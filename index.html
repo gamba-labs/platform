@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <title>Gamba Demo</title>
+    <link rel="icon" type="image/png" href="/icon-32.png">
+    <link rel="apple-touch-icon" href="/icon-512.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module">
+      import * as buffer from 'buffer'
+      import assert from 'assert'
+      window.Buffer = buffer.Buffer
+      window.assert = assert
+    </script>
+    <script type="module" src="./src/index.tsx"></script>
+  </body>
+</html>
