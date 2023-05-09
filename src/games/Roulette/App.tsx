@@ -67,7 +67,7 @@ export default function Roulette() {
   return (
     <>
       <ResponsiveSize>
-        <div style={{ display: 'grid', gap: '20px', alignItems: 'center' }}>
+        <div style={{ display: 'grid', gap: '20px', alignItems: 'center', padding: '200px' }}>
           <div style={{ textAlign: 'center', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
             <div>
               <div style={{ fontWeight: 'bold' }}>
