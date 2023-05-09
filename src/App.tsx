@@ -1,7 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import View from './View'
-import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import ScrollToTop from './components/ScrollToTop'
 

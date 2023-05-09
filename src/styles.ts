@@ -106,27 +106,27 @@ export const Section = styled.div`
   padding: 20px;
 `
 
-export const Banner = styled.div<{$yes: boolean, $game: boolean}>`
+export const Banner = styled.div<{size: 'big' | 'medium' | 'default'}>`
   position: relative;
   transition: height .25s ease;
-  height: 80vh;
-  @media (min-height: 420px) {
-    height: 420px;
-  }
-  @media (min-height: 500px) {
-    height: 500px;
-  }
-  @media (min-height: 960px) {
-    height: 40vh;
-  }
-  ${({ $yes }) => $yes && `
-    height: 100vh;
+  height: 100vh;
+  ${({ size }) => size === 'default' && `
+    @media (min-height: 420px) {
+      height: 420px;
+    }
+    @media (min-height: 500px) {
+      height: 500px;
+    }
+    @media (min-height: 960px) {
+      height: 40vh;
+    }
+  `}
+  ${({ size }) => size === 'medium' && `
     @media (min-height: 800px) {
       height: 50vh!important;
     }
   `}
-  ${({ $game }) => $game && `
-    height: 100vh;
+  ${({ size }) => size === 'big' && `
     @media (min-height: 800px) {
       height: 75vh!important;
     }
@@ -155,4 +155,12 @@ export const Banner = styled.div<{$yes: boolean, $game: boolean}>`
     position: absolute;
     background-image: linear-gradient(0deg, var(--bg-color) 0%, ${({ theme }) => theme.palette.background}00 100%);
   }
+`
+
+export const StylelessButton = styled.button`
+  border: none;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  background: none;
 `

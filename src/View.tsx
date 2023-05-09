@@ -5,8 +5,7 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Card } from './components/Card'
 import { Slider } from './components/Slider'
-import { StylelessButton } from './games/Roulette/styles'
-import { Banner, Section } from './styles'
+import { Banner, Section, StylelessButton } from './styles'
 
 const CoverImage = styled.div`
   transition: background-image .2s ease;
@@ -70,7 +69,7 @@ export default function View({ play = false }: {play?: boolean}) {
 
   return (
     <>
-      <Banner $game={play} $yes={!!shortName}>
+      <Banner size={play ? 'big' : shortName ? 'medium' : 'default'}>
         <Fragment key={shortName}>
           {(play && game) ? (
             <div>

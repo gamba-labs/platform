@@ -7,7 +7,4 @@ export const GAMES: GameBundle[] = [
   Flip,
   Roulette,
   Mines,
-  // HiLo,
-  // HiLo2,
-  // Rapid,
 ]

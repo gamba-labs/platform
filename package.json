@@ -1,5 +1,5 @@
 {
-  "name": "gamba-demo",
+  "name": "game-platform",
   "private": true,
   "version": "1.0.0",
   "description": "",
@@ -25,6 +25,10 @@
     "zustand": "^4.3.7"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint": "^8.36.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-router-dom": "^5.3.3",

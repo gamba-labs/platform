@@ -26,6 +26,14 @@ const getChipColor = (value = 0) => {
   return '#00ff61'
 }
 
+export const StylelessButton = styled.button`
+  border: none;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  background: none;
+`
+
 export const TableWrapper = styled.div`
   display: inline-grid;
   user-select: none;
@@ -49,14 +57,6 @@ export const Loader = styled.div`
 
 export const Relative = styled.div`
   position: relative;
-`
-
-export const StylelessButton = styled.button`
-  border: none;
-  margin: 0;
-  outline: none;
-  padding: 0;
-  background: none;
 `
 
 export const TableSquare = styled.div<{$color: 'red' | 'black' | 'none', $transparent?: boolean, $highlighted?: boolean}>`

@@ -1,0 +1,54 @@
+env:
+  browser: true
+  es2021: true
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 12
+  sourceType: module
+plugins:
+  - react
+  - '@typescript-eslint'
+extends:
+  - eslint:recommended
+  - plugin:react/recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+rules:
+  max-len: 'off'
+  semi: ['error', 'never']
+  indent: 'off'
+  '@typescript-eslint/indent': ['error', 2]
+  '@typescript-eslint/explicit-module-boundary-types': 'off'
+  quotes: ['error', 'single']
+  object-curly-spacing: ['error', 'always']
+  array-bracket-spacing: ['error', 'never']
+  no-shadow: ['off']
+  comma-dangle: ['error', 'always-multiline']
+  comma-spacing: ['error', {before: false, after: true}]
+  comma-style: ['error', 'last']
+  arrow-spacing: ['error', {before: true, after: true}]
+  key-spacing: ['error', {'beforeColon': false, 'afterColon': true}]
+  keyword-spacing: ['error']
+  space-before-blocks: ['error', 'always']
+  computed-property-spacing: ['error', 'never']
+  eol-last: ['error', 'always']
+  func-call-spacing: ['error', 'never']
+  space-before-function-paren: ['error', {anonymous: 'never', named: 'never', asyncArrow: 'always'}]
+  brace-style: ['error', '1tbs']
+  jsx-quotes: ['error', 'prefer-double']
+  quote-props: ['error', 'as-needed']
+  space-in-parens: ['error', 'never']
+  new-cap: 'off'
+  padded-blocks: ['error', 'never']
+  object-property-newline: ['error', {'allowAllPropertiesOnSameLine': true}]
+  object-curly-newline: ['error', {'multiline': true}]
+  space-infix-ops: 'error'
+  react/jsx-space-before-closing: ['error', 'always']
+  react/react-in-jsx-scope: 'off'
+  react/no-unknown-property: 'off'
+  react/display-name: 'off'
+  react/prop-types: 'off'
+  react/no-children-prop: 'off'
+
