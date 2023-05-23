@@ -20,7 +20,6 @@ const Wrapper = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  font-size: 23px;
   padding: 10px 20px;
   gap: 20px;
   .label {
@@ -64,13 +63,16 @@ export function Header() {
     <Wrapper>
       <NavigationLink to="/">
         <Logo src="/logo.png" />
-        <div className="label" style={{ fontSize: "30px" }}>THE COLONY</div >
+        <div className="label">Gamba Demo</div>
       </NavigationLink>
       <Links>
+        <a target="_blank" href="https://github.com/gamba-labs/gamba" rel="noreferrer">
+          <FaGithub />
+        </a>
         <a target="_blank" href="http://discord.gg/xjBsW3e8fK" rel="noreferrer">
           <FaDiscord />
         </a>
-        <a target="_blank" href="https://twitter.com/TheAntzNest" rel="noreferrer">
+        <a target="_blank" href="https://twitter.com/GambaLabs" rel="noreferrer">
           <FaTwitter />
         </a>
       </Links>
