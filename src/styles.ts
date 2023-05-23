@@ -1,4 +1,5 @@
 import styled, { DefaultTheme, createGlobalStyle, keyframes } from 'styled-components'
+import "../src/assets/fonts/style.css"
 
 declare module 'styled-components' {
   export interface DefaultTheme {
@@ -13,10 +14,10 @@ declare module 'styled-components' {
 
 export const theme: DefaultTheme = {
   palette: {
-    background: '#080809',
+    background: '#3d4287',
     backgroundLight: '#1a1c24',
     textColor: '#ffffff',
-    primary: '#ff335c',
+    primary: '#ffffff',
   },
 }
 
@@ -66,9 +67,11 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body, input, button, textarea, pre {
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Ass', 'Roboto Mono', monospace;
     font-display: block;
-    font-size: 14px;
+    font-size: 18px;
+    
+
   }
   button, a {
     cursor: pointer;
@@ -153,7 +156,7 @@ export const Banner = styled.div<{size: 'big' | 'medium' | 'default'}>`
     left: 0px;
     top: 0px;
     position: absolute;
-    background-image: linear-gradient(0deg, var(--bg-color) 0%, ${({ theme }) => theme.palette.background}00 100%);
+    background-image: linear-gradient(0deg, var(--bg-color) 0%, ${({ theme }) => theme.palette.background}00 %);
   }
 `
 

@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'Lo-Res';
+    src: local('Lo-Res 12 OT Bold'), local('Lo-Res-12-OT-Bold'),
+        url('LoRes12OT-Bold.woff2') format('woff2'),
+        url('LoRes12OT-Bold.woff') format('woff'),
+        url('LoRes12OT-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+
+  @font-face {
+    font-family: 'Ass';
+    src: local('Ass'), local('Ass'),
+        url('Assiduous-SmallCaps.ttf.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+  }
+  
