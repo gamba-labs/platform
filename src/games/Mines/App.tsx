@@ -1,4 +1,4 @@
-import { solToLamports } from 'gamba'
+import { solToLamports, lam} from 'gamba'
 import { useGamba } from 'gamba/react'
 import { ActionBar, Button, ResponsiveSize, formatLamports } from 'gamba/react-ui'
 import React, { useMemo, useState } from 'react'
@@ -43,18 +43,16 @@ function Mines() {
   const hasClaimableBalance = gamba.balances.user > 0
 
   const resetGame = async () => {
-    setGrid(generateGrid())
-    setUnclickedSquares(GRID_SIZE)
-    // setMines(MINE_COUNT)
-    setLoading(false)
-    setFirstPlay(true)
-    setPlaybackRate(1)
-
     if (gamba.balances.user > 0) {
       setClaiming(true)
       await gamba.withdraw()
       setClaiming(false)
     }
+    setGrid(generateGrid())
+    setUnclickedSquares(GRID_SIZE)
+    setLoading(false)
+    setFirstPlay(true)
+    setPlaybackRate(1)
   }
 
   const multiplier = useMemo(() => {
@@ -112,18 +110,6 @@ function Mines() {
       console.error(err)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const claim = async () => {
-    try {
-      const res = await gamba.withdraw()
-      setClaiming(true)
-      await res.result()
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setClaiming(false)
     }
   }
 
@@ -190,7 +176,7 @@ function Mines() {
             <Button
               loading={claiming}
               disabled={firstPlay || claiming || loading}
-              onClick={() => claim()}
+              onClick={() => resetGame()}
             >
               Claim {formatLamports(gamba.balances.user)}
             </Button>
