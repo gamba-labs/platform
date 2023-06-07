@@ -52,18 +52,6 @@ export default function HiLo() {
     setFirstPlay(true)
   }
 
-  const cashout = async () => {
-    try {
-      const res = await gamba.withdraw()
-      setClaiming(true)
-      await res.result()
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setClaiming(false)
-    }
-  }
-
   const play = async () => {
     try {
       const bet = option === 'hi' ? betHi : betLo
@@ -141,7 +129,7 @@ export default function HiLo() {
           <Button
             loading={claiming}
             disabled={newSession || claiming || loading || needsReset}
-            onClick={cashout}
+            onClick={resetGame}
           >
             CASHOUT {formatLamports(gamba.balances.user)}
           </Button>
