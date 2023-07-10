@@ -13,15 +13,17 @@ export const NUMBERS = 18
 export const NUMBER_COLUMNS = Math.ceil(NUMBERS / 3)
 
 export const getNumberInfo = (index: number): NumberInfo => {
-  const number = index + 1
-  const isEven = number % 2 === 0
+  const number = index + 1;
+  const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18];
+  const isRed = redNumbers.includes(number);
   return {
     number,
-    isEven,
+    isEven: number % 2 === 0,
     row: (2 - index % 3),
-    color: isEven ? 'red' : 'black',
+    color: isRed ? 'red' : 'black',
   }
 }
+
 
 const squares = Array.from({ length: NUMBERS }).fill(0).map((_, i) => i)
 
@@ -34,8 +36,8 @@ export const NAMED_BETS = {
   secondHalf: filterSquares(({ number }) => number > NUMBERS / 2),
   even: filterSquares(({ isEven }) => isEven),
   odd: filterSquares(({ isEven }) => !isEven),
-  black: filterSquares(({ color }) => color === 'black'),
   red: filterSquares(({ color }) => color === 'red'),
+  black: filterSquares(({ color }) => color === 'black'),
   row1: filterSquares(({ row }) => row === 0),
   row2: filterSquares(({ row }) => row === 1),
   row3: filterSquares(({ row }) => row === 2),
