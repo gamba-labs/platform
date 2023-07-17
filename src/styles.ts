@@ -26,7 +26,7 @@ export const GlobalStyle = createGlobalStyle`
   }
   :root {
     ${({ theme }) => `
-      --border-radius: 5px;
+      --border-radius: 10px;
       --text-color: ${theme.palette.textColor};
       --primary-color: ${theme.palette.primary};
       --header-bg-color: ${theme.palette.background}EE;
