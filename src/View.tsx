@@ -51,7 +51,7 @@ function Details({ game }: {game?: GameBundle}) {
               A decentralized, provably-fair casino built on <a target="_blank" href="https://github.com/gamba-labs/gamba" rel="noreferrer">gamba</a>.
             </div>
             <div style={{ display: 'flex', gap: '20px' }}>
-              <Button onClick={() => window.open('https://twitter.com/gambalabs', '_blank')}>
+              <Button onClick={() => window.open('https://gamba.so', '_blank')}>
                 Read More
               </Button>
             </div>
