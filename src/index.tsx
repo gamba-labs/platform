@@ -4,9 +4,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { GAMES } from './games'
-import { GlobalStyle, theme } from './styles'
 import { App } from './App'
+import { GlobalStyle, theme } from './styles'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
@@ -20,7 +19,7 @@ root.render(
           config: { wsEndpoint: import.meta.env.GAMBA_SOLANA_RPC_WS },
         }}
       >
-        <GambaUi games={GAMES}>
+        <GambaUi>
           <App />
         </GambaUi>
       </Gamba>
