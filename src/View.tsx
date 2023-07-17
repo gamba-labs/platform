@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { Card } from './components/Card'
 import { Slider } from './components/Slider'
 import { Banner, Section, StylelessButton } from './styles'
+import { GAMES } from './games'
 
 const CoverImage = styled.div`
   transition: background-image .2s ease;
@@ -64,8 +65,7 @@ function Details({ game }: {game?: GameBundle}) {
 export default function View({ play = false }: {play?: boolean}) {
   const { shortName } = useParams()
   const navigate = useNavigate()
-  const games = useGambaUi((state) => state.games)
-  const game = useMemo(() => games.find((x) => x.short_name === shortName), [games, shortName])
+  const game = useMemo(() => GAMES.find((x) => x.short_name === shortName), [shortName])
 
   return (
     <>
@@ -85,7 +85,7 @@ export default function View({ play = false }: {play?: boolean}) {
           )}
         </Fragment>
       </Banner>
-      {games.length > 1 && (
+      {GAMES.length > 1 && (
         <Section>
           <Slider
             title={
@@ -94,7 +94,7 @@ export default function View({ play = false }: {play?: boolean}) {
               </h2>
             }
           >
-            {games.map((game) => (
+            {GAMES.map((game) => (
               <NavLink key={game.short_name} to={`/game/${game.short_name}`}>
                 <Card
                   width={150}

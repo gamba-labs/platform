@@ -94,7 +94,7 @@ export default function Flip() {
 
   return (
     <>
-      <Canvas linear flat onContextMenu={(e) => e.preventDefault()} style={{ background: '#191621' }}>
+      <Canvas linear flat onContextMenu={(e) => e.preventDefault()}>
         <OrthographicCamera
           makeDefault
           zoom={80}
