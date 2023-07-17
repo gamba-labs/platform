@@ -55,15 +55,23 @@ export default function HiLo() {
   const play = async () => {
     try {
       const bet = option === 'hi' ? betHi : betLo
-      const wagerInput = newSession ? wager : gamba.balances.user
-      const res = await gamba.play(bet, wagerInput, { deductFees: true })
+      let wagerInput = wager
+      let res
+
+      if (!firstPlay) {
+        wagerInput = gamba.balances.user
+        res = await gamba.play(bet, wagerInput, { deductFees: true })
+      } else {
+        res = await gamba.play(bet, wagerInput, { deductFees: false })
+      }
+      
       setLoading(true)
       setFirstPlay(false)
       const result = await res.result()
       addCard(result.resultIndex)
       cardSound.start()
 
-      if (result.payout == 0 ) {
+      if (result.payout == 0) {
         setFirstPlay(true)
       } else {
         winSound.start()

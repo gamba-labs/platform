@@ -79,12 +79,15 @@ function Mines() {
       }
 
       let wagerInput = wager
+      let res
 
       if (!firstPlay) {
         wagerInput = gamba.balances.user
+        res = await gamba.play(bet, wagerInput, { deductFees: true })
+      } else {
+        res = await gamba.play(bet, wagerInput, { deductFees: false })
       }
 
-      const res = await gamba.play(bet, wagerInput, { deductFees: true })
       soundTick.start()
       const result = await res.result()
       const win = result.payout > 0
