@@ -165,11 +165,11 @@ const Slots: React.FC = () => {
         }, SPIN_INTERVAL * (i + 1))
       })
 
-      const result = await res.result()
-      setResult(result.payout)
+      const gambaResult = await res.result()
+      setResult(gambaResult.payout + wager) //set result to payout + wager because in slots we display total payout not net gain
 
       //get the combination of emojis to display
-      const finalCombination = getEmojiSelector(wager, result.payout)
+      const finalCombination = getEmojiSelector(wager, (gambaResult.payout + wager))
 
       // Stop spinning animation with suspense
       spinIntervals.forEach((interval, i) =>

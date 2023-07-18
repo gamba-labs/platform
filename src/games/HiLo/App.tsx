@@ -1,11 +1,11 @@
-import { solToLamports} from 'gamba'
+import { solToLamports } from 'gamba'
 import { useGamba } from 'gamba/react'
 import { ActionBar, Button, ResponsiveSize, formatLamports } from 'gamba/react-ui'
 import React, { useMemo, useState } from 'react'
-import { FaHandPointDown, FaHandPointUp } from 'react-icons/fa'
+import { FaHandPointDown, FaHandPointUp, FaEquals } from 'react-icons/fa'
 import { Dropdown } from '../../components/Dropdown'
 import { RANKS } from './constants'
-import { Card, Container, Option , Overlay, OverlayText} from './styles'
+import { Card, Container, Option, Overlay, OverlayText } from './styles'
 import * as Tone from 'tone'
 import cardSrc from './card.mp3'
 import winSrc from './win.wav'
@@ -16,7 +16,7 @@ const createSound = (url: string) =>
 const cardSound = createSound(cardSrc)
 const winSound = createSound(winSrc)
 
-const randomRank = () => 0 + Math.floor(Math.random() * (RANKS - 1))
+const randomRank = () => 1 + Math.floor(Math.random() * (RANKS - 1))
 const WAGER_AMOUNTS = [0.05, 0.1, 0.25, 0.5, 1, 2].map(solToLamports)
 
 export default function HiLo() {
@@ -29,15 +29,19 @@ export default function HiLo() {
   const [currentRank] = cards
   const newSession = gamba.balances.user < wager
   const addCard = (rank: number) => setCards((cards) => [rank, ...cards])
-  const [option, setOption] = useState<'hi' | 'lo'>()
+  const [option, setOption] = useState<'hi' | 'lo' | 'same'>()
+
   const betHi = useMemo(() =>
     Array.from({ length: RANKS }).map((_, i) =>
-      i > currentRank ? RANKS / (RANKS - currentRank - 1) : 0,
+      i > 0 && i >= currentRank ? (currentRank === 0 ? RANKS / (RANKS - 1) : RANKS / (RANKS - currentRank)) : 0,
     ), [currentRank])
+
   const betLo = useMemo(() =>
     Array.from({ length: RANKS }).map((_, i) =>
-      i < currentRank ? RANKS / currentRank : 0,
+      i < RANKS - 1 && i <= currentRank ? (currentRank === RANKS - 1 ? RANKS / currentRank : RANKS / (currentRank + 1)) : 0,
     ), [currentRank])
+  
+  const betSame = useMemo(() => [RANKS, ...Array(RANKS - 1).fill(0)], [currentRank])
 
   const hasClaimableBalance = gamba.balances.user > 0
 
@@ -54,7 +58,18 @@ export default function HiLo() {
 
   const play = async () => {
     try {
-      const bet = option === 'hi' ? betHi : betLo
+      let bet
+      switch (option) {
+        case 'hi':
+          bet = betHi
+          break
+        case 'lo':
+          bet = betLo
+          break
+        case 'same':
+          bet = betSame
+          break
+      }
       let wagerInput = wager
       let res
 
@@ -71,45 +86,64 @@ export default function HiLo() {
       addCard(result.resultIndex)
       cardSound.start()
 
-      if (result.payout == 0) {
-        setFirstPlay(true)
-      } else {
+      const win = result.payout > 0
+
+      if (win) {
         winSound.start()
+      } else {
+        setFirstPlay(true)
       }
     } catch (err) {
       console.error(err)
     } finally {
       setLoading(false)
-      
     }
   }
-
+  
   const needsReset = firstPlay && hasClaimableBalance
 
   return (
     <>
       <ResponsiveSize>
         <Container>
-          <Option 
-            $selected={option === 'lo'} 
-            onClick={currentRank !== 0 ? () => setOption('lo') : undefined}
-            style={{visibility: currentRank === 0 ? 'hidden' : 'visible'}}
-          >
-            <div><FaHandPointDown /></div>
-            <div>(x{Math.max(...betLo).toFixed(2)})</div>
-          </Option>
+          {currentRank !== 0 ? (
+            <Option
+              $selected={option === 'lo'}
+              onClick={() => setOption('lo')}
+            >
+              <div><FaHandPointDown /></div>
+              <div>(x{Math.max(...betLo).toFixed(2)})</div>
+            </Option>
+          ) : (
+            <Option
+              $selected={option === 'same'}
+              onClick={() => setOption('same')}
+            >
+              <div><FaEquals /></div>
+              <div>(x{Math.max(...betSame).toFixed(2)})</div>
+            </Option>
+          )}
           <Card key={cards.length}>
             <div className="rank">{currentRank + 1}</div>
             <div className="suit"></div>
           </Card>
-          <Option 
-            $selected={option === 'hi'} 
-            onClick={currentRank !== 12 ? () => setOption('hi') : undefined}
-            style={{visibility: currentRank === 12 ? 'hidden' : 'visible'}}
-          >
-            <div><FaHandPointUp /></div>
-            <div>(x{Math.max(...betHi).toFixed(2)})</div>
-          </Option>
+          {currentRank !== RANKS - 1 ? (
+            <Option
+              $selected={option === 'hi'}
+              onClick={() => setOption('hi')}
+            >
+              <div><FaHandPointUp /></div>
+              <div>(x{Math.max(...betHi).toFixed(2)})</div>
+            </Option>
+          ) : (
+            <Option
+              $selected={option === 'same'}
+              onClick={() => setOption('same')}
+            >
+              <div><FaEquals /></div>
+              <div>(x{Math.max(...betSame).toFixed(2)})</div>
+            </Option>
+          )}
           {needsReset && !loading && (
             <Overlay>
               <OverlayText>
@@ -141,6 +175,7 @@ export default function HiLo() {
           >
             CASHOUT {formatLamports(gamba.balances.user)}
           </Button>
+           
         )}
         <Button loading={loading} disabled={!option || needsReset} onClick={play}>
           PLAY {option}
@@ -149,6 +184,4 @@ export default function HiLo() {
       </ActionBar>
     </>
   )
-  
-  
 }
