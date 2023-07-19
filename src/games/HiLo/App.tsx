@@ -30,6 +30,7 @@ export default function HiLo() {
   const newSession = gamba.balances.user < wager
   const addCard = (rank: number) => setCards((cards) => [rank, ...cards])
   const [option, setOption] = useState<'hi' | 'lo' | 'same'>()
+  const [totalGain, setTotalGain] = useState(0)
 
   const betHi = useMemo(() =>
     Array.from({ length: RANKS }).map((_, i) =>
@@ -74,7 +75,7 @@ export default function HiLo() {
       let res
 
       if (!firstPlay) {
-        wagerInput = gamba.balances.user
+        wagerInput = wager + totalGain
         res = await gamba.play(bet, wagerInput, { deductFees: true })
       } else {
         res = await gamba.play(bet, wagerInput, { deductFees: false })
@@ -90,8 +91,10 @@ export default function HiLo() {
 
       if (win) {
         winSound.start()
+        setTotalGain(totalGain + result.payout)
       } else {
         setFirstPlay(true)
+        setTotalGain(0)
       }
     } catch (err) {
       console.error(err)

@@ -76,3 +76,30 @@ export const OverlayText = styled.div`
   font-size: 1.5rem;
   color: red;
 `
+
+
+export const MultiplierWrapper = styled.div`
+  border-radius: 5px;
+  background: #292a307d;
+  font-weight: bold;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+`
+
+export const MultiplierCurrent = styled.div<{isCurrent?: boolean}>`
+  color: ${({ isCurrent }) => isCurrent ? 'red' : 'white'};
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  width: 25%;
+  justify-content: center;
+  font-size: 15px;
+  height: 62px;
+  background: ${({ isCurrent }) => isCurrent ? '#FFFFFF11' : 'transparent'};
+  box-shadow: ${({ isCurrent }) => isCurrent ? '2px 0px 10px #00000033' : 'none'};
+`
