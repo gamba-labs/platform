@@ -47,14 +47,16 @@ function Mines() {
     setMultipliers(calculateMultipliers(unclickedSquares, mines))
   }, [mines])
 
-  const hasClaimableBalance = gamba.balances.user > 0
-
-  const resetGame = async () => {
+  const claim = async () => {
     if (gamba.balances.user > 0) {
       setClaiming(true)
       await gamba.withdraw()
       setClaiming(false)
     }
+    setGameState('lost')
+  }
+
+  const reset = async () => {
     setGrid(generateGrid())
     setUnclickedSquares(GRID_SIZE)
     setLoading(false)
@@ -91,10 +93,10 @@ function Mines() {
       let res
 
       if (gameState === 'playing') {
-        wagerInput = wager + totalGain
+        wagerInput = wager + totalGain //rebet with winnings
         res = await gamba.play(bet, wagerInput, { deductFees: true })
       } else {
-        res = await gamba.play(bet, wagerInput, { deductFees: false })
+        res = await gamba.play(bet, wagerInput) //if its first bet just use inital wager
       }
 
       soundTick.start()
@@ -112,14 +114,12 @@ function Mines() {
         setCurrentMultiplierIndex(currentMultiplierIndex + 1)
         setTotalGain(totalGain + result.payout)
       } else if (!win) {
+        setGameState('lost')
         updatedGrid[index].status = 'mine'
         revealRandomMines(updatedGrid, mines - 1, index)
         soundTick.stop()
         soundLose.start()
         setPlaybackRate(1)
-        setCurrentMultiplierIndex(0)
-        setTotalGain(0)
-        setGameState('lost')
       }
       setGrid(updatedGrid)
     } catch (err) {
@@ -129,7 +129,7 @@ function Mines() {
     }
   }
 
-  const needsReset = gameState === 'lost' || (hasClaimableBalance && gameState === 'idle')
+  const needsReset = gameState === 'lost'
 
   return (
     <>
@@ -187,21 +187,22 @@ function Mines() {
               }))}
             />
           </>
-        ) : (
+        ) : gameState === 'playing' ? (
           <div>
             <Button
               loading={claiming}
-              disabled={(gameState === 'idle') || claiming || loading}
-              onClick={() => resetGame()}
+              disabled={claiming || loading}
+              onClick={claim}
             >
               Claim {formatLamports(gamba.balances.user)}
             </Button>
           </div>
-        )}
-        {gameState === 'idle' || gameState === 'lost' ? (
-          <Button disabled={!needsReset || claiming || loading} onClick={resetGame}>Reset</Button>
+        ) : null}
+        {gameState === 'lost' ? (
+          <Button disabled={!needsReset || claiming || loading} onClick={reset}>Reset</Button>
         ) : null}
       </ActionBar>
+
     </>
   )
 }

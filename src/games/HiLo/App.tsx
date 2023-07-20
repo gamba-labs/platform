@@ -24,13 +24,12 @@ export default function HiLo() {
   const [cards, setCards] = useState([randomRank()])
   const [loading, setLoading] = useState(false)
   const [claiming, setClaiming] = useState(false)
-  const [firstPlay, setFirstPlay] = useState(true)
   const [wager, setWager] = useState(WAGER_AMOUNTS[0])
   const [currentRank] = cards
-  const newSession = gamba.balances.user < wager
   const addCard = (rank: number) => setCards((cards) => [rank, ...cards])
   const [option, setOption] = useState<'hi' | 'lo' | 'same'>()
   const [totalGain, setTotalGain] = useState(0)
+  const [gameState, setGameState] = useState('idle') // idle, playing, lost
 
   const betHi = useMemo(() =>
     Array.from({ length: RANKS }).map((_, i) =>
@@ -44,17 +43,20 @@ export default function HiLo() {
   
   const betSame = useMemo(() => [RANKS, ...Array(RANKS - 1).fill(0)], [currentRank])
 
-  const hasClaimableBalance = gamba.balances.user > 0
-
-  const resetGame = async () => {
+  const claim = async () => {
     if (gamba.balances.user > 0) {
       setClaiming(true)
       await gamba.withdraw()
       setClaiming(false)
     }
+    setGameState('lost')
+  }
+
+  const reset = async () => {
     setCards([randomRank()])
     setLoading(false)
-    setFirstPlay(true)
+    setTotalGain(0)
+    setGameState('idle')
   }
 
   const play = async () => {
@@ -74,7 +76,7 @@ export default function HiLo() {
       let wagerInput = wager
       let res
 
-      if (!firstPlay) {
+      if (gameState === 'playing') {
         wagerInput = wager + totalGain
         res = await gamba.play(bet, wagerInput, { deductFees: true })
       } else {
@@ -82,7 +84,7 @@ export default function HiLo() {
       }
       
       setLoading(true)
-      setFirstPlay(false)
+      setGameState('playing')
       const result = await res.result()
       addCard(result.resultIndex)
       cardSound.start()
@@ -93,7 +95,7 @@ export default function HiLo() {
         winSound.start()
         setTotalGain(totalGain + result.payout)
       } else {
-        setFirstPlay(true)
+        setGameState('lost')
         setTotalGain(0)
       }
     } catch (err) {
@@ -103,7 +105,7 @@ export default function HiLo() {
     }
   }
   
-  const needsReset = firstPlay && hasClaimableBalance
+  const needsReset = gameState === 'lost'
 
   return (
     <>
@@ -157,34 +159,37 @@ export default function HiLo() {
         </Container>
       </ResponsiveSize>
       <ActionBar>
-        {firstPlay ? (
-          <>
-            <Dropdown
-              value={wager}
-              format={(value) => formatLamports(value)}
-              label="Wager"
-              onChange={setWager}
-              options={WAGER_AMOUNTS.map((value) => ({
-                label: formatLamports(value),
-                value,
-              }))}
-            />
-          </>
+        {gameState === 'lost' ? (
+          <Button onClick={reset}>Reset</Button>
         ) : (
-          <Button
-            loading={claiming}
-            disabled={newSession || claiming || loading || needsReset}
-            onClick={resetGame}
-          >
-            CASHOUT {formatLamports(gamba.balances.user)}
-          </Button>
-           
+          <>
+            {gameState === 'idle' ? (
+              <Dropdown
+                value={wager}
+                format={(value) => formatLamports(value)}
+                label="Wager"
+                onChange={setWager}
+                options={WAGER_AMOUNTS.map((value) => ({
+                  label: formatLamports(value),
+                  value,
+                }))}
+              />
+            ) : (
+              <Button
+                loading={claiming}
+                disabled={claiming || loading}
+                onClick={claim}
+              >
+                CASHOUT {formatLamports(gamba.balances.user)}
+              </Button>
+            )}
+            <Button loading={loading} disabled={!option} onClick={play}>
+              PLAY {option}
+            </Button>
+          </>
         )}
-        <Button loading={loading} disabled={!option || needsReset} onClick={play}>
-          PLAY {option}
-        </Button>
-        <Button disabled={!needsReset} onClick={resetGame}>Reset</Button>
       </ActionBar>
+
     </>
   )
 }
