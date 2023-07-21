@@ -14,7 +14,7 @@
     "@react-three/drei": "^9.65.5",
     "@react-three/fiber": "^8.12.2",
     "assert": "^2.0.0",
-    "gamba": "^0.7.3",
+    "gamba": "^0.7.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
