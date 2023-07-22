@@ -11,16 +11,16 @@ export const numberColorToHex = (numberColor: string) => {
 }
 
 const getChipColor = (value = 0) => {
-  if (value >= .5) {
+  if (value >= .75) {
     return '#d46bff'
   }
-  if (value >= .25) {
+  if (value >= .5) {
     return '#ffdf56'
   }
-  if (value >= .1) {
+  if (value >= .25) {
     return '#ff384b'
   }
-  if (value >= .05) {
+  if (value >= .1) {
     return '#5187ff'
   }
   return '#00ff61'
