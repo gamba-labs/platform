@@ -48,7 +48,6 @@ export const DEGEN_ARRAY_2 = [ // THIS ARRAY CURRENTLY DOESNT WORK BECAUSE MAX S
   30] // 30x * 1, jackpot (100 outcomes array sum = 100)
 
 export const WAGER_AMOUNTS = [
-  0.01,
   0.05,
   0.1,
   .25,
