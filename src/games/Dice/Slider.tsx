@@ -11,16 +11,19 @@ const soundTick = createSound(tickSrc)
 const SliderWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 36px;
+  margin: 50px 0;
 `
 
-const SliderLabel = styled.div`
-  position: absolute;
-  top: -20px;
-  transform: translateX(-50%);
+const SliderLabels = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+  & > div {
+    opacity: .9;
+    width: 50px;
+    text-align: center;
+  }
 `
-
-
 
 const SliderInput = styled.input`
   -webkit-appearance: none;
@@ -46,8 +49,8 @@ const SliderInput = styled.input`
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border: none;
     background: #4CAF50;
     border-radius: 3px;
@@ -58,8 +61,8 @@ const SliderInput = styled.input`
   &::-moz-range-thumb {
     -moz-appearance: none;
     appearance: none;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border: none;
     background: #4CAF50;
     border-radius: 3px;
@@ -76,9 +79,8 @@ const SliderInput = styled.input`
   }
 `
 
-
-
 const Track = styled.div`
+  background: #00bf57;
   position: absolute;
   height: 8px;
   border-radius: 4px;
@@ -88,35 +90,40 @@ const Track = styled.div`
 
 const ResultLabel = styled.div`
   position: absolute;
-  top: -30px;
-  background: white;
+  top: -40px;
+  background: #ffffffCC;
+  backdrop-filter: blur(50px);
   border-radius: 3px;
   padding: 5px;
-  font-size: 12px;
+  font-size: 18px;
+  font-weight: bold;
   transform: translateX(-50%);
+  width: 50px;
+  text-align: center;
   transition: left 0.3s ease-in-out;
   color:black;
   &::after {
     content: "";
     position: absolute;
-    top: 90%;
+    top: 100%;
     left: 50%;
-    margin-left: -5px;
-    border-width: 20px 5px 0px 5px; 
+    margin-left: -10px;
+    border-width: 10px 10px 0px 10px;
     border-style: solid;
-    border-color: white transparent transparent transparent;
+    border-color: #ffffffCC transparent transparent transparent;
   }
 `
 
 interface SliderProps {
-  min: number;
-  max: number;
-  value: number;
-  onChange: (value: number) => void;
-  resultIndex: number;
+  min: number
+  max: number
+  value: number
+  onChange: (value: number) => void
+  resultIndex: number
+  disabled?: boolean
 }
 
-const Slider: React.FC<SliderProps> = ({ min, max, value, onChange, resultIndex }) => {
+const Slider: React.FC<SliderProps> = ({ min, max, value, onChange, resultIndex, disabled }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value)
     if (newValue <= 95) {
@@ -129,23 +136,26 @@ const Slider: React.FC<SliderProps> = ({ min, max, value, onChange, resultIndex 
 
   return (
     <SliderWrapper>
-      {labels.map((label, i) => (
-        <SliderLabel style={{ left: `${label}%` }} key={i}>
-          {label}
-        </SliderLabel>
-      ))}
-      <Track style={{ width: `${value}%`, background: 'green' }} />
-      <Track style={{ width: `${100 - value}%`, background: 'red', right: 0 }} />
-      {resultIndex > 0 && 
+      <Track style={{ width: `${value}%` }} />
+      <Track style={{ width: `${100 - value}%`, background: '#322943', right: 0 }} />
+      {resultIndex > -1 &&
         <ResultLabel style={{ left: `${resultIndex}%` }}>{resultIndex}</ResultLabel>
       }
       <SliderInput
+        disabled={disabled}
         type="range"
         min={min.toString()}
         max={max.toString()}
         value={value}
         onChange={handleChange}
       />
+      <SliderLabels>
+        {labels.map((label, i) => (
+          <div key={i}>
+            {label}
+          </div>
+        ))}
+      </SliderLabels>
     </SliderWrapper>
   )
 }

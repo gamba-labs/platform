@@ -2,7 +2,7 @@
 
 A simple gaming platform built on [Gamba](https://github.com/gamba-labs/gamba).
 
-This repository can be used as a starting template for a completely new game or casino, Every time someone plays on your site you will automatically collect royalties. [Learn more](https://github.com/gamba-labs/gamba)
+This repository can be used as a starting template for a completely new game or casino, Every time someone plays on your site you will automatically collect royalties. [Learn more](https://gamba.so)
 
 ## Quick Setup
 

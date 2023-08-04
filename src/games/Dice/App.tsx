@@ -1,13 +1,12 @@
-import { solToLamports, lamportsToSol } from 'gamba'
+import { lamportsToSol, solToLamports } from 'gamba'
 import { useGamba } from 'gamba/react'
-import { ResponsiveSize, ActionBar, Button, formatLamports } from 'gamba/react-ui'
-import React, { useState, useEffect } from 'react'
-import { GameContainer, WagerButtons, WagerInputs, WagerSection, StyledSlider, StatItem, StatContainer, SemiCircleContainer, StatContainerWrapper } from './styles'
+import { ActionBar, Button, ResponsiveSize } from 'gamba/react-ui'
+import React, { useState } from 'react'
 import * as Tone from 'tone'
-import styled from 'styled-components'
-import Slider from './Slider'  
-import winSrc from './win.mp3'
+import Slider from './Slider'
 import loseSrc from './lose.mp3'
+import { GameContainer, SemiCircleContainer, StatContainer, StatContainerWrapper, StatItem, StyledSlider, WagerButtons, WagerInput, WagerSection } from './styles'
+import winSrc from './win.mp3'
 
 const createSound = (url: string) => new Tone.Player({ url }).toDestination()
 
@@ -16,42 +15,35 @@ const soundLose = createSound(loseSrc)
 
 function Dice() {
   const gamba = useGamba()
-  const [wager, setWager] = useState<number>(0.05)  // wager in SOL
-  const [resultIndex, setResultIndex] = useState<number>(0)
-  const [odds, setOdds] = useState<number>(50)  // Initializing odds with 50%
-  const [multiplier, setMultiplier] = useState<number>(100 / odds)
-  const [maxBet, setMaxBet] = useState<number>(6)  // maxBet in SOL
+  const [wager, setWager] = useState(0.05) // wager in SOL
+  const [loading, setLoading] = useState(false)
+  const [resultIndex, setResultIndex] = useState(-1)
+  const [odds, setOdds] = useState(50)  // Initializing odds with 50%
 
   const MAX_PAYOUT = 6
 
-  useEffect(() => {
-    setMultiplier(100 / odds)
-    setMaxBet(MAX_PAYOUT * (odds / 100))  // maxBet in SOL
-  }, [odds])
-
-  const generateBetArray = () => {
-    const betArray = []
-    
-    for (let i = 0; i < 100; i++) {
-      if (i < odds) {
-        betArray.push(+multiplier.toFixed(4))
-      } else {
-        betArray.push(0)
-      }
-    }
-    return betArray
-  }
+  const multiplier = 100 / odds
+  const maxBet = Math.min(lamportsToSol(gamba.balances.total), MAX_PAYOUT * (odds / 100))
 
   const play = async () => {
     try {
-      const bet = generateBetArray()
+      const bet = Array.from({ length: 100 }).map((_, i) => {
+        if (i < odds) {
+          return +multiplier.toFixed(4)
+        }
+        return 0
+      })
       const wagerLamports = solToLamports(wager)
       const response = await gamba.play(bet, wagerLamports)
 
+      setLoading(true)
+
       const result = await response.result()
       const resultnr = result.resultIndex + 1
-      console.log('resultindex', resultnr)
-      console.log('betarray', bet)
+
+      console.debug('resultindex', resultnr)
+      console.debug('betarray', bet)
+
       setResultIndex(resultnr)
       const win = result.payout > 0
       if (win) {
@@ -62,7 +54,7 @@ function Dice() {
     } catch (err) {
       console.log(err)
     } finally {
-      console.log('done')
+      setLoading(false)
     }
   }
 
@@ -71,15 +63,6 @@ function Dice() {
       <ResponsiveSize>
         <GameContainer>
 
-          <Slider min={1} max={100} value={odds} onChange={(value) => {
-            setOdds(value)
-            let newWager = wager // Compute the new wager based on the new odds value
-            if (newWager > maxBet) {
-              newWager = maxBet
-            }
-            setWager(newWager)
-          }} resultIndex={resultIndex} />
-
           <StatContainerWrapper>
             <SemiCircleContainer>
               <div>{odds + 1}</div>
@@ -87,45 +70,66 @@ function Dice() {
             </SemiCircleContainer>
             <StatContainer>
               <StatItem>
-                <div>Win odds</div>
                 <div>{odds}%</div>
+                <div>Win odds</div>
               </StatItem>
               <StatItem>
-                <div>Wager</div>
                 <div>{wager.toFixed(2)} SOL</div>
+                <div>Wager</div>
               </StatItem>
               <StatItem>
-                <div>Multiplier</div>
                 <div>{multiplier.toFixed(2)}x</div>
+                <div>Multiplier</div>
               </StatItem>
               <StatItem>
-                <div>Payout</div>
                 <div>{(wager * multiplier).toFixed(2)} SOL</div>
+                <div>Payout</div>
               </StatItem>
               <StatItem>
-                <div>Max Bet</div>
                 <div>{maxBet.toFixed(2)} SOL</div>
+                <div>Max Bet</div>
               </StatItem>
             </StatContainer>
           </StatContainerWrapper>
 
+          <Slider
+            resultIndex={resultIndex}
+            disabled={loading}
+            min={1}
+            max={100}
+            value={odds}
+            onChange={(value) => {
+              setOdds(value)
+              let newWager = wager // Compute the new wager based on the new odds value
+              if (newWager > maxBet) {
+                newWager = maxBet
+              }
+              setWager(newWager)
+            }}
+          />
+
           <WagerSection>
-            <WagerInputs>
-              <input
-                type="number"
-                min="0.05"
-                step="0.01"
-                max={maxBet.toFixed(2)}
-                value={wager}
-                onChange={(e) => {
-                  let newWager = Number(e.target.value)
-                  if (newWager > maxBet) {
-                    newWager = maxBet
-                  }
-                  setWager(newWager)
-                }}
-              />
+            <div>
+              <WagerInput>
+                <input
+                  disabled={loading}
+                  type="number"
+                  min="0.05"
+                  step="0.01"
+                  max={maxBet.toFixed(2)}
+                  value={wager}
+                  onChange={(e) => {
+                    let newWager = Number(e.target.value)
+                    if (newWager > maxBet) {
+                      newWager = maxBet
+                    }
+                    setWager(newWager)
+                  }}
+                />
+                SOL
+              </WagerInput>
               <StyledSlider
+                disabled={loading}
                 type="range"
                 min="0.05"
                 step="0.01"
@@ -139,19 +143,21 @@ function Dice() {
                   setWager(newWager)
                 }}
               />
-            </WagerInputs>
-            <WagerButtons>
-              <Button onClick={() => setWager(0.05)}>Min</Button>
-              <Button onClick={() => setWager(Math.min(wager * 2, maxBet))}>2x</Button>
-              <Button onClick={() => setWager(wager / 2)}>1/2</Button>
-              <Button onClick={() => setWager(maxBet)}>Max</Button>
-            </WagerButtons>
+              <WagerButtons>
+                <button onClick={() => setWager(0.05)}>Min</button>
+                <button onClick={() => setWager(Math.min(wager * 2, maxBet))}>2x</button>
+                <button onClick={() => setWager(wager / 2)}>1/2</button>
+                <button onClick={() => setWager(maxBet)}>Max</button>
+              </WagerButtons>
+            </div>
           </WagerSection>
 
         </GameContainer>
       </ResponsiveSize>
       <ActionBar>
-        <Button onClick={play}>Spin</Button>
+        <Button loading={loading} onClick={play}>
+          Spin
+        </Button>
       </ActionBar>
     </>
   )
