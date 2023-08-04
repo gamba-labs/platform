@@ -15,15 +15,16 @@ const soundLose = createSound(loseSrc)
 
 function Dice() {
   const gamba = useGamba()
-  const [wager, setWager] = useState(0.05) // wager in SOL
+  const [_wager, setWager] = useState(0.05)
   const [loading, setLoading] = useState(false)
   const [resultIndex, setResultIndex] = useState(-1)
-  const [odds, setOdds] = useState(50)  // Initializing odds with 50%
+  const [odds, setOdds] = useState(50)
 
   const MAX_PAYOUT = 6
 
   const multiplier = 100 / odds
   const maxBet = Math.min(lamportsToSol(gamba.balances.total), MAX_PAYOUT * (odds / 100))
+  const wager = Math.min(maxBet, _wager)
 
   const play = async () => {
     try {
