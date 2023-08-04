@@ -87,7 +87,7 @@ function Dice() {
             </SemiCircleContainer>
             <StatContainer>
               <StatItem>
-                <div>Winning odds</div>
+                <div>Win odds</div>
                 <div>{odds}%</div>
               </StatItem>
               <StatItem>
