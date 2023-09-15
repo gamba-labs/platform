@@ -1,135 +1,115 @@
-import { OrthographicCamera } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { solToLamports } from 'gamba'
 import { useGamba } from 'gamba/react'
-import { ActionBar, Button, formatLamports } from 'gamba/react-ui'
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import * as Tone from 'tone'
-import { Dropdown } from '../../components/Dropdown'
+import { GameUi, formatLamports } from 'gamba/react-ui'
+import React from 'react'
 import { Coin } from './Coin'
-import { SplashEffect } from './SplashEffect'
-import coinSrc from './coin.wav'
-import headsSrc from './heads.png'
-import loseSrc from './lose.wav'
-import tailsSrc from './tails.png'
-import winSrc from './win.wav'
+import { Effect } from './Effect'
 
-const WAGER_AMOUNTS = [
-  0.05,
-  0.1,
-  0.25,
-  .5,
-  1,
-  3,
-].map(solToLamports)
+import SOUND_COIN from './coin.mp3'
+import SOUND_LOSE from './lose.mp3'
+import SOUND_WIN from './win.mp3'
 
-const createSound = (url: string) =>
-  new Tone.Player({ url }).toDestination()
-
-const soundPlay = createSound(coinSrc)
-const soundWin = createSound(winSrc)
-const soundLose = createSound(loseSrc)
-
-const CoinButton = styled.button<{selected: boolean}>`
-  background: #ccc;
-  border: none;
-  margin: 0;
-  position: relative;
-  border-radius: var(--border-radius);
-  ${({ selected }) => selected && `
-    background: #42ff78;
-  `}
-  &:disabled {
-    cursor: default;
-    opacity: .5;
-  }
-  & > div {
-    position: absolute;
-    width: 75%;
-    height: 75%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-size: auto 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-`
-
-interface Result {
-  win: boolean
-  index: number
+const SIDES = {
+  Heads: [2, 0],
+  Tails: [0, 2],
 }
+
+const WAGER_OPTIONS = [0.05, 0.1, 0.5, 1, 3].map(solToLamports)
 
 export default function Flip() {
   const gamba = useGamba()
-  const [heads, setHeads] = useState(true)
-  const [flipping, setFlipping] = useState<'heads' | 'tails'>()
-  const [result, setResult] = useState<Result>()
-  const [wager, setWager] = useState(WAGER_AMOUNTS[0])
+  const [flipping, setFlipping] = React.useState(false)
+  const [win, setWin] = React.useState(false)
+  const [resultIndex, setResultIndex] = React.useState(0)
+  const [wager, setWager] = React.useState(WAGER_OPTIONS[0])
 
-  const play = async () => {
+  const sounds = GameUi.useSounds({
+    coin: SOUND_COIN,
+    win: SOUND_WIN,
+    lose: SOUND_LOSE,
+  })
+
+  const play = async (bet: number[]) => {
     try {
-      const bet = heads ? [2, 0] : [0, 2]
-      const response = await gamba.play(bet, wager)
-      soundPlay.start()
-      setFlipping(heads ? 'heads' : 'tails')
-      const result = await response.result()
+      setWin(false)
+      setFlipping(true)
+
+      sounds.coin.play({ playbackRate: .5 })
+
+      const res = await gamba.play({ bet, wager })
+
+      sounds.coin.play()
+
+      const result = await res.result()
+
       const win = result.payout > 0
-      setResult({
-        index: result.resultIndex,
-        win,
-      })
-      if (win)
-        soundWin.start()
-      else
-        soundLose.start()
-    } catch (err) {
-      console.error(err)
+
+      setResultIndex(result.resultIndex)
+
+      setWin(win)
+
+      if (win) {
+        sounds.win.play()
+      } else {
+        sounds.lose.play()
+      }
     } finally {
-      setFlipping(undefined)
+      setFlipping(false)
     }
   }
 
   return (
     <>
-      <Canvas linear flat onContextMenu={(e) => e.preventDefault()}>
-        <OrthographicCamera
-          makeDefault
-          zoom={80}
-          position={[0, 0, 100]}
-        />
-        <Coin result={result?.index ?? 0} flipping={!!flipping} />
-        {flipping && (
-          <SplashEffect color="white" />
-        )}
-        {!flipping && result !== null && result?.win && <SplashEffect color="#42ff78" />}
-        <ambientLight color="#ffffff" intensity={.5} />
-        <directionalLight position={[0, 5, 5]} intensity={.5} />
-        <hemisphereLight color="black" groundColor="red" intensity={1} />
-      </Canvas>
-      <ActionBar>
-        <Dropdown
+      <GameUi.Controls disabled={flipping}>
+        <GameUi.Select.Root
           value={wager}
-          format={(value) => formatLamports(value)}
           label="Wager"
-          onChange={setWager}
-          options={WAGER_AMOUNTS.map((value) => ({
-            label: formatLamports(value),
-            value,
-          }))}
+          onChange={(wager) => setWager(wager)}
+          format={() => formatLamports(wager)}
+        >
+          {WAGER_OPTIONS.map((wager) => (
+            <GameUi.Select.Option key={wager} value={wager}>
+              {formatLamports(wager)}
+            </GameUi.Select.Option>
+          ))}
+        </GameUi.Select.Root>
+        <GameUi.Button variant="primary" onClick={() => play(SIDES.Heads)}>
+          Heads
+        </GameUi.Button>
+        <GameUi.Button variant="primary" onClick={() => play(SIDES.Tails)}>
+          Tails
+        </GameUi.Button>
+      </GameUi.Controls>
+      <Canvas
+        linear
+        flat
+        orthographic
+        camera={{
+          zoom: 80,
+          position: [0, 0, 100],
+        }}
+      >
+        <React.Suspense fallback={null}>
+          <Coin result={resultIndex} flipping={flipping} />
+        </React.Suspense>
+        {flipping && <Effect color="white" />}
+        {win && <Effect color="#42ff78" />}
+        <ambientLight color="#CCCCCC" />
+        <directionalLight
+          position-z={1}
+          position-y={1}
+          castShadow
+          color="#CCCCCC"
         />
-        <CoinButton disabled={flipping} selected={heads} onClick={() => setHeads(true)}>
-          HEADS
-        </CoinButton>
-        <CoinButton disabled={flipping} selected={!heads} onClick={() => setHeads(false)} label={tailsSrc}>
-          TAILS
-        </CoinButton>
-        <Button disabled={!!flipping} onClick={play}>
-          Flip
-        </Button>
-      </ActionBar>
+        <hemisphereLight
+          intensity={.5}
+          position={[0, 1, 0]}
+          scale={[1, 1, 1]}
+          color="#ff0000"
+          groundColor="#0000ff"
+        />
+      </Canvas>
     </>
   )
 }

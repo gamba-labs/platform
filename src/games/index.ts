@@ -1,16 +1,16 @@
 import { GameBundle } from 'gamba/react-ui'
-import Flip from './Flip'
 import Dice from './Dice'
+import Flip from './Flip'
 import Mines from './Mines'
-import Roulette from './Roulette'
 import Slots from './Slots'
-import HiLo from './HiLo'
+import Roulette from './Roulette'
+// import HiLo from './HiLo'
 
 export const GAMES: GameBundle[] = [
-  Flip,
   Dice,
-  Roulette,
   Mines,
-  HiLo,
+  Roulette,
+  Flip,
   Slots,
+  // HiLo,
 ]

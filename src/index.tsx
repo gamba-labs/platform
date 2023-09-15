@@ -1,28 +1,42 @@
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
+import '@solana/wallet-adapter-react-ui/styles.css'
+import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { Gamba } from 'gamba/react'
-import { GambaUi } from 'gamba/react-ui'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider } from 'styled-components'
 import { App } from './App'
-import { GlobalStyle, theme } from './styles'
+
+import './styles.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
-root.render(
-  <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Gamba
-        connection={{
-          endpoint: import.meta.env.GAMBA_SOLANA_RPC,
-          config: { wsEndpoint: import.meta.env.GAMBA_SOLANA_RPC_WS },
-        }}
+function Root() {
+  const wallets = React.useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+    ],
+    [],
+  )
+
+  return (
+    <BrowserRouter>
+      <ConnectionProvider
+        endpoint={import.meta.env.GAMBA_SOLANA_RPC}
+        config={{ wsEndpoint: import.meta.env.GAMBA_SOLANA_RPC_WS, commitment: 'processed' }}
       >
-        <GambaUi>
-          <App />
-        </GambaUi>
-      </Gamba>
-    </ThemeProvider>
-  </BrowserRouter>,
-)
+        <WalletProvider autoConnect wallets={wallets}>
+          <WalletModalProvider>
+            <Gamba creator="DwRFGbjKbsEhUMe5at3qWvH7i8dAJyhhwdnFoZMnLVRV">
+              <App />
+            </Gamba>
+          </WalletModalProvider>
+        </WalletProvider>
+      </ConnectionProvider>
+    </BrowserRouter>
+  )
+}
+
+root.render(<Root />)

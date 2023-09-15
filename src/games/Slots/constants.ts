@@ -1,56 +1,51 @@
+export interface SlotItem {
+  multiplier: number
+  image: string
+}
+
+export { default as SOUND_PLAY } from './assets/play.mp3'
+export { default as SOUND_WIN } from './assets/win.mp3'
+export { default as SOUND_LOSE } from './assets/lose.mp3'
+export { default as SOUND_SPIN } from './assets/spin.mp3'
+export { default as SOUND_REVEAL } from './assets/reveal.mp3'
+export { default as SOUND_REVEAL_LEGENDARY } from './assets/reveal-legendary.mp3'
+
 import { solToLamports } from 'gamba'
+import IMAGE_2X from './assets/slot-2x.png'
+import IMAGE_3X from './assets/slot-3x.png'
+import IMAGE_5X from './assets/slot-5x.png'
+import IMAGE_COOL from './assets/slot-emoji-cool.png'
+import IMAGE_HEARTS from './assets/slot-emoji-hearts.png'
+import IMAGE_UNICORN from './assets/slot-unicorn.png'
+import IMAGE_WOJAK from './assets/slot-wojak.png'
 
-export const ITEMS = [
-  '🍭',
-  '❌',
-  '⛄️',
-  '🦄',
-  '🍌',
-  '💩',
-  '👻',
-  '😻',
-  '💵',
-  '🤡',
-  '🦖',
-  '🍎',
-  '😂',
-  '🖕',
-]
+const slotItem = (multiplier: number, ...icons: string[]): SlotItem[] =>
+  icons.map((image) => ({ multiplier, image }))
 
-export const MEDIUM_WIN_ITEMS = ['🍭', '⛄️', '🍌', '😻', '💵', '🦖', '🍎', '😂']
+export const SLOT_ITEMS = [
+  slotItem(7, IMAGE_UNICORN),
+  slotItem(5, IMAGE_5X),
+  slotItem(3, IMAGE_3X),
+  slotItem(2, IMAGE_2X),
+  slotItem(1, IMAGE_COOL, IMAGE_HEARTS),
+  slotItem(.5, IMAGE_WOJAK),
+].flat()
 
-export const BAD_WIN_ITEMS = ['❌', '💩', '👻', '🤡', '🖕']
-
-export const DEGEN_ARRAY = [
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (10 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0,  // 0x * 6 lose (16 outcomes array sum = 0)
-  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, // 0.5x * 6, small win (22 outcomes array sum = 3)
-  1, 1, 1, 1, // 1x * 4, small win (26 outcomes array sum = 7)
-  2, 2, 2, // 2x * 3, small win (29 outcomes array sum = 13)
-  3, 3, 3, // 3x * 3, medium win (32 outcomes array sum = 22)
-  5, // 5x * 1, medium win (33 outcomes array sum = 27)
-  7] // 7x * 1, very big win (34 outcomes array sum = 34)
-
-export const DEGEN_ARRAY_2 = [ // THIS ARRAY CURRENTLY DOESNT WORK BECAUSE MAX SIZE IS 34
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (10 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (20 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (30 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (40 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (50 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0x * 10, lose (60 outcomes array sum = 0)
-  0, 0, 0, 0, 0, 0,  // 0x * 6, lose (66 outcomes array sum = 0)
-  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, // 0.5x * 10, small win (76 outcomes array sum = 5)
-  1, 1, 1, 1, 1, 1, // 1x * 6, small win (82 outcomes array sum = 11)
-  2, 2, 2, 2, 2, 2, 2, // 2x * 7, medium win (89 outcomes array sum = 25)
-  3, 3, 3, 3, 3, // 3x * 5, medium win (94 outcomes array sum = 40)
-  5, 5, 5, 5, // 5x * 4, big win (98 outcomes array sum = 60)
-  10, // 10x * 1, very big win (99 outcomes array sum = 70)
-  30] // 30x * 1, jackpot (100 outcomes array sum = 100)
-
-export const WAGER_AMOUNTS = [
+export const WAGER_OPTIONS = [
   0.05,
   0.1,
   .25,
-  0.5,
-  0.75,
+  .5,
+  .75,
+  1,
 ].map(solToLamports)
+
+export const NUM_SLOTS = 3
+/** MS that it takes for spin to finish and reveal to start */
+export const SPIN_DELAY = 1000
+/** MS between each slot reveal */
+export const REVEAL_SLOT_DELAY = 750
+/** MS after reveal until win / lose effect is played */
+export const FINAL_DELAY = 500
+/** */
+export const LEGENDARY_THRESHOLD = 5

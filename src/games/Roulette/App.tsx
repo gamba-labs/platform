@@ -1,120 +1,128 @@
-import { lamportsToSol } from 'gamba'
+import { solToLamports } from 'gamba'
 import { useGamba } from 'gamba/react'
-import { ActionBar, Button, ResponsiveSize, formatLamports } from 'gamba/react-ui'
-import React, { useMemo, useState } from 'react'
-import * as Tone from 'tone'
+import { GameUi, formatLamports } from 'gamba/react-ui'
+import React from 'react'
+import styles from './App.module.css'
+import { Chip } from './Chip'
 import { Results } from './Results'
 import { Table } from './Table'
-import { CHIPS, NAMED_BETS } from './constants'
-import { useRoulette } from './store'
-import { Chip, StylelessButton } from './styles'
+import { CHIPS, NAMED_BETS, SOUND_LOSE, SOUND_PLAY, SOUND_WIN } from './constants'
 import { NamedBet } from './types'
+import { useRoulette } from './useRoulette'
 
-const createSound = (url: string) =>
-  new Tone.Player({ url }).toDestination()
-
-
-import chipSrc from './chip.wav'
-import diceSrc from './dice.wav'
-import winSrc from './win.wav'
-
-export const soundChip = createSound(chipSrc)
-export const soundDice = createSound(diceSrc)
-export const soundWin = createSound(winSrc)
+const CHIP_RATE = solToLamports(0.05)
 
 export default function Roulette() {
   const gamba = useGamba()
+  const spinning = useRoulette((state) => state.spinning)
+  const setSpinning = useRoulette((state) => state.setSpinning)
   const tableBet = useRoulette((state) => state.tableBet)
   const clearChips = useRoulette((state) => state.clearChips)
   const selectedBetAmount = useRoulette((state) => state.selectedBetAmount)
   const setSelectedBetAmount = useRoulette((state) => state.setSelectedBetAmount)
   const addResult = useRoulette((state) => state.addResult)
-  const [loading, setLoading] = useState(false)
+  const sounds = GameUi.useSounds({
+    win: SOUND_WIN,
+    lose: SOUND_LOSE,
+    play: SOUND_PLAY,
+  })
 
-  const distributedBet = useMemo(() =>
+  const distributedBet = React.useMemo(() =>
     tableBet.numbers.map((value, i) => {
-      return Object.keys(NAMED_BETS).reduce((prev, key) => {
-        const betName = key as NamedBet
-        const ids = NAMED_BETS[betName]
-        return ids.includes(i) ? Math.floor(prev + tableBet.named[betName] / ids.length) : prev
-      }, value)
-    }), [tableBet])
+      return Object
+        .entries(NAMED_BETS)
+        .reduce((prev, [betName, { ids }]) => {
+          if (ids.includes(i)) {
+            return prev + tableBet.named[betName as NamedBet] / ids.length
+          }
+          return prev
+        }, value) * CHIP_RATE
+    }), [tableBet],
+  )
 
-  const { wager, bet, maxPayoutExceeded, maxPayout } = useMemo(() => {
-    const wager = distributedBet.reduce((a, b) => a + b, 0)
-    const bet = distributedBet.map((amount) => (amount * distributedBet.length) / (wager || 1))
-    const maxPayout = Math.max(...bet) * wager
-    const maxPayoutExceeded = maxPayout > (gamba.house?.maxPayout ?? 0)
-    return { wager, bet, maxPayoutExceeded, maxPayout }
-  }, [distributedBet, gamba.house?.maxPayout])
+  const { bet, wager } = React.useMemo(() => {
+    const wager = Math.floor(distributedBet.reduce((a, b) => a + b, 0))
+    const bet = distributedBet.map((amount) => +((amount * distributedBet.length) / (wager || 1)).toFixed(4))
+    return { bet, wager }
+  }, [distributedBet, gamba.house.maxPayout])
+
+  const maxPayout = Math.max(...bet) * wager
+  const maxPayoutExceeded = maxPayout > gamba.house.maxPayout
 
   const play = async () => {
     try {
-      const res = await gamba.play(bet, wager)
-      soundDice.start()
-      setLoading(true)
+      setSpinning(true)
+      const res = await gamba.play({ bet, wager })
+      sounds.play.play()
       const result = await res.result()
       addResult(result.resultIndex)
-      if (result.payout > 0)
-        soundWin.start()
-    } catch {
-      //
+      if (result.payout > 0) {
+        sounds.win.play()
+      } else {
+        sounds.lose.play()
+      }
     } finally {
-      setLoading(false)
+      setSpinning(false)
     }
   }
 
   return (
-    <>
-      <ResponsiveSize>
-        <div style={{ display: 'grid', gap: '20px', alignItems: 'center', padding: '200px' }}>
-          <div style={{ textAlign: 'center', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
+    <GameUi.Fullscreen maxScale={1.25} onContextMenu={(e) => e.preventDefault()}>
+      <GameUi.Controls disabled={spinning}>
+        <GameUi.Group>
+          {CHIPS.map((value) => (
+            <GameUi.Button
+              key={value}
+              selected={value === selectedBetAmount}
+              onClick={() => setSelectedBetAmount(value)}
+            >
+              <Chip value={value} />
+            </GameUi.Button>
+          ))}
+        </GameUi.Group>
+        <GameUi.Group>
+          <GameUi.Button
+            disabled={!wager}
+            onClick={clearChips}
+          >
+            Clear
+          </GameUi.Button>
+          <GameUi.Button variant="primary" onClick={play}>
+            Spin
+          </GameUi.Button>
+        </GameUi.Group>
+      </GameUi.Controls>
+
+      <div className={styles.container}>
+        <div style={{ textAlign: 'center', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
+          <div>
             <div>
-              <div style={{ fontWeight: 'bold' }}>
-                {maxPayoutExceeded ? (
-                  <span style={{ color: '#ff0066' }}>
-                    TOO HIGH
-                  </span>
-                ) : (
-                  <>
-                    {formatLamports(maxPayout)}
-                  </>
-                )}
-              </div>
-              <div style={{ fontSize: '10px' }}>
-                MAX PAYOUT
-              </div>
+              {formatLamports(wager)}
             </div>
             <div>
-              <div style={{ fontWeight: 'bold' }}>
-                {formatLamports(wager)}
-              </div>
-              <div style={{ fontSize: '10px' }}>
-                TOTAL BET
-              </div>
+              TOTAL BET
             </div>
           </div>
-          <Results loading={loading} />
-          <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-            {CHIPS.map((value) => (
-              <StylelessButton key={value} onClick={() => setSelectedBetAmount(value)}>
-                <Chip inactive={value !== selectedBetAmount} value={lamportsToSol(value)}>
-                  {lamportsToSol(value)}
-                </Chip>
-              </StylelessButton>
-            ))}
+          <div>
+            <div>
+              {maxPayoutExceeded ? (
+                <span style={{ color: '#ff0066' }}>
+                  TOO HIGH
+                </span>
+              ) : (
+                <>
+                  {formatLamports(maxPayout)}
+                </>
+              )}
+            </div>
+            <div>
+              MAX PAYOUT
+            </div>
           </div>
-          <Table />
         </div>
-      </ResponsiveSize>
-      <ActionBar>
-        <Button disabled={!wager} onClick={clearChips}>
-          Clear
-        </Button>
-        <Button disabled={loading || maxPayoutExceeded || !wager} onClick={play}>
-          Spin
-        </Button>
-      </ActionBar>
-    </>
+        <Results />
+        <Table />
+      </div>
+    </GameUi.Fullscreen>
   )
 }

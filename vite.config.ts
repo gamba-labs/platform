@@ -1,5 +1,4 @@
 import react from '@vitejs/plugin-react'
-import nodePolyfills from 'rollup-plugin-polyfill-node'
 import Unfonts from 'unplugin-fonts/vite'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -14,13 +13,6 @@ export default defineConfig(() => ({
     host: true,
   },
   define: { 'process.env.ANCHOR_BROWSER': true },
-  build: {
-    rollupOptions: {
-      plugins: [
-        nodePolyfills(),
-      ],
-    },
-  },
   plugins: [
     react(),
     Unfonts({

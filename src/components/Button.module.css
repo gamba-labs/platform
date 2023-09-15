@@ -1,0 +1,129 @@
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--bg-col-solid);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.size-large {
+  padding: 12px 24px;
+}
+
+.size-medium {
+  padding: 10px 20px;
+}
+
+.size-small {
+  padding: 2px 4px;
+}
+
+.color-default {
+  --bg-col-solid: #1e222f;
+  --bg-col-solid-hover: #212738;
+  --bg-col-outlined: #21273866;
+  --bg-col-outlined-hover: #6666ff66;
+  --col-outlined: white;
+  --col-solid: white;
+}
+
+.color-white {
+  --bg-col-solid: #FFFFFFDF;
+  --bg-col-solid-hover: #FFFFFF;
+  --bg-col-outlined: #FFFFFF33;
+  --bg-col-outlined-hover: #FFFFFF99;
+  --col-outlined: white;
+  --col-solid: black;
+}
+
+.variant-solid {
+  background: var(--bg-col-solid);
+  color: var(--col-solid);
+  border: none;
+  --hover-background: var(--bg-col-solid-hover);
+}
+
+.variant-ghost {
+  background: transparent;
+  color: inherit;
+  border: none;
+  --hover-background: var(--bg-col-outlined);
+}
+
+.variant-soft {
+  background: var(--bg-col-outlined);
+  color: var(--col-outlined);
+  border: none;
+  --hover-background: var(--bg-col-outlined-hover);
+}
+
+.variant-outlined {
+  background: var(--bg-col-outlined);
+  color: var(--col-outlined);
+  border: 1px solid var(--bg-col-solid);
+  --hover-background: var(--bg-col-outlined-hover);
+}
+
+.pulse {
+  animation: pulse 1s 1s infinite;
+}
+
+.button {
+  margin: 0;
+  border-radius: 8px;
+  transition: background .25s;
+  text-align: center;
+  display: inline-block;
+  text-wrap: nowrap;
+}
+
+@media (hover: hover) {
+  .button:not(:disabled):hover {
+    background: var(--hover-background);
+  }
+}
+
+.button:not(:disabled) {
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: .9;
+  cursor: default
+}
+
+a.button {
+  text-decoration: none;
+}
+
+.icon {
+  margin-left: .5em;
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 15px;
+}
+
+.icon > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+@keyframes loader-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader {
+  --border-size: .2em;
+  --size: 1em;
+  display: inline-block;
+  border: var(--border-size) solid transparent;
+  border-top: var(--border-size) solid currentColor;
+  border-radius: 50%;
+  width: var(--size);
+  height: var(--size);
+  animation: loader-spin .3s linear infinite;
+}

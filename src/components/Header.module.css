@@ -1,0 +1,49 @@
+.wrapper {
+  width: 100%;
+  z-index: 10001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 10px;
+}
+
+@media (min-height: 800px) {
+  .wrapper {
+    background: #000000CC;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 10px 20px;
+  }
+}
+
+.wrapper > div {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.logo {
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  transition: background .2s;
+  white-space: nowrap;
+  padding: 5px 10px;
+}
+
+.logo:hover {
+  background: #ffffff11;
+}
+
+.logo > img {
+  height: 30px;
+}
+
+.title {
+  display: none;
+  @media (min-width: 800px) {
+    display: block;
+  }
+}

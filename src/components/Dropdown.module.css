@@ -1,0 +1,33 @@
+.container {
+  opacity: 0;
+  transition: transform .2s ease, opacity .2s;
+  position: absolute;
+  visibility: hidden;
+  z-index: 10;
+  right: 0;
+  color: white;
+  &.top {
+    top: 100%;
+    margin-top: 10px;
+    transform: translateY(-10px);
+  }
+  &.bottom {
+    bottom: 100%;
+    margin-bottom: 10px;
+    transform: translateY(10px);
+  }
+  &.visible {
+    opacity: 1;
+    transform: translateY(0px)!important;
+    visibility: visible;
+  }
+}
+
+.container > div {
+  display: grid;
+  background: #15151f;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 5px;
+  gap: 5px;
+}

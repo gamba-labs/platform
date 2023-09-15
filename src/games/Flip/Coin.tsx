@@ -1,42 +1,26 @@
 import { useGLTF, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import React, { useEffect, useRef } from 'react'
-import { BufferGeometry, Group, MeshStandardMaterial } from 'three'
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import assetModel from './Coin.glb'
-import headsSrc from './heads.png'
-import tailsSrc from './tails.png'
+import React from 'react'
+import { Group } from 'three'
 
-const COIN_COLOR = '#ffd630'
-
-type GLTFResult = GLTF & {
-  nodes: {
-    Coin: THREE.Mesh<BufferGeometry, MeshStandardMaterial>
-  }
-}
+import TEXTURE_HEADS from './heads.png'
+import TEXTURE_TAILS from './tails.png'
 
 function CoinModel() {
-  const coin = useGLTF(assetModel) as GLTFResult
-  const [heads, tails] = useTexture([headsSrc, tailsSrc])
+  const model = useGLTF('/Coin.glb')
+  const [heads, tails] = useTexture([TEXTURE_HEADS, TEXTURE_TAILS])
   return (
     <>
-      <primitive object={coin.nodes.Coin}>
-        <meshToonMaterial
-          color={COIN_COLOR}
-          emissive={COIN_COLOR}
-          emissiveIntensity={.1}
-          normalMap={coin.nodes.Coin.material.normalMap}
-          map={coin.nodes.Coin.material.map}
-        />
+      <primitive object={model.nodes.Coin}>
       </primitive>
-      <mesh position-z={.26}>
+      <mesh position-z={.3}>
         <planeGeometry args={[1.3, 1.3, 1.3]} />
-        <meshBasicMaterial transparent map={heads} />
+        <meshStandardMaterial transparent map={heads} />
       </mesh>
       <group rotation-y={Math.PI}>
-        <mesh position-z={.26}>
+        <mesh position-z={.3}>
           <planeGeometry args={[1.3, 1.3, 1.3]} />
-          <meshBasicMaterial transparent map={tails} />
+          <meshStandardMaterial transparent map={tails} />
         </mesh>
       </group>
     </>
@@ -45,16 +29,15 @@ function CoinModel() {
 
 interface CoinFlipProps {
   flipping: boolean
-  result: number | null
+  result: number
 }
 
 export function Coin({ flipping, result }: CoinFlipProps) {
-  const group = useRef<Group>(null!)
-  const target = useRef(0)
-  const transition = useRef(0)
+  const group = React.useRef<Group>(null!)
+  const target = React.useRef(0)
 
-  useEffect(() => {
-    if (!flipping && result !== null) {
+  React.useEffect(() => {
+    if (!flipping) {
       const fullTurns = Math.floor(group.current.rotation.y / (Math.PI * 2))
       target.current = (fullTurns + 1) * Math.PI * 2 + result * Math.PI
     }
@@ -63,12 +46,12 @@ export function Coin({ flipping, result }: CoinFlipProps) {
   useFrame((_, dt) => {
     if (flipping) {
       group.current.rotation.y += 25 * dt
-    } else if (result !== null) {
+    } else {
       group.current.rotation.y += (target.current - group.current.rotation.y) * .1
     }
-    group.current.scale.y += ((flipping ? 1.25 : 1) - group.current.scale.y) * .1
-    group.current.scale.setScalar(group.current.scale.y * transition.current)
-    transition.current += (1 - transition.current) * .1
+    const scale = flipping ? 1.25 : 1
+    group.current.scale.y += (scale - group.current.scale.y) * .1
+    group.current.scale.setScalar(group.current.scale.y)
   })
 
   return (

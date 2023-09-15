@@ -1,0 +1,224 @@
+#root, html, body {
+  height: 100%;
+}
+
+:root {
+  --bg-color: #080809;
+  --bg-color: #0b0b0e;
+  --text-color: #ffffff;
+  --recent-plays-bg: #13151c;
+  --recent-plays-bg-hover: #1a1c24;
+}
+
+[data-theme="light"] {
+  --bg-color: #efe9ff;
+  --text-color: #080809;
+  --recent-plays-bg: #e1e5fc;
+  --recent-plays-bg-hover: #dbdff8;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  color: var(--text-color);
+  background: var(--bg-color);
+  cursor: default;
+  overflow-y: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #2424ff44;
+}
+
+body::-webkit-scrollbar {
+  width: .4em;
+}
+
+body::-webkit-scrollbar-thumb {
+  bg-color: #cccccc33;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 700;
+}
+
+body, input, button, textarea, pre {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 14px;
+}
+
+a:not([href^="https://"]):not([href^="http://"]) {
+  text-decoration: none;
+}
+
+a {
+  color: unset;
+}
+
+.gamba-ui-controls-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.gamba-ui-select-container {
+  position: relative;
+}
+
+.gamba-ui-select-option {
+  width: 100%;
+  background: #272735;
+  color: white;
+  border: none;
+  margin: 0;
+  padding: 10px 5px;
+  cursor: pointer;
+}
+
+.gamba-ui-select-option.selected {
+  background: #2e2e40;
+}
+
+.gamba-ui-select-popup {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 10px;
+  display: grid;
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 100%;
+  border-radius: 5px;
+}
+
+.gamba-game-button {
+  margin: 0;
+  pointer-events: auto;
+  border: none;
+  background: #272735;
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  opacity: .9;
+  transition: opacity .2s;
+  cursor: pointer;
+}
+
+.gamba-game-button-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.gamba-game-button:not(:disabled):hover {
+  background: #2e2e40;
+}
+
+.gamba-game-button.primary {
+  min-width: 100px;
+  background: #a079ff;
+  color: white;
+}
+
+.gamba-game-button.primary:hover {
+  background: #9468ff;
+}
+
+.gamba-game-ui-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.gamba-game-button:disabled {
+  cursor: default;
+  opacity: .7;
+}
+
+.gamba-ui-select-container {
+  min-width: 100px;
+}
+
+.gamba-ui-select-container button {
+  width: 100%;
+}
+
+.gamba-game-button.selected {
+  background: #515182!important;
+}
+
+.gamba-game-button:active {
+  transition: opacity .2s, transform .1s ease;
+  opacity: 1;
+}
+
+.gamba-game-ui-wager-input {
+  display: flex;
+  gap: 2px;
+}
+
+.gamba-game-ui-wager-input input {
+  background: #272735;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 0;
+}
+
+.gamba-game-ui-wager-input input {
+  width: 120px;
+}
+
+.gamba-wager-input-field {
+  display: flex;
+}
+
+/* .gamba-game-ui-range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 15px;
+  background: #111122;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  cursor: pointer;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.gamba-game-ui-range-input:hover {
+  opacity: 1;
+}
+
+.gamba-game-ui-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 15px;
+  background: #dbdaff;
+  cursor: pointer;
+  border-radius: 2px;
+  box-shadow: -407px 0 0 400px #a079ff;
+}
+
+.gamba-game-ui-range-input::-webkit-slider-runnable-track {
+  background: #111122;
+} */

@@ -1,167 +1,119 @@
-import { lamportsToSol, solToLamports } from 'gamba'
 import { useGamba } from 'gamba/react'
-import { ActionBar, Button, ResponsiveSize } from 'gamba/react-ui'
-import React, { useState } from 'react'
-import * as Tone from 'tone'
+import { GameUi, formatLamports } from 'gamba/react-ui'
+import React from 'react'
+import styles from './App.module.css'
 import Slider from './Slider'
-import loseSrc from './lose.mp3'
-import { GameContainer, SemiCircleContainer, StatContainer, StatContainerWrapper, StatItem, StyledSlider, WagerButtons, WagerInput, WagerSection } from './styles'
-import winSrc from './win.mp3'
 
-const createSound = (url: string) => new Tone.Player({ url }).toDestination()
+import SOUND_LOSE from './lose.mp3'
+import SOUND_PLAY from './play.mp3'
+import SOUND_TICK from './tick.mp3'
+import SOUND_WIN from './win.mp3'
 
-const soundWin = createSound(winSrc)
-const soundLose = createSound(loseSrc)
+const DICE_SIDES = 100
 
-function Dice() {
+export default function Dice() {
   const gamba = useGamba()
-  const [_wager, setWager] = useState(0.05)
-  const [loading, setLoading] = useState(false)
-  const [resultIndex, setResultIndex] = useState(-1)
-  const [odds, setOdds] = useState(50)
+  const [wager, setWager] = React.useState(0)
+  const [rolling, setRolling] = React.useState(false)
+  const [resultIndex, setResultIndex] = React.useState(-1)
+  const [rollUnderIndex, setRollUnderIndex] = React.useState(Math.floor(DICE_SIDES / 2))
 
-  const MAX_PAYOUT = 6
+  const sounds = GameUi.useSounds({
+    win: SOUND_WIN,
+    dice: SOUND_PLAY,
+    lose: SOUND_LOSE,
+    tick: SOUND_TICK,
+  })
 
-  const multiplier = 100 / odds
-  const maxBet = Math.min(lamportsToSol(gamba.balances.total), MAX_PAYOUT * (odds / 100))
-  const wager = Math.min(maxBet, _wager)
+  const bet = React.useMemo(
+    () => Array
+      .from({ length: DICE_SIDES })
+      .map((_, i) => i >= rollUnderIndex ? 0 : +(DICE_SIDES / rollUnderIndex).toFixed(4)),
+    [rollUnderIndex],
+  )
+
+  const multiplier = DICE_SIDES / rollUnderIndex
+  const winChange = rollUnderIndex / DICE_SIDES
 
   const play = async () => {
     try {
-      const bet = Array.from({ length: 100 }).map((_, i) => {
-        if (i < odds) {
-          return +multiplier.toFixed(4)
-        }
-        return 0
+      setRolling(true)
+      sounds.dice.play()
+
+      await gamba.play({
+        bet,
+        wager,
       })
-      const wagerLamports = solToLamports(wager)
-      const response = await gamba.play(bet, wagerLamports)
 
-      setLoading(true)
+      const result = await gamba.nextResult()
+      setResultIndex(result.resultIndex)
 
-      const result = await response.result()
-      const resultnr = result.resultIndex + 1
-
-      console.debug('resultindex', resultnr)
-      console.debug('betarray', bet)
-
-      setResultIndex(resultnr)
       const win = result.payout > 0
       if (win) {
-        soundWin.start()
+        sounds.win.play()
       } else {
-        soundLose.start()
+        sounds.lose.play()
       }
-    } catch (err) {
-      console.log(err)
     } finally {
-      setLoading(false)
+      setRolling(false)
     }
   }
 
   return (
-    <>
-      <ResponsiveSize>
-        <GameContainer>
+    <GameUi.Fullscreen maxScale={1.5}>
+      <GameUi.Controls disabled={rolling}>
+        <GameUi.WagerInput
+          bet={bet}
+          wager={wager}
+          onChange={setWager}
+        />
+        <GameUi.Button variant="primary" onClick={play}>
+          Roll
+        </GameUi.Button>
+      </GameUi.Controls>
 
-          <StatContainerWrapper>
-            <SemiCircleContainer>
-              <div>{odds + 1}</div>
-              <div>Roll Under</div>
-            </SemiCircleContainer>
-            <StatContainer>
-              <StatItem>
-                <div>{odds}%</div>
-                <div>Win odds</div>
-              </StatItem>
-              <StatItem>
-                <div>{wager.toFixed(2)} SOL</div>
-                <div>Wager</div>
-              </StatItem>
-              <StatItem>
-                <div>{multiplier.toFixed(2)}x</div>
-                <div>Multiplier</div>
-              </StatItem>
-              <StatItem>
-                <div>{(wager * multiplier).toFixed(2)} SOL</div>
-                <div>Payout</div>
-              </StatItem>
-              <StatItem>
-                <div>{maxBet.toFixed(2)} SOL</div>
-                <div>Max Bet</div>
-              </StatItem>
-            </StatContainer>
-          </StatContainerWrapper>
-
-          <Slider
-            resultIndex={resultIndex}
-            disabled={loading}
-            min={1}
-            max={100}
-            value={odds}
-            onChange={(value) => {
-              setOdds(value)
-              let newWager = wager // Compute the new wager based on the new odds value
-              if (newWager > maxBet) {
-                newWager = maxBet
-              }
-              setWager(newWager)
-            }}
-          />
-
-          <WagerSection>
-            <div>
-              <WagerInput>
-                <input
-                  disabled={loading}
-                  type="number"
-                  min="0.05"
-                  step="0.01"
-                  max={maxBet.toFixed(2)}
-                  value={wager}
-                  onChange={(e) => {
-                    let newWager = Number(e.target.value)
-                    if (newWager > maxBet) {
-                      newWager = maxBet
-                    }
-                    setWager(newWager)
-                  }}
-                />
-                SOL
-              </WagerInput>
-              <StyledSlider
-                disabled={loading}
-                type="range"
-                min="0.05"
-                step="0.01"
-                max={maxBet.toFixed(2)}
-                value={wager}
-                onChange={(e) => {
-                  let newWager = Number(e.target.value)
-                  if (newWager > maxBet) {
-                    newWager = maxBet
-                  }
-                  setWager(newWager)
-                }}
-              />
-              <WagerButtons>
-                <button onClick={() => setWager(0.05)}>Min</button>
-                <button onClick={() => setWager(Math.min(wager * 2, maxBet))}>2x</button>
-                <button onClick={() => setWager(wager / 2)}>1/2</button>
-                <button onClick={() => setWager(maxBet)}>Max</button>
-              </WagerButtons>
+      <div className={styles.container}>
+        <div className={styles.rollUnder}>
+          <div>{rollUnderIndex + 1}</div>
+          <div>Roll Under</div>
+        </div>
+        <div className={styles.stats}>
+          <div>
+            <div>{(winChange * 100).toFixed(1)}%</div>
+            <div>Win Chance</div>
+          </div>
+          <div>
+            <div>{multiplier.toFixed(2)}x</div>
+            <div>Multiplier</div>
+          </div>
+          <div>
+            <div>{formatLamports(wager * multiplier - wager)}</div>
+            <div>Payout</div>
+          </div>
+        </div>
+        <div className={styles.sliderContainer}>
+          {resultIndex > -1 &&
+            <div className={styles.result} style={{ left: `${resultIndex}%` }}>
+              <div key={resultIndex}>
+                {resultIndex + 1}
+              </div>
             </div>
-          </WagerSection>
-
-        </GameContainer>
-      </ResponsiveSize>
-      <ActionBar>
-        <Button loading={loading} onClick={play}>
-          Spin
-        </Button>
-      </ActionBar>
-    </>
+          }
+          <Slider
+            disabled={rolling}
+            range={[0, DICE_SIDES]}
+            min={1}
+            max={DICE_SIDES - 5}
+            value={rollUnderIndex}
+            onChange={
+              (value) => {
+                setRollUnderIndex(value)
+                sounds.tick.play()
+              }
+            }
+          />
+        </div>
+      </div>
+    </GameUi.Fullscreen>
   )
 }
-
-export default Dice

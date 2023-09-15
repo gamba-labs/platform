@@ -1,0 +1,107 @@
+.container {
+  height: 100vh;
+  max-height: -webkit-fill-available;
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  position: relative;
+  transition: height .2s ease;
+}
+
+@media (min-height: 820px) {
+  .container {
+    height: 90vh;
+  }
+}
+
+@media (min-height: 1200px) {
+  .container {
+    height: max(960px, min(1600px, 60vh));
+  }
+}
+
+.view {
+  height: 100%;
+  position: relative;
+  transition: height .2s ease;
+  background: #0c0c11;
+}
+
+.controls {
+  width: 100%;
+  padding: 20px 10px;
+}
+
+.controls > div {
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+@media (min-width: 960px) {
+  .controls > div {
+    width: 800px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .controls > div {
+    width: 1000px;
+  }
+}
+
+@keyframes splash {
+  0% {
+    opacity: 1;
+  }
+  30%, 75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes splash2 {
+  0% {
+    opacity: 0;
+    transform: scale(.5);
+  }
+  30% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(.9);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+
+.splash {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: splash .75s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.splash > img {
+  opacity: 0;
+  max-width: min(300px, 90%);
+  max-height: min(300px, 25%);
+  animation: splash2 .75s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.splash {
+  background: #0c0c11;
+}

@@ -1,0 +1,106 @@
+.container {
+  color: white;
+  user-select: none;
+  width: min(100vw, 400px);
+}
+
+.rollUnder {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.rollUnder > div:first-child {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.rollUnder > div:last-child {
+  font-size: 12px;
+  opacity: .8;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  color: white;
+  background: #32294333;
+  border-radius: 50px;
+  max-width: 100%;
+  padding: 5px;
+  text-wrap: nowrap;
+}
+
+.stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-align: center;
+  word-wrap: nowrap;
+}
+
+.stats > div > div {
+  padding: 5px;
+}
+
+.stats > div > div:last-child {
+  opacity: .6;
+  font-size: 75%;
+}
+
+.stats > div > div:first-child {
+  font-weight: bold;
+}
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  padding: 50px 0;
+}
+
+@keyframes result-appear {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.result {
+  transform: translateX(-50%);
+  position: absolute;
+  top: -5px;
+  transition: left .3s ease;
+}
+
+.result > div {
+  animation: result-appear .25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  transform-origin: bottom;
+  background: #ffffffCC;
+  backdrop-filter: blur(50px);
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 50px;
+  text-align: center;
+  color: black;
+}
+
+.result > div::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  border-width: 10px 10px 0px 10px;
+  border-style: solid;
+  border-color: #ffffffCC transparent transparent transparent;
+}
