@@ -7,7 +7,6 @@ export default {
   description: `
     Use the slider to pick a number, then roll below that number to win. Lower numbers will increase your potential payout, while higher ones are safer.
   `,
-  creator: 'DwRFGbjKbsEhUMe5at3qWvH7i8dAJyhhwdnFoZMnLVRV',
   image,
   theme_color: 'rgb(255 100 144)',
   app: React.lazy(() => import('./App')),

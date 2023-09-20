@@ -1,8 +1,3 @@
-export interface SlotItem {
-  multiplier: number
-  image: string
-}
-
 export { default as SOUND_PLAY } from './assets/play.mp3'
 export { default as SOUND_WIN } from './assets/win.mp3'
 export { default as SOUND_LOSE } from './assets/lose.mp3'
@@ -18,6 +13,11 @@ import IMAGE_COOL from './assets/slot-emoji-cool.png'
 import IMAGE_HEARTS from './assets/slot-emoji-hearts.png'
 import IMAGE_UNICORN from './assets/slot-unicorn.png'
 import IMAGE_WOJAK from './assets/slot-wojak.png'
+
+export interface SlotItem {
+  multiplier: number
+  image: string
+}
 
 const slotItem = (multiplier: number, ...icons: string[]): SlotItem[] =>
   icons.map((image) => ({ multiplier, image }))

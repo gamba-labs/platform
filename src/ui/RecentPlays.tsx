@@ -46,7 +46,8 @@ function RecentPlay({ time, signature, result, isSelf }: RecentPlayProps) {
     <a className={styles.play} href={`${VERIFY_URL}/${signature}`} target="_blank" rel="noreferrer">
       <div>
         <span className={styles.who}>
-          {isSelf ? 'You ' : 'Someone '}
+          {isSelf ? 'You' : 'Someone'}
+          {/* {result.player.toBase58()} */}
         </span>
         made
         <span>
@@ -74,13 +75,13 @@ export function RecentPlays() {
   return (
     <Section title="Recent Plays">
       <div className={styles.container}>
-        {events.map((transaction) => (
+        {events.map(({ signature, event, time }) => (
           <RecentPlay
-            key={transaction.signature}
-            time={transaction.time}
-            signature={transaction.signature}
-            result={transaction.event.gameResult}
-            isSelf={transaction.event.gameResult.player.equals(gamba.wallet.publicKey)}
+            key={signature}
+            time={time}
+            signature={signature}
+            result={event.gameResult}
+            isSelf={event.gameResult.player.equals(gamba.wallet.publicKey)}
           />
         ))}
         {!events.length && Array.from({ length: 5 }).map((_, i) => (

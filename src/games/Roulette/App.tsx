@@ -52,7 +52,10 @@ export default function Roulette() {
   const play = async () => {
     try {
       setSpinning(true)
-      const res = await gamba.play({ bet, wager })
+      const res = await gamba.play({
+        bet,
+        wager,
+      })
       sounds.play.play()
       const result = await res.result()
       addResult(result.resultIndex)
@@ -87,7 +90,7 @@ export default function Roulette() {
           >
             Clear
           </GameUi.Button>
-          <GameUi.Button variant="primary" onClick={play}>
+          <GameUi.Button variant="primary" disabled={!wager} onClick={play}>
             Spin
           </GameUi.Button>
         </GameUi.Group>

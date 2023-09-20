@@ -22,8 +22,7 @@ function InitUserModal({ onClose }: {onClose: () => void}) {
   const create = async () => {
     try {
       setCreating(true)
-      await gamba.methods.initializeAccount()
-      await gamba.anticipate((state) => state.user.created)
+      await gamba.initializeAccount()
       setInitUser(true)
     } catch {
       onClose()
@@ -113,13 +112,15 @@ export function ErrorHandlers() {
           <p>
             {genericError.message}
           </p>
-          <div style={{ width: '100%', padding: '30px', fontSize: '12px', fontFamily: 'monospace' }}>
-            {genericError.logs?.map((x, i) => (
-              <Fragment key={i}>
-                {x}<br />
-              </Fragment>
-            ))}
-          </div>
+          {genericError.logs && (
+            <div style={{ width: '100%', padding: '30px', fontSize: '12px', fontFamily: 'monospace' }}>
+              {genericError.logs.map((x, i) => (
+                <Fragment key={i}>
+                  {x}<br />
+                </Fragment>
+              ))}
+            </div>
+          )}
         </Modal>
       )}
       {lowBalanceModal && (

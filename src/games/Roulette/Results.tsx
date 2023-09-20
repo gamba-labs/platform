@@ -14,7 +14,7 @@ export function Results() {
       <div className={styles.result} data-color={firstResultColor}>
         {spinning ? '..' : typeof firstResult === 'number' ? firstResult + 1 : '-'}
       </div>
-      {results.slice(spinning ? 0 : 1, spinning ? 9 : 10).map((index, i) => {
+      {results.slice(spinning ? 0 : 1, spinning ? 8 : 9).map((index, i) => {
         return (
           <div
             key={i}

@@ -1,7 +1,8 @@
-@keyframes identifier {
+@keyframes result-flash {
   from { background-color: white;}
   to { background-color: #292a307d;}
 }
+
 .wrapper {
   border-radius: 10px;
   background: #191c2fa1;
@@ -35,5 +36,5 @@
   width: 60px;
   justify-content: center;
   background: #FFFFFF11;
-  animation: identifier 1s;
+  animation: result-flash 1s;
 }

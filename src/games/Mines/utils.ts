@@ -5,7 +5,6 @@ export const generateGrid = (size: number) =>
     .from<CellState>({ length: size })
     .fill({ status: 'hidden', profit: 0 })
 
-
 export const revealGold = (cells: CellState[], cellIndex: number, value: number) => {
   return cells.map<CellState>(
     (cell, i) => {
@@ -36,6 +35,7 @@ export const revealAllMines = (
     })
     .map((x) => x.index)
     .slice(0, numberOfMines)
+
   return cells.map<CellState>(
     (cell, i) => {
       if (mineIndices.includes(i)) {

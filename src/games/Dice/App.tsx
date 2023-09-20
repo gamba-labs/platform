@@ -40,12 +40,12 @@ export default function Dice() {
       setRolling(true)
       sounds.dice.play()
 
-      await gamba.play({
+      const res = await gamba.play({
         bet,
         wager,
       })
 
-      const result = await gamba.nextResult()
+      const result = await res.result()
       setResultIndex(result.resultIndex)
 
       const win = result.payout > 0

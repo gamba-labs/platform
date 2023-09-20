@@ -29,8 +29,10 @@
   align-items: center;
   gap: 1em;
   transition: background .2s;
+  border-radius: 5px;
   white-space: nowrap;
   padding: 5px 10px;
+  filter: drop-shadow(-1px 1px 1px #00000033)
 }
 
 .logo:hover {
@@ -39,11 +41,4 @@
 
 .logo > img {
   height: 30px;
-}
-
-.title {
-  display: none;
-  @media (min-width: 800px) {
-    display: block;
-  }
 }

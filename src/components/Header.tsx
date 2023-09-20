@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavButton } from './Button'
+import { NavLink } from 'react-router-dom'
 import styles from './Header.module.css'
 
 export const Header: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -7,10 +7,9 @@ export const Header: React.FC<React.PropsWithChildren> = ({ children }) => {
     <div className={styles.wrapper}>
       <div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <NavButton variant="ghost" className={styles.logo} to="/">
-            <img src="/logo.svg" height="20px" />
-            <span className={styles.title}>Gamba Demo</span>
-          </NavButton>
+          <NavLink className={styles.logo} to="/">
+            <img alt="Gamba logo" src="/logo-2.svg" height="20px" />
+          </NavLink>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           {children}
