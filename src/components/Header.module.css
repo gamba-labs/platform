@@ -20,7 +20,7 @@
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
 }
 
 .logo {
@@ -31,7 +31,7 @@
   transition: background .2s;
   border-radius: 5px;
   white-space: nowrap;
-  padding: 5px 10px;
+  padding: 0px 5px;
   filter: drop-shadow(-1px 1px 1px #00000033)
 }
 
@@ -40,5 +40,26 @@
 }
 
 .logo > img {
-  height: 30px;
+  height: 35px;
+}
+
+.externalLinks {
+  gap: 20px;
+  display: flex;
+  visibility: hidden;
+}
+
+.externalLinks > a {
+  text-decoration: none;
+  color: #ffffffcc;
+}
+
+.externalLinks > a:hover {
+  color: #ffffffff;
+}
+
+@media (min-width: 800px) {
+  .externalLinks {
+    visibility: visible;
+  }
 }

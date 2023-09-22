@@ -1,6 +1,6 @@
 import { SLOT_ITEMS, SlotItem } from './constants'
 
-const pickRandom = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)]
+const pickRandom = <T>(arr: T[]) => arr.at(Math.floor(Math.random() * arr.length))
 
 /**
  * Creates a bet array for given wager amount and max payout
@@ -21,8 +21,10 @@ export const generateBetArray = (
     const left = maxLength - total
     const pickableItems = SLOT_ITEMS.filter((x) => x.multiplier <= Math.min(left, maxMultiplier))
     const item = pickRandom(pickableItems)
-    total += item.multiplier
-    arr[i] = item.multiplier
+    if (item) {
+      total += item.multiplier
+      arr[i] = item.multiplier
+    }
     i++
   }
 
@@ -49,16 +51,16 @@ export const getSlotCombination = (count: number, multiplier: number, bet: numbe
       const item = (() => {
         // Make sure we don't pick one that has been selected
         if (i === count - 1) {
-          return pickRandom(availableSlotItems.filter((x) => !items.includes(x))) ?? pickRandom(SLOT_ITEMS)
+          return pickRandom(availableSlotItems.filter((x) => !items.includes(x))) ?? pickRandom(SLOT_ITEMS)!
         }
 
         // Pick a random one
-        return Math.random() < .75 ? previous : pickRandom(availableSlotItems)
+        return Math.random() < .75 ? previous : pickRandom(availableSlotItems)!
       })()
 
       return { previous: item, items: [...items, item] }
     }
-    , { previous: pickRandom(availableSlotItems), items: [] })
+    , { previous: pickRandom(availableSlotItems)!, items: [] })
 
   return items
 }

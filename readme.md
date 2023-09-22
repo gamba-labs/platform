@@ -1,6 +1,6 @@
 # Gamba Demo
 
-> This is a mirrored repo. Latest version in [monorepo](https://github.com/gamba-labs/gamba/tree/main/apps/demo).
+> This is a mirrored repo from the [gamba monorepo](https://github.com/gamba-labs/gamba/tree/main/apps/demo).
 
 A demo frontend featuring multiple casino games built on Gamba.
 
