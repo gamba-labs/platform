@@ -29,7 +29,7 @@ function Root() {
       >
         <WalletProvider autoConnect wallets={wallets}>
           <WalletModalProvider>
-            <Gamba creator={import.meta.env.GAMBA_CREATOR_ADDRESS} creatorFee={0.05}>
+            <Gamba creator={import.meta.env.GAMBA_CREATOR_ADDRESS}>
               <App />
             </Gamba>
           </WalletModalProvider>
