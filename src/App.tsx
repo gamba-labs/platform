@@ -33,7 +33,7 @@ export function App() {
         <Route path="/:shortName" element={<Game />} />
       </Routes>
 
-      <SlideSection title="Demo Games">
+      <SlideSection title="Degen Games">
         {GAMES.map((game) => (
           <Card key={game.short_name} game={game} />
         ))}
