@@ -27,7 +27,7 @@ export default defineConfig(() => ({
     }),
     VitePWA({
       base: '/',
-      includeAssets: ['/favicon.png'],
+      includeAssets: ['/logo.png'],
       manifest: {
         name: 'Gamba Demo',
         short_name: 'Gamba',

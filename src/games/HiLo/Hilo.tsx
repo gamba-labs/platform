@@ -107,6 +107,7 @@ export default function HiLo() {
       const res = await gamba.play({
         bet,
         wager: profit || initialWager,
+        creatorFee: 0.025,
       })
 
       setLoading(true)
@@ -150,7 +151,7 @@ export default function HiLo() {
                 >
                   <Card>
                     <div className="rank">{RANK_SYMBOLS[card.rank]}</div>
-                    <div className="suit" style={{ backgroundImage: 'url(/logo.svg)' }} />
+                    <div className="suit" style={{ backgroundImage: 'url(/logo.png)' }} />
                   </Card>
                 </CardContainer>
               )

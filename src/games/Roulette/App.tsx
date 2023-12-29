@@ -55,6 +55,7 @@ export default function Roulette() {
       const res = await gamba.play({
         bet,
         wager,
+        creatorFee: 0.025,
       })
       sounds.play.play()
       const result = await res.result()

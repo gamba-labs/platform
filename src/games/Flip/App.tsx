@@ -37,7 +37,7 @@ export default function Flip() {
 
       sounds.coin.play({ playbackRate: .5 })
 
-      const res = await gamba.play({ bet, wager })
+      const res = await gamba.play({ bet, wager, creatorFee: 0.025 })
 
       sounds.coin.play()
 
