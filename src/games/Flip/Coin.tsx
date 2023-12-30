@@ -2,12 +2,14 @@ import { useGLTF, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import React from 'react'
 import { Group } from 'three'
+import { clamp } from 'three/src/math/MathUtils'
 
-import TEXTURE_HEADS from './heads.png'
-import TEXTURE_TAILS from './tails.png'
+export const TEXTURE_HEADS = require('./heads.png')
+export const TEXTURE_TAILS = require('./tails.png')
+const MODEL_COIN = require('./Coin.glb')
 
 function CoinModel() {
-  const model = useGLTF('/Coin.glb')
+  const model = useGLTF(MODEL_COIN)
   const [heads, tails] = useTexture([TEXTURE_HEADS, TEXTURE_TAILS])
   return (
     <>
@@ -47,7 +49,7 @@ export function Coin({ flipping, result }: CoinFlipProps) {
     if (flipping) {
       group.current.rotation.y += 25 * dt
     } else {
-      group.current.rotation.y += (target.current - group.current.rotation.y) * .1
+      group.current.rotation.y += clamp((target.current - group.current.rotation.y) * 10 * dt, 0, 1)
     }
     const scale = flipping ? 1.25 : 1
     group.current.scale.y += (scale - group.current.scale.y) * .1

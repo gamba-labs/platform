@@ -1,6 +1,9 @@
 {
   "include": ["src"],
   "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+    },
     "target": "esnext",
     "lib": ["esnext", "dom"],
     "types": ["vite/client"],

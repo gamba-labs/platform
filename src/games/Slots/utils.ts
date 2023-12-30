@@ -26,6 +26,7 @@ export const generateBetArray = (
       arr[i] = item.multiplier
     }
     i++
+    if (i > 1000) break
   }
 
   return arr

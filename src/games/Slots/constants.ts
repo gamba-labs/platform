@@ -1,11 +1,10 @@
-export { default as SOUND_PLAY } from './assets/play.mp3'
-export { default as SOUND_WIN } from './assets/win.mp3'
 export { default as SOUND_LOSE } from './assets/lose.mp3'
-export { default as SOUND_SPIN } from './assets/spin.mp3'
-export { default as SOUND_REVEAL } from './assets/reveal.mp3'
+export { default as SOUND_PLAY } from './assets/insert.mp3'
 export { default as SOUND_REVEAL_LEGENDARY } from './assets/reveal-legendary.mp3'
+export { default as SOUND_REVEAL } from './assets/reveal.mp3'
+export { default as SOUND_SPIN } from './assets/spin.mp3'
+export { default as SOUND_WIN } from './assets/win.mp3'
 
-import { solToLamports } from 'gamba'
 import IMAGE_2X from './assets/slot-2x.png'
 import IMAGE_3X from './assets/slot-3x.png'
 import IMAGE_5X from './assets/slot-5x.png'
@@ -31,21 +30,12 @@ export const SLOT_ITEMS = [
   slotItem(.5, IMAGE_WOJAK),
 ].flat()
 
-export const WAGER_OPTIONS = [
-  0.05,
-  0.1,
-  .25,
-  .5,
-  .75,
-  1,
-].map(solToLamports)
-
 export const NUM_SLOTS = 3
-/** MS that it takes for spin to finish and reveal to start */
+// MS that it takes for spin to finish and reveal to start
 export const SPIN_DELAY = 1000
-/** MS between each slot reveal */
-export const REVEAL_SLOT_DELAY = 750
-/** MS after reveal until win / lose effect is played */
+// MS between each slot reveal
+export const REVEAL_SLOT_DELAY = 500
+// MS after reveal until win / lose effect is played
 export const FINAL_DELAY = 500
-/** */
+//
 export const LEGENDARY_THRESHOLD = 5

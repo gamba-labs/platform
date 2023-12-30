@@ -1,45 +1,64 @@
+import { useWalletModal } from '@solana/wallet-adapter-react-ui'
+import { useTransactionError } from 'gamba-react-v2'
 import React from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
-import { Card } from './components/Card'
-import { Header } from './components/Header'
-import { SlideSection } from './components/Section'
-import { GAMES } from './games'
-import { ErrorHandlers } from './ui/ErrorHandlers'
-import { Game } from './ui/Game'
-import { Home } from './ui/Home'
-import { RecentPlays } from './ui/RecentPlays'
-import { UserButton } from './ui/UserButton'
+import { Modal } from './components/Modal'
+import { StyledSection } from './components/Slider'
+import { useToast } from './hooks/useToast'
+import Dashboard from './sections/Dashboard/Dashboard'
+import Game from './sections/Game/Game'
+import Header from './sections/Header'
+import RecentPlays from './sections/RecentPlays/RecentPlays'
+import Toasts from './sections/Toasts'
 
-export function App() {
-  const location = useLocation()
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  React.useEffect(() => window.scrollTo(0, 0), [pathname])
+  return null
+}
 
-  React.useEffect(() =>
-    document.body.scrollTo({
-      top: 0,
-      left: 0,
-    })
-  , [location.key])
+function ErrorHandler() {
+  const walletModal = useWalletModal()
+  const toast = useToast()
+  const [error, setError] = React.useState<Error>()
+
+  useTransactionError(
+    (error) => {
+      if (error.message === 'NOT_CONNECTED') {
+        walletModal.setVisible(true)
+        return
+      }
+      toast({ title: '❌ Transaction error', description: error?.error?.errorMessage ?? error.message })
+    },
+  )
 
   return (
     <>
-      <ErrorHandlers />
+      {error && (
+        <Modal onClose={() => setError(undefined)}>
+          <h1>Error occured</h1>
+          <p>{error.message}</p>
+        </Modal>
+      )}
+    </>
+  )
+}
 
-      <Header>
-        <UserButton />
-      </Header>
-
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/:shortName" element={<Game />} />
-      </Routes>
-
-      <SlideSection title="Demo Games">
-        {GAMES.map((game) => (
-          <Card key={game.short_name} game={game} />
-        ))}
-      </SlideSection>
-
-      <RecentPlays />
+export default function App() {
+  return (
+    <>
+      <ScrollToTop />
+      <ErrorHandler />
+      <Header />
+      <Toasts />
+      <StyledSection>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/:gameId" element={<Game />} />
+        </Routes>
+        <h2 style={{ textAlign: 'center' }}>Recent Plays</h2>
+        <RecentPlays />
+      </StyledSection>
     </>
   )
 }

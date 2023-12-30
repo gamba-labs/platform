@@ -1,6 +1,4 @@
-import { solToLamports } from 'gamba'
-
-export const WAGER_AMOUNTS = [0.05, 0.1, 0.25, 0.5, 1, 2].map(solToLamports)
+export const WAGER_AMOUNTS = [100_000, 1_000_000]
 
 export const MAX_CARD_SHOWN = 5
 
@@ -26,4 +24,3 @@ export { default as SOUND_FINISH } from './finish.mp3'
 export { default as SOUND_LOSE } from './lose.mp3'
 export { default as SOUND_PLAY } from './play.mp3'
 export { default as SOUND_WIN } from './win.mp3'
-
