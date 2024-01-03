@@ -3,10 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import React from 'react'
 import { Group } from 'three'
 import { clamp } from 'three/src/math/MathUtils'
+import MODEL_COIN from './Coin.glb'
+import TEXTURE_HEADS from './heads.png'
+import TEXTURE_TAILS from './tails.png'
 
-export const TEXTURE_HEADS = require('./heads.png')
-export const TEXTURE_TAILS = require('./tails.png')
-const MODEL_COIN = require('./Coin.glb')
+export { TEXTURE_HEADS, TEXTURE_TAILS }
 
 function CoinModel() {
   const model = useGLTF(MODEL_COIN)
