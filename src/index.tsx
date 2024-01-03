@@ -8,7 +8,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
-import { PLATFORM_CREATOR_ADDRESS, TOKENS } from './constants'
+import { PLATFORM_CREATOR_ADDRESS, RPC_ENDPOINT, TOKENS } from './constants'
 import { GAMES } from './games'
 import './styles.css'
 
@@ -26,7 +26,7 @@ function Root() {
   return (
     <HashRouter>
       <ConnectionProvider
-        endpoint={import.meta.env.VITE_RPC_ENDPOINT}
+        endpoint={RPC_ENDPOINT}
         config={{ commitment: 'processed' }}
       >
         <WalletProvider autoConnect wallets={wallets}>

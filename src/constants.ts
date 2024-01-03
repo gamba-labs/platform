@@ -1,4 +1,7 @@
+import { clusterApiUrl } from '@solana/web3.js'
 import { GambaStandardTokens, TokenMeta } from 'gamba-react-ui-v2'
+
+export const RPC_ENDPOINT = import.meta.env.VITE_RPC_ENDPOINT ?? clusterApiUrl()
 
 export const PLATFORM_CREATOR_ADDRESS = 'V2grJiwjs25iJYqumbHyKo5MTK7SFqZSdmoRaj8QWb9'
 
