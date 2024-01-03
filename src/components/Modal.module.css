@@ -1,12 +1,19 @@
-
 @keyframes appear {
-  0% { opacity: 0;}
-  100% { opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes appear2 {
-  0% { transform: scale(.9); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .modal {
@@ -20,7 +27,7 @@
   z-index: 1040;
   overflow-y: auto;
   height: 100vh;
-  animation: appear .3s;
+  animation: appear 0.3s;
 }
 
 .container {
@@ -35,16 +42,17 @@
   box-sizing: border-box;
   position: relative;
   display: flex;
+  gap: 20px;
   align-items: center;
   flex-direction: column;
   z-index: 1050;
   max-width: min(100%, 400px);
   border-radius: 10px;
-  background: #10141f;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+  background: var(--bg-color);
+  box-shadow: 0 8px 20px #0000001a;
   flex: 1;
   padding-bottom: 20px;
-  animation: appear2 .3s;
+  animation: appear2 0.3s;
   color: white;
 }
 
@@ -67,8 +75,8 @@ button.close {
   top: 10px;
   border: none;
   z-index: 11;
-  opacity: .75;
-  transition: opacity .2s, background .2s;
+  opacity: 0.75;
+  transition: opacity 0.2s, background 0.2s;
   background: transparent;
   border-radius: 50%;
   width: 2em;

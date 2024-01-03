@@ -1,7 +1,7 @@
 .section {
   width: 100%;
   max-width: 100%;
-  transition: width .25s ease padding .25s ease;
+  transition: width 0.25s ease padding 0.25s ease;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -21,7 +21,7 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 10px;
 }
@@ -38,11 +38,11 @@
   width: 100%;
   overflow: scroll visible;
   scroll-snap-type: x mandatory;
-  transition: height .25s ease;
+  transition: height 0.25s ease;
 }
 
 .slideContent::-webkit-scrollbar {
-  height: .33em;
+  height: 0.33em;
 }
 
 .slideContent::-webkit-scrollbar-thumb {
@@ -60,4 +60,16 @@
 
 .sliderArrows > * {
   flex-grow: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
