@@ -2,6 +2,7 @@
 html,
 body {
   height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 :root {
@@ -10,6 +11,7 @@ body {
   --button-color: #ffc762;
   --recent-plays-bg: rgba(0, 0, 0, 0.1);
   --recent-plays-bg-hover: rgba(0, 0, 0, 0.15);
+  --card-aspect-ratio: 2 / 1.3;
 }
 
 [data-theme="light"] {

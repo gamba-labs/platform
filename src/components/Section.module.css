@@ -26,6 +26,12 @@
   margin-bottom: 10px;
 }
 
+.header h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
 .header > .arrows {
   display: flex;
 }

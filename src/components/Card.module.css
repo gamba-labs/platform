@@ -21,8 +21,8 @@
   background-position: center;
   background-repeat: no-repeat;
   z-index: 10;
-  transition: transform .2s ease;
-  transform: scale(.99);
+  transition: transform 0.2s ease;
+  transform: scale(0.99);
 }
 
 .card {
@@ -33,23 +33,18 @@
   border-radius: 10px;
   aspect-ratio: var(--card-aspect-ratio);
   width: 160px;
-  transition: width .25s ease, transform .2s ease, aspect-ratio .2s ease;
+  transition: width 0.25s ease, transform 0.2s ease, aspect-ratio 0.2s ease;
+  width: 100%;
   max-height: 100%;
   overflow: hidden;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-@media (min-width: 900px) {
-  .card {
-    width: 180px;
-  }
-}
-
 .card:hover {
   outline: var(--text-color) solid 1px;
   outline-offset: 2px;
-  transform: translateY(-2px)
+  transform: translateY(-2px);
 }
 
 .card:hover .logo {
@@ -70,7 +65,7 @@
   background-size: 100px;
   background-position: center;
   background-image: url(/game.svg);
-  transition: transform .2s ease, opacity .3s;
+  transition: transform 0.2s ease, opacity 0.3s;
   animation: tile-animation 10s linear infinite;
   opacity: 0;
 }
