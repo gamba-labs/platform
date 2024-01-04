@@ -6,18 +6,18 @@ body {
 }
 
 :root {
-  --bg-color: #ff7427;
+  --bg-color: #a81008;
   --text-color: #ffffff;
-  --button-color: #ffc762;
+  --button-color: #e1191b;
   --recent-plays-bg: rgba(0, 0, 0, 0.1);
   --recent-plays-bg-hover: rgba(0, 0, 0, 0.15);
   --card-aspect-ratio: 2 / 1.3;
 }
 
 [data-theme="light"] {
-  --bg-color: #ff7427;
+  --bg-color: #a81008;
   --text-color: #ffffff;
-  --recent-plays-bg: #ffc762;
+  --recent-plays-bg: #e1191b;
   --recent-plays-bg: rgba(0, 0, 0, 0.1);
   --recent-plays-bg-hover: rgba(0, 0, 0, 0.15);
 }

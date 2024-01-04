@@ -4,7 +4,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  background: rgb(255 116 39 / 50%);
+  background: rgb(225, 25, 27 / 50%);
+  /* background-color: rgb(225, 25, 27); */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 10px 20px;
