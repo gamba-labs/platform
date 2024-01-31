@@ -13,12 +13,11 @@ export const PLATFORM_SHARABLE_URL = 'v2-play.gamba.so'
 export const TOKENS: TokenMeta[] = [
   GambaStandardTokens.sol,
   GambaStandardTokens.usdc,
-{
-    mint: new PublicKey("JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"),
-    symbol: 'JUP',
-    name: 'Jupiter',
-    image: "https://assets.coingecko.com/coins/images/34188/standard/jup.png?1704266489",
-    decimals: 6,
-    baseWager: 1 * 1e6,
-}
+  // {
+  //   mint: new PublicKey(""),
+  //   symbol: '???',
+  //   name: 'Custom SPL Token',
+  //   decimals: 1e9,
+  //   baseWager: 1,
+  // }
 ]
