@@ -6,9 +6,9 @@ import { GambaPlatformProvider } from 'gamba-react-ui-v2'
 import { GambaProvider } from 'gamba-react-v2'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, HashRouter} from 'react-router-dom'
 import App from './App'
-import { PLATFORM_CREATOR_ADDRESS, RPC_ENDPOINT } from './constants'
+import { PLATFORM_CREATOR_ADDRESS, RPC_ENDPOINT, TOKENS } from './constants'
 import { GAMES } from './games'
 import './styles.css'
 
@@ -35,11 +35,7 @@ function Root() {
               <GambaPlatformProvider
                 creator={PLATFORM_CREATOR_ADDRESS}
                 games={GAMES}
-                tokens={[
-                  {
-                    image: ""
-                  }
-                ]}
+                tokens={TOKENS}
                 defaultCreatorFee={0.01}
                 defaultJackpotFee={0.001}
               >
