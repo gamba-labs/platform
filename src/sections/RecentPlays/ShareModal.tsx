@@ -107,7 +107,7 @@ export function ShareModal({ event, onClose }: {event: GambaTransaction<'GameSet
           <GambaUi.Button size="small" disabled={copying} onClick={copyImage}>
             Share
           </GambaUi.Button>
-          <GambaUi.Button size="small" onClick={() => window.open(`https://v2.gamba.so/#/tx/${event.signature}`, '_blank')}>
+          <GambaUi.Button size="small" onClick={() => window.open(`https://v2.gamba.so/tx/${event.signature}`, '_blank')}>
             Verify
           </GambaUi.Button>
         </Flex>
