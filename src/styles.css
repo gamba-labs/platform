@@ -3,7 +3,7 @@
 }
 
 :root {
-  --background-color: #0b0b0e;
+  --background-image: url('../public/brrrr.jpg') !important;
   --text-color: #ffffff;
 
   --gamba-ui-border-radius: 10px;
@@ -19,7 +19,9 @@
   --gamba-ui-input-color: #ffffff;
   --gamba-ui-input-background-hover: #11111d;
 }
-
+.cvmhTS,.chmyoW,.fwNcZC,.grXzsX,.izjgxW,.jxmaFw,.lnzDuI{
+  background: #03FFA4 !important;
+}
 body, input, button, textarea, pre {
   font-family: 'DM Sans', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -30,15 +32,24 @@ h1, h2 {
 }
 
 body {
-  background: var(--background-color);
+  background-image: url('../public/brrrr.png') !important;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-position: center;
+  background-size: 100% 100%;
   color: var(--text-color);
   cursor: default;
   margin: 0;
   overflow-y: scroll;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+  
 }
-
+@media only screen and (max-width: 768px) {
+  body {
+    background-image: url('../public/brrr2.png') !important;
+  }
+}
 a {
   color: inherit;
   text-decoration: none;
