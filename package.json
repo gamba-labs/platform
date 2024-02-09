@@ -18,7 +18,6 @@
     "@solana/wallet-adapter-react-ui": "^0.9.34",
     "@solana/wallet-adapter-wallets": "^0.19.18",
     "@solana/web3.js": "^1.78.5",
-    "@types/matter-js": "^0.19.5",
     "buffer": "^6.0.3",
     "gamba-core-v2": "^0.1.7",
     "gamba-react-ui-v2": "^0.2.0",
@@ -36,6 +35,8 @@
   "devDependencies": {
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.0.11",
+    "@types/matter-js": "^0.19.5",
+    "@types/three": "^0.161.2",
     "@vitejs/plugin-react": "^3.1.0",
     "unplugin-fonts": "^1.0.3",
     "vite": "^4.2.1",
