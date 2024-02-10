@@ -7,7 +7,15 @@ export default defineConfig(() => ({
   envPrefix: ENV_PREFIX,
   server: { port: 4001, host: false },
   assetsInclude: ["**/*.glb"],
-  define: { 'process.env.ANCHOR_BROWSER': true },
+  define: {
+    'process.env.ANCHOR_BROWSER': true,
+    'global': 'window',
+  },
+  resolve: {
+    alias: {
+      crypto: 'crypto-browserify',
+    },
+  },
   plugins: [
     react({ jsxRuntime: 'classic' }),
   ],

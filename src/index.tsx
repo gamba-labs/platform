@@ -6,7 +6,7 @@ import { GambaPlatformProvider } from 'gamba-react-ui-v2'
 import { GambaProvider } from 'gamba-react-v2'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter} from 'react-router-dom'
 import App from './App'
 import { PLATFORM_CREATOR_ADDRESS, RPC_ENDPOINT, TOKENS } from './constants'
 import { GAMES } from './games'
@@ -24,7 +24,7 @@ function Root() {
   )
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ConnectionProvider
         endpoint={RPC_ENDPOINT}
         config={{ commitment: 'processed' }}
@@ -45,7 +45,7 @@ function Root() {
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 
