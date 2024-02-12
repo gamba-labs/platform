@@ -29,14 +29,46 @@ h1, h2 {
   margin: 0;
 }
 
+.cvmhTS,
+.chmyoW,
+.fwNcZC,
+.grXzsX,
+.izjgxW,
+.jxmaFw,
+.lnzDuI,
+.bgojrM,
+.dSJtLp,
+.ERdVd,
+.bgwtxf,
+.btzsrT,
+.fpLgBV,
+.ihcxnh {
+  background: #03FFA4 !important;
+}
+
+
+.fDaMhj{
+  background: linear-gradient(-45deg, #ffb07c, #ff3e88, #2969ff, #ef3cff, #ff3c87) !important;
+}
 body {
-  background: var(--background-color);
+  background-image: url('../public/brrrr.png') !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-size: 100% 100%;
   color: var(--text-color);
   cursor: default;
   margin: 0;
   overflow-y: scroll;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+
+}
+
+@media only screen and (max-width: 768px) {
+  body {
+    background-image: url('../public/brrr2.png') !important;
+  }
 }
 
 a {
