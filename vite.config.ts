@@ -9,7 +9,6 @@ export default defineConfig(() => ({
   assetsInclude: ["**/*.glb"],
   define: {
     'process.env.ANCHOR_BROWSER': true,
-    'global': 'window',
   },
   resolve: {
     alias: {
