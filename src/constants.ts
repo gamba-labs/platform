@@ -19,7 +19,7 @@ export const TOKENS: TokenMeta[] = [
   //   symbol: '???',
   //   name: 'Custom SPL Token',
   //   image: "image url",
-  //   decimals: 1e9,
-  //   baseWager: 1,
+  //   decimals: 6,
+  //   baseWager: 1 * 1e6,
   // }
 ]
