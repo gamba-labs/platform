@@ -4,6 +4,3 @@ node_modules
 dist
 dev-dist
 .env
-
-# Local Netlify folder
-.netlify

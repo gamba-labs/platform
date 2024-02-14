@@ -1,204 +1,69 @@
-#root,
-html,
-body {
-  height: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
-:root {
-  --bg-color: #a81008;
-  --text-color: #ffffff;
-  --button-color: #e1191b;
-  --recent-plays-bg: rgba(0, 0, 0, 0.1);
-  --recent-plays-bg-hover: rgba(0, 0, 0, 0.15);
-  --card-aspect-ratio: 2 / 1.3;
-}
-
-[data-theme="light"] {
-  --bg-color: #a81008;
-  --text-color: #ffffff;
-  --recent-plays-bg: #e1191b;
-  --recent-plays-bg: rgba(0, 0, 0, 0.1);
-  --recent-plays-bg-hover: rgba(0, 0, 0, 0.15);
-}
-
-html,
-body {
-  overflow-x: hidden;
-}
-
 * {
   box-sizing: border-box;
 }
 
-button {
-  user-select: none;
+@font-face {
+  font-family: 'PixelMix';
+  src: url('/public/pixelmix.ttf') format('truetype');
+}
+
+:root {
+  --background-color: #ac172c;
+  --text-color: #ffffff;
+
+  --gamba-ui-border-radius: 10px;
+
+  --gamba-ui-button-default-background: #221b33;
+  --gamba-ui-button-default-background-hover: #11111d;
+  --gamba-ui-button-default-color: white;
+
+  --gamba-ui-button-main-background: #8851ff;
+  --gamba-ui-button-main-background-hover: #9564ff;
+
+  --gamba-ui-input-background: #0e0e16;
+  --gamba-ui-input-color: #ffffff;
+  --gamba-ui-input-background-hover: #11111d;
+}
+
+body, input, button, textarea, pre {
+  font-family: 'pixelmix','DM Sans', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+h1, h2 {
+  margin: 0;
 }
 
 body {
-  margin: 0;
+  background: var(--background-color) url('Main Banner.webp') no-repeat center 55px; 
+  background-size: contain;
+  background-attachment: fixed;
   color: var(--text-color);
-  background: var(--bg-color);
   cursor: default;
-  overflow-y: auto;
+  margin: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 
-::selection {
-  background: #2424ff44;
-}
 
-body::-webkit-scrollbar {
-  width: 0.4em;
-}
-
-body::-webkit-scrollbar-thumb {
-  bg-color: #cccccc33;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  margin: 0;
-  font-weight: 700;
-}
-
-body,
-input,
-button,
-textarea,
-pre {
-  font-family: "Roboto Mono", monospace;
-  font-size: 14px;
-}
-
-a:not([href^="https://"]):not([href^="http://"])
-{
+a {
+  color: inherit;
   text-decoration: none;
 }
 
-a {
-  color: unset;
+body::-webkit-scrollbar {
+  width: 4px;
 }
 
-.gamba-ui-controls-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
+body::-webkit-scrollbar-thumb {
+  background-color: #9564ff;
 }
 
-.gamba-ui-select-container {
-  position: relative;
-}
-
-.gamba-ui-select-option {
-  width: 100%;
-  background: #272735;
-  color: white;
-  border: none;
-  margin: 0;
-  padding: 10px 5px;
-  cursor: pointer;
-}
-
-.gamba-ui-select-option.selected {
-  background: #2e2e40;
-}
-
-.gamba-ui-select-popup {
-  position: absolute;
-  bottom: 100%;
-  margin-bottom: 10px;
-  display: grid;
+.wallet-adapter-button.wallet-adapter-button-trigger {
+  height: 40px;
+  line-height: 40px;
+  font-weight: normal;
+  background: rgb(55, 57, 82);
   border-radius: 10px;
-  overflow: hidden;
-  min-width: 100%;
-  border-radius: 5px;
-}
-
-.gamba-game-button {
-  margin: 0;
-  pointer-events: auto;
-  border: none;
-  background: #272735;
-  color: white;
-  border-radius: 5px;
-  padding: 10px;
-  opacity: 0.9;
-  transition: opacity 0.2s;
-  cursor: pointer;
-}
-
-.gamba-game-button-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-}
-
-.gamba-game-button:not(:disabled):hover {
-  background: #2e2e40;
-}
-
-.gamba-game-button.primary {
-  min-width: 100px;
-  background: #a079ff;
-  color: white;
-}
-
-.gamba-game-button.primary:hover {
-  background: #9468ff;
-}
-
-.gamba-game-ui-group {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-}
-
-.gamba-game-button:disabled {
-  cursor: default;
-  opacity: 0.7;
-}
-
-.gamba-ui-select-container {
-  min-width: 100px;
-}
-
-.gamba-ui-select-container button {
-  width: 100%;
-}
-
-.gamba-game-button.selected {
-  background: #515182 !important;
-}
-
-.gamba-game-button:active {
-  transition: opacity 0.2s, transform 0.1s ease;
-  opacity: 1;
-}
-
-.gamba-game-ui-wager-input {
-  display: flex;
-  gap: 2px;
-}
-
-.gamba-game-ui-wager-input input {
-  background: #272735;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 0;
-}
-
-.gamba-game-ui-wager-input input {
-  width: 120px;
-}
-
-.gamba-wager-input-field {
-  display: flex;
 }

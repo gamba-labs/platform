@@ -33,30 +33,22 @@ export const Option = styled.button<{ selected?: boolean }>`
   font-size: 20px;
   color: white;
   & > div:first-child {
-    transition: transform .5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    font-size: 64px;
-    transform: scale(var(--scale));
+    font-size: 48px;
     filter: drop-shadow(-4px 4px 2px #00000066);
     margin-right: 10px;
   }
-  &:hover > div:first-child {
-    transform: scale(max(var(--scale), 1.1));
+
+  --opacity: .5;
+
+  &:hover {
+    --opacity : 1;
   }
-  & > div:last-child {
-    ${({ selected }) => selected ? css`
-      opacity: 1;
-      ` : css`
-      opacity: .5;
-    `}
-  }
-  ${({ selected }) => selected ? css`
-    --scale: 1;
+
+  ${(props) => props.selected && css`
     --opacity: 1;
-    opacity: 1;
-  ` : css`
-    --scale: .75;
-    opacity: .5;
   `}
+
+  opacity: var(--opacity);
 `
 
 export const Profit = styled.div`
@@ -100,7 +92,7 @@ export const CardContainer = styled.div`
   transform-origin: bottom;
   perspective: 500px;
   & > div {
-    animation: ${appear} .25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    animation: ${appear} .25s cubic-bezier(0.5, 0.9, 0.35, 1.05);
   }
 `
 
@@ -109,12 +101,12 @@ export const Card = styled.div<{$small?: boolean}>`
     height: 35px;
     font-size: 15px;
     padding: 5px;
-    border-radius: 6px;
+    border-radius: 4px;
   ` : css`
     height: 160px;
     font-size: 70px;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 8px;
   `}
   box-shadow: -5px 5px 10px 1px #0000003d;
   background: white;
@@ -138,4 +130,24 @@ export const Card = styled.div<{$small?: boolean}>`
     font-size: 128px;
     opacity: .9;
   }
+`
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+`
+
+export const WarningMessage = styled.div`
+  animation: ${float} 2s ease-in-out infinite;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateX(100%) translateY(-50%);
+  background-color: rgba(255, 204, 0, 0.8);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  color: black;
+  white-space: nowrap;
+  pointer-events: none;
 `

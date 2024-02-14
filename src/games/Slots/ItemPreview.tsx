@@ -1,7 +1,6 @@
 import React from 'react'
 import { SLOT_ITEMS, SlotItem } from './constants'
-import styles from './ItemPreview.module.css'
-import appStyles from './App.module.css'
+import { StyledItemPreview } from './ItemPreview.styles'
 
 const itemsByMultiplier = Object.entries(
   SLOT_ITEMS.reduce<Record<string, SlotItem[]>>(
@@ -22,19 +21,19 @@ const itemsByMultiplier = Object.entries(
 export function ItemPreview({ betArray }: {betArray: number[]}) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <div className={styles.items}>
+      <StyledItemPreview>
         {itemsByMultiplier.map(({ items, multiplier }, i) => (
-          <div className={!betArray.includes(multiplier) ? styles.hidden : ''} key={i}>
-            <div className={styles.multiplier}>{multiplier}x</div>
+          <div className={!betArray.includes(multiplier) ? "hidden" : ''} key={i}>
+            <div className={"multiplier"}>{multiplier}x</div>
             <div
               key={i}
-              className={styles.icon}
+              className={"icon"}
             >
-              <img className={appStyles.slotImage} src={items[0].image} />
+              <img className={"slotImage"} src={items[0].image} />
             </div>
           </div>
         ))}
-      </div>
+      </StyledItemPreview>
     </div>
   )
 }
