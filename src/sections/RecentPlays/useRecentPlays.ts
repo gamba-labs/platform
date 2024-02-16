@@ -18,7 +18,7 @@ export function useRecentPlays() {
     'GameSettled',
     (event) => {
       // Ignore events that occured on another platform
-      if (!event.data.creator.equals(PLATFORM_CREATOR_ADDRESS)) return
+      // if (!event.data.creator.equals(PLATFORM_CREATOR_ADDRESS)) return
       // Todo handle delays in platform library
       const delay = event.data.user.equals(userAddress) && ['plinko', 'slots'].some((x) => location.pathname.includes(x)) ? 3000 : 1
       setTimeout(

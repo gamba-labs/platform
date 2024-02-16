@@ -42,7 +42,7 @@ export const GAMES: GameBundle[] = [
     id: 'plinko',
     meta: {
       background: '#7272ff',
-      image: '/games/plinko.png',
+      image: '/games/bannerplinko.webp',
       name: 'Plinko',
       description: `
         Plinko
@@ -58,7 +58,7 @@ export const GAMES: GameBundle[] = [
       description: 'Guess if the next card is going to be higher or lower than the current one. Continue until you want to cash out!',
       background: '#77bbff',
     },
-    props: { logo: '/logo.svg' },
+    props: { logo: '/logo.webp' },
     app: React.lazy(() => import('./HiLo')),
   },
   {
