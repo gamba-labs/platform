@@ -43,6 +43,11 @@ const Logo = styled(NavLink)`
   & > img {
     height: 100%;
   }
+
+  /* Hide logo on screens less than 768px wide */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `
 
 const Twitter = styled(NavLink)`
@@ -92,7 +97,7 @@ export default function Header() {
               +<TokenValue amount={balance.bonusBalance} />
             </Bonus>
           )}
-          <Twitter to="/">
+          <Twitter to="https://twitter.com/SolBet_">
             <img alt="Gamba logo" src="/twitter.svg" />
           </Twitter>
           <TokenSelect />

@@ -35,7 +35,7 @@ h1, h2 {
 }
 
 body {
-  background: var(--background-color) url('Main Banner.webp') no-repeat center 55px; 
+  background: var(--background-color) url('main_banner.webp') no-repeat center 55px; 
   background-size: contain;
   background-attachment: fixed;
   color: var(--text-color);
