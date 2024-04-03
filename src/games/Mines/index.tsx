@@ -98,7 +98,7 @@ function Mines() {
         metadata: [currentLevel],
       })
 
-      const result = await gamba.result()
+      const result = await game.result()
 
       sounds.sounds.tick.player.stop()
 
@@ -172,7 +172,6 @@ function Mines() {
                     onClick={() => play(index)}
                     disabled={!canPlay || cell.status !== 'hidden'}
                   >
-                    {/* {(cell.status === 'hidden' || cell.status === 'mine') && <MineSvg />} */}
                     {(cell.status === 'gold') && (
                       <div>
                         +<TokenValue amount={cell.profit} />

@@ -39,6 +39,10 @@ const StyledSlot = styled.div<{$good: boolean}>`
   border-radius: 10px;
   border: 2px solid #2d2d57;
   transition: background .2s, border .2s, box-shadow .2s;
+  ${(props) => props.$revealed && css`
+    animation: result-flash-2 ease .2s;
+    animation-delay: .15s;
+  `}
   ${(props) => props.$good && css`
     animation: reveal-glow 1s;
   `}
@@ -58,7 +62,7 @@ const Revealed = styled.div<{$revealed: boolean, $good: boolean}>`
   ${(props) => props.$revealed && css`
     opacity: 1;
     transform: translateY(0%);
-    animation: ${reveal} cubic-bezier(0.18, 0.89, 0.32, 1.28) .25s;
+    animation: ${reveal} cubic-bezier(0.18, 0.89, 0.32, 1.3) .25s;
   `}
 
   ${(props) => props.$good && css`
@@ -74,23 +78,23 @@ export function Slot({ revealed, good, item, index }: SlotProps) {
   , [],
   )
   return (
-    <StyledSlot $good={good}>
+    <StyledSlot $good={good} $revealed={revealed}>
       <StyledSpinner data-spinning={!revealed}>
         {items.map((item, i) => (
           <div key={i}>
-            <img className={"slotImage"} src={item.image} />
+            <img className={'slotImage'} src={item.image} />
           </div>
         ))}
       </StyledSpinner>
       {item && (
         <>
           <Revealed
-            className={"revealedSlot"}
+            className={'revealedSlot'}
             $revealed={revealed}
             $good={revealed && good}
           >
             <img
-              className={"slotImage"}
+              className={'slotImage'}
               src={item.image}
               style={{ animationDelay: index * .25 + 's' }}
             />

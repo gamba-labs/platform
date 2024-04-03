@@ -50,7 +50,7 @@ export const Profit = styled.div<{$win: boolean}>`
   align-items: center;
   background: ${props => props.$win ? '#00ff4021' : '#ffffff11'};
   border-radius: 10px;
-  padding: 1px 5px;
+  padding: 2px 5px;
 `
 
 export const Jackpot = styled.div`

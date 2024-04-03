@@ -1,6 +1,5 @@
 import { GameResult } from 'gamba-core-v2'
 import { EffectTest, GambaUi, TokenValue, useCurrentPool, useSound, useWagerInput } from 'gamba-react-ui-v2'
-import { useGamba } from 'gamba-react-v2'
 import React from 'react'
 import { ItemPreview } from './ItemPreview'
 import { Slot } from './Slot'
@@ -41,7 +40,7 @@ const Messages: React.FC<{messages: string[]}> = ({ messages }) => {
 }
 
 export default function Slots() {
-  const gamba = useGamba()
+  const gamba = GambaUi.useGame()
   const game = GambaUi.useGame()
   const pool = useCurrentPool()
   const [spinning, setSpinning] = React.useState(false)
@@ -64,7 +63,7 @@ export default function Slots() {
 
   const bet = React.useMemo(
     () => generateBetArray(pool.maxPayout, wager),
-    [pool.maxPayout, wager, gamba.nonce],
+    [pool.maxPayout, wager],
   )
 
   const valid = bet.some((x) => x > 1)
@@ -144,7 +143,6 @@ export default function Slots() {
     <>
       <GambaUi.Portal target="screen">
         {good && <EffectTest src={combination[0].image} />}
-        {/* {true && <EffectTest src={combination[0].image} />} */}
         <GambaUi.Responsive>
           <StyledSlots>
             <div>

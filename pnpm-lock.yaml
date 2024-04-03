@@ -32,14 +32,14 @@ dependencies:
     specifier: ^6.0.3
     version: 6.0.3
   gamba-core-v2:
-    specifier: ^0.1.7
-    version: 0.1.7(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
+    specifier: ^0.3.0
+    version: 0.3.0(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
   gamba-react-ui-v2:
-    specifier: ^0.2.0
-    version: 0.2.0(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(gamba-react@0.3.7)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^0.4.5
+    version: 0.4.5(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(gamba-react@0.3.7)(react-dom@18.2.0)(react@18.2.0)
   gamba-react-v2:
-    specifier: ^0.2.0
-    version: 0.2.0(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(react@18.2.0)
+    specifier: ^1.1.3
+    version: 1.1.3(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core-v2@0.3.0)(react@18.2.0)
   html2canvas:
     specifier: ^1.4.1
     version: 1.4.1
@@ -6399,8 +6399,8 @@ packages:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
     dev: true
 
-  /gamba-core-v2@0.1.7(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5):
-    resolution: {integrity: sha512-Mg81M7lUZxv0NrPTCpGbs5mj8/low2YkuGblnyYpGDIDMK0pZIhGYYRJmato7KGmSpwDdj8VIjT92lzIW5Cf4A==}
+  /gamba-core-v2@0.3.0(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5):
+    resolution: {integrity: sha512-wcqgcaYWX6evhRfB2BrRj+O66cYyAF+7jy7nctSU8kXec5H9KltvwfMk/V0lu1zg3DCUMH2RHX0QS6V0cI5RXA==}
     peerDependencies:
       '@coral-xyz/anchor': ^0.27.0
       '@solana/web3.js': ^1.78.5
@@ -6429,8 +6429,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /gamba-react-ui-v2@0.2.0(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(gamba-react@0.3.7)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-53jqmc2Bjsr7JanWrM/91fKQDWyeSxnkZPe5fHxT7KY2aIg4A+QwPUFl2RVCLXgEJxxYpoPRLKPldeNfrBThTA==}
+  /gamba-react-ui-v2@0.4.5(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(gamba-react@0.3.7)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-soUCYgsl2msEjUOD2e9vBtnB98X5ArckDFplLCcWEJXlGct9VToBxBUJ38YJt6qPFqjWEeGrlIGXAJDAXxQQsw==}
     peerDependencies:
       '@coral-xyz/anchor': ^0.27.0
       '@solana/wallet-adapter-react': ^0.15.35
@@ -6448,9 +6448,9 @@ packages:
       '@solana/wallet-adapter-react': 0.15.35(@solana/web3.js@1.78.5)(bs58@4.0.1)(react-native@0.73.4)(react@18.2.0)
       '@solana/web3.js': 1.78.5
       gamba-core: 0.5.5(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
-      gamba-core-v2: 0.1.7(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
+      gamba-core-v2: 0.3.0(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
       gamba-react: 0.3.7(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-base@0.9.23)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(gamba-core@0.5.5)(react@18.2.0)
-      gamba-react-v2: 0.2.0(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(react@18.2.0)
+      gamba-react-v2: 1.1.3(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core-v2@0.3.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       styled-components: 6.0.8(react-dom@18.2.0)(react@18.2.0)
@@ -6466,23 +6466,24 @@ packages:
       - utf-8-validate
     dev: false
 
-  /gamba-react-v2@0.2.0(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core@0.5.5)(react@18.2.0):
-    resolution: {integrity: sha512-r+hKcWihGiYunJAkBYi79Uq5mVMvPxrthQMJMiVLuf+/2l3ZSVrsRfyZvSjOfxAPnf/E4/JpU8NgnVZzXjVqCw==}
+  /gamba-react-v2@1.1.3(@coral-xyz/anchor@0.27.0)(@solana/wallet-adapter-react@0.15.35)(@solana/web3.js@1.78.5)(@types/react@18.2.22)(gamba-core-v2@0.3.0)(react@18.2.0):
+    resolution: {integrity: sha512-ikESg1s5J1k4eR7uZPGE5yDcvXqzuvIfeXSK9fHsXDMI85J2xdcVlwL5jJzdwnU/ZKznheV36mAm7HdWyNdNWA==}
     peerDependencies:
       '@coral-xyz/anchor': ^0.27.0
       '@solana/wallet-adapter-react': ^0.15.35
       '@solana/web3.js': ^1.78.5
-      gamba-core: '*'
+      gamba-core-v2: '*'
       react: ^18.2.0
     peerDependenciesMeta:
       '@solana/wallet-adapter-react':
         optional: true
     dependencies:
       '@coral-xyz/anchor': 0.27.0
+      '@preact/signals-react': 1.3.8(react@18.2.0)
+      '@solana/spl-token': 0.3.8(@solana/web3.js@1.78.5)
       '@solana/wallet-adapter-react': 0.15.35(@solana/web3.js@1.78.5)(bs58@4.0.1)(react-native@0.73.4)(react@18.2.0)
       '@solana/web3.js': 1.78.5
-      gamba-core: 0.5.5(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
-      gamba-core-v2: 0.1.7(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
+      gamba-core-v2: 0.3.0(@coral-xyz/anchor@0.27.0)(@solana/web3.js@1.78.5)
       react: 18.2.0
       swr: 2.2.4(react@18.2.0)
       zustand: 4.5.0(@types/react@18.2.22)(react@18.2.0)

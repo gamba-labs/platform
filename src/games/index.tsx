@@ -2,6 +2,16 @@ import { GameBundle } from 'gamba-react-ui-v2'
 import React from 'react'
 
 export const GAMES: GameBundle[] = [
+  // {
+  //   id: 'example',
+  //   meta: {
+  //     background: '#00ffe1',
+  //     name: 'Example',
+  //     image: '#',
+  //     description: '',
+  //   },
+  //   app: React.lazy(() => import('./ExampleGame')),
+  // },
   {
     id: 'dice',
     meta: {
@@ -9,7 +19,7 @@ export const GAMES: GameBundle[] = [
       name: 'Dice',
       image: '/games/dice.png',
       description: `
-        Use the slider to pick a number, then roll below that number to win. Lower numbers will increase your potential payout, while higher ones are safer.
+        Dice challenges players to predict the outcome of a roll with a unique twist. Select a number and aim to roll below it to win. Adjusting your choice affects potential payouts, balancing risk and reward for an engaging experience.
       `,
     },
     app: React.lazy(() => import('./Dice')),
@@ -21,7 +31,7 @@ export const GAMES: GameBundle[] = [
       name: 'Slots',
       image: '/games/slots.png',
       description: `
-        Play and pray. At the top of the slot machine you can see your potential rewards. Always fair.
+        Slots is the quintessential game of luck and anticipation. Spin the reels and match symbols to win, with potential rewards displayed upfront. A fair and exciting game, Slots offers a classic casino experience tailored for digital enjoyment.
       `,
     },
     app: React.lazy(() => import('./Slots')),
@@ -31,7 +41,7 @@ export const GAMES: GameBundle[] = [
     meta: {
       name: 'Flip',
       description: `
-        Pick Heads or Tails. Double your money or go broke. Simple as.
+        Flip offers a straightforward yet thrilling gamble: choose Heads or Tails and double your money or lose it all. This simple, high-stakes game tests your luck and decision-making with every flip of the coin.
       `,
       image: '/games/flip.png',
       background: '#ffe694',
@@ -39,24 +49,14 @@ export const GAMES: GameBundle[] = [
     app: React.lazy(() => import('./Flip')),
   },
   {
-    id: 'plinko',
-    meta: {
-      background: '#7272ff',
-      image: '/games/plinko.png',
-      name: 'Plinko',
-      description: `
-        Plinko
-      `,
-    },
-    app: React.lazy(() => import('./Plinko')),
-  },
-  {
     id: 'hilo',
     meta: {
       name: 'HiLo',
       image: '/games/hilo.png',
-      description: 'Guess if the next card is going to be higher or lower than the current one. Continue until you want to cash out!',
-      background: '#77bbff',
+      description: `
+        HiLo is a game of foresight and luck, challenging players to guess whether the next card will be higher or lower. Make consecutive correct guesses to increase your winnings, and decide when to cash out for maximum rewards.
+      `,
+      background: '#ff4f4f',
     },
     props: { logo: '/logo.svg' },
     app: React.lazy(() => import('./HiLo')),
@@ -79,10 +79,23 @@ export const GAMES: GameBundle[] = [
       name: 'Roulette',
       image: '/games/roulette.png',
       description: `
-        A miniature version of Roulette. WYSIWYG!
+        Roulette brings the classic wheel-spinning game to life with a digital twist. Bet on where the ball will land and watch as the wheel decides your fate. With straightforward rules and the chance for big wins, Roulette is a timeless game of chance.
       `,
       background: '#1de87e',
     },
     app: React.lazy(() => import('./Roulette')),
+  },
+  {
+    id: 'plinko',
+    meta: {
+      background: '#7272ff',
+      image: '/games/plinko.png',
+      name: 'Plinko',
+      description: `
+        Plinko is played by dropping chips down a pegged board where they randomly fall into slots with varying win amounts. Each drop is a mix of anticipation and strategy, making Plinko an endlessly entertaining game of chance.
+        ⚠️ Under development. Results shown might be incorrect. ⚠️
+      `,
+    },
+    app: React.lazy(() => import('./Plinko')),
   },
 ]

@@ -65,7 +65,7 @@ export default function Plinko() {
 
   const play = async () => {
     await game.play({ wager, bet })
-    const result = await gamba.result()
+    const result = await game.result()
     plinko.reset()
     plinko.run(result.multiplier)
   }
@@ -175,6 +175,7 @@ export default function Plinko() {
                     ctx.miterLimit = 2
                     const brightness = 75 + animation * 25
                     ctx.fillStyle = 'hsla(' + bucketHue + ', 75%, ' + brightness + '%, 1)'
+                    ctx.beginPath()
                     ctx.strokeText('x' + body.plugin.bucketMultiplier, 0, 0)
                     ctx.stroke()
                     ctx.fillText('x' + body.plugin.bucketMultiplier, 0, 0)

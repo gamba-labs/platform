@@ -1,5 +1,6 @@
 import React from 'react'
 import { Icon } from './Icon'
+import useOutsideClick from '../hooks/useOnClickOutside'
 import styled from 'styled-components'
 
 interface Props extends React.PropsWithChildren {
@@ -26,7 +27,7 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
   z-index: 100;
-  max-width: min(100%, 400px);
+  max-width: min(100%, 460px);
   border-radius: 10px;
   background: #15151f;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
@@ -91,10 +92,25 @@ const StyledModal = styled.div`
 `
 
 export function Modal({ children, onClose }: Props) {
+  React.useEffect(
+    () => {
+      const oldValue = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = oldValue
+      }
+    },
+    [],
+  )
+
+  const ref = React.useRef<HTMLDivElement>(null!)
+
+  useOutsideClick(ref, () => onClose && onClose())
+
   return (
     <StyledModal>
       <Container>
-        <Wrapper>
+        <Wrapper ref={ref}>
           {onClose && (
             <button className="close" onClick={onClose}>
               <Icon.Close2 />

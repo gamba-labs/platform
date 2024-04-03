@@ -110,7 +110,7 @@ export default function HiLo(props: HiLoConfig) {
       wager,
     })
 
-    const result = await gamba.result()
+    const result = await game.result()
     addCard(result.resultIndex)
     sounds.play('card', { playbackRate: .8 })
     const win = result.payout > 0

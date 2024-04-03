@@ -49,6 +49,16 @@ export const StyledSlots = styled.div`
       color: #ffec63;
     }
   }
+  @keyframes result-flash-2 {
+    0%, 50% {
+      background-color: #ffec6388;
+      filter: brightness(2.5) contrast(1.5) saturate(10);
+    }
+    100% {
+      background-color: #ffec6300;
+      filter: brightness(1) contrast(1);
+    }
+  }
 
   .result {
     border: none;

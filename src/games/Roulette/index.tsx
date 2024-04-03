@@ -102,7 +102,7 @@ export default function Roulette() {
       wager,
     })
     sounds.play('play')
-    const result = await gamba.result()
+    const result = await game.result()
     addResult(result.resultIndex)
     if (result.payout > 0) {
       sounds.play('win')

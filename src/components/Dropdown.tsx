@@ -11,6 +11,7 @@ const Wrapper = styled.div<{$visible: boolean, $anchor: 'top' | 'bottom'}>`
   color: white;
   min-width: 100%;
   white-space: nowrap;
+  min-width: max-content;
   ${(props) => props.$visible && css`
     opacity: 1;
     transform: translateY(0px)!important;

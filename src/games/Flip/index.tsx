@@ -50,7 +50,7 @@ function Flip() {
 
       sounds.play('coin')
 
-      const result = await gamba.result()
+      const result = await game.result()
 
       const win = result.payout > 0
 
@@ -104,7 +104,8 @@ function Flip() {
         </Canvas>
       </GambaUi.Portal>
       <GambaUi.Portal target="controls">
-        <GambaUi.WagerSelect
+        <GambaUi.WagerInput
+          type="select"
           options={WAGER_OPTIONS}
           value={wager}
           onChange={setWager}

@@ -3,7 +3,7 @@ export { default as SOUND_LOSE } from './lose.mp3'
 export { default as SOUND_PLAY } from './play.mp3'
 export { default as SOUND_WIN } from './win.mp3'
 
-export const CHIPS = [1, 2, 10]
+export const CHIPS = [1, 2, 10, 50]
 export const NUMBERS = 18
 export const NUMBER_COLUMNS = Math.ceil(NUMBERS / 3)
 

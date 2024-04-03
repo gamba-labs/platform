@@ -5,6 +5,7 @@
 :root {
   --background-color: #0b0b0e;
   --text-color: #ffffff;
+  --gamba-ui-primary-color: #9564ff;
 
   --gamba-ui-border-radius: 10px;
 
@@ -13,6 +14,7 @@
   --gamba-ui-button-default-color: white;
 
   --gamba-ui-button-main-background: #8851ff;
+  --gamba-ui-button-main-color: white;
   --gamba-ui-button-main-background-hover: #9564ff;
 
   --gamba-ui-input-background: #0e0e16;
@@ -49,7 +51,7 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #9564ff;
+  background-color: var(--gamba-ui-primary-color);
 }
 
 .wallet-adapter-button.wallet-adapter-button-trigger {
