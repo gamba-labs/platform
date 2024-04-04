@@ -28,4 +28,4 @@ Simply fork the repository, supply your own wallet address, and begin collecting
 
 [Discord](https://discord.com/invite/xjBsW3e8fK)
 
-[NextJS version by @BankkRoll](https://github.com/BankkRoll/Gamba-V2-Next.js)
+[NextJS version by BankkRoll](https://github.com/BankkRoll/Gamba-V2-Next.js)

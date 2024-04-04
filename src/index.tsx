@@ -8,7 +8,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
-import { DEFAULT_POOL, PLATFORM_CREATOR_ADDRESS, RPC_ENDPOINT, TOKEN_METADATA, TOKEN_METADATA_FETCHER } from './constants'
+import { DEFAULT_POOL, PLATFORM_CREATOR_ADDRESS, PLATFORM_CREATOR_FEE, PLATFORM_JACKPOT_FEE, RPC_ENDPOINT, TOKEN_METADATA, TOKEN_METADATA_FETCHER } from './constants'
 import './styles.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
@@ -31,18 +31,16 @@ function Root() {
         <WalletProvider autoConnect wallets={wallets}>
           <WalletModalProvider>
             <TokenMetaProvider
-              // A method for fetching token metadata
-              fetcher={TOKEN_METADATA_FETCHER}
-              // List of known token metadata
               tokens={TOKEN_METADATA}
+              fetcher={TOKEN_METADATA_FETCHER}
             >
               <SendTransactionProvider priorityFee={400_201}>
                 <GambaProvider>
                   <GambaPlatformProvider
                     creator={PLATFORM_CREATOR_ADDRESS}
                     defaultPool={DEFAULT_POOL}
-                    defaultCreatorFee={0.01}
-                    defaultJackpotFee={0.001}
+                    defaultCreatorFee={PLATFORM_CREATOR_FEE}
+                    defaultJackpotFee={PLATFORM_JACKPOT_FEE}
                   >
                     <App />
                   </GambaPlatformProvider>

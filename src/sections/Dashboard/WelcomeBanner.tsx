@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { EXPLORER_URL } from '../../constants'
 
 const Buttons = styled.div`
   overflow: hidden;
@@ -108,7 +109,7 @@ export function WelcomeBanner() {
         </p>
       </div>
       <Buttons>
-        <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
+        <button onClick={() => window.open(EXPLORER_URL, '_blank')}>
           🚀 Add Liquidity
         </button>
         <button onClick={() => window.open('https://github.com/gamba-labs/gamba', '_blank')}>

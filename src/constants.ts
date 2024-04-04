@@ -1,18 +1,29 @@
 import { PublicKey } from '@solana/web3.js'
 import { FAKE_TOKEN_MINT, PoolToken, TokenMeta, makeHeliusTokenFetcher } from 'gamba-react-ui-v2'
 
-/** The address that will collect fees when somebody plays on this platform */
-export const PLATFORM_CREATOR_ADDRESS = new PublicKey('V2grJiwjs25iJYqumbHyKo5MTK7SFqZSdmoRaj8QWb9')
-
 // Get RPC from the .env file or default to the public RPC.
-export const RPC_ENDPOINT = import.meta.env.VITE_RPC_ENDPOINT ?? "https://api.mainnet-beta.solana.com"
+export const RPC_ENDPOINT = import.meta.env.VITE_RPC_ENDPOINT ?? 'https://api.mainnet-beta.solana.com'
 
-/** Appears in ShareModal */
+// Solana address that will receive fees when somebody plays on this platform
+export const PLATFORM_CREATOR_ADDRESS = new PublicKey(
+  'V2grJiwjs25iJYqumbHyKo5MTK7SFqZSdmoRaj8QWb9'
+)
+
+// Gamba explorer URL - Appears in RecentPlays
+export const EXPLORER_URL = `https://explorer.gamba.so/`;
+
+// Platform URL - Appears in ShareModal
 export const PLATFORM_SHARABLE_URL = 'play.gamba.so'
 
+// Creator fee (in %)
+export const PLATFORM_CREATOR_FEE = 0.05 // 5% (5/100 = 0.05)
+
+// Jackpot fee (in %)
+export const PLATFORM_JACKPOT_FEE = 0.01 // 1% (1/100 = 0.01)
+
 // Just a helper function
-const lp = (poolToken: PublicKey | string, poolAuthority?: PublicKey | string): PoolToken => ({
-  token: new PublicKey(poolToken),
+const lp = (tokenMint: PublicKey | string, poolAuthority?: PublicKey | string): PoolToken => ({
+  token: new PublicKey(tokenMint),
   authority: poolAuthority !== undefined ? new PublicKey(poolAuthority) : undefined,
 })
 
@@ -36,23 +47,8 @@ export const POOLS = [
 export const DEFAULT_POOL = POOLS[0]
 
 /**
- * A method for automatically fetching Token Metadata.
- * If we don't supply a fetcher method we manually add the metadata for each supported token in TOKEN_METADATA below.
- * Here we create a fetcher that uses Helius metadata API, if an API key exists as an Environment variable.
- */
-export const TOKEN_METADATA_FETCHER = (
-  () => {
-    if (import.meta.env.VITE_HELIUS_API_KEY) {
-      return makeHeliusTokenFetcher(
-        import.meta.env.VITE_HELIUS_API_KEY,
-        { dollarBaseWager: 1 },
-      )
-    }
-  }
-)()
-
-/**
  * List of token metadata for the supported tokens
+ * Alternatively, we can provide a fetcher method to automatically fetch metdata. See TOKEN_METADATA_FETCHER below.
  */
 export const TOKEN_METADATA: (Partial<TokenMeta> & {mint: PublicKey})[] = [
   {
@@ -74,3 +70,18 @@ export const TOKEN_METADATA: (Partial<TokenMeta> & {mint: PublicKey})[] = [
     usdPrice: 0,
   },
 ]
+
+/**
+ * A method for automatically fetching Token Metadata.
+ * Here we create a fetcher that uses Helius metadata API, if an API key exists as an environment variable.
+ */
+export const TOKEN_METADATA_FETCHER = (
+  () => {
+    if (import.meta.env.VITE_HELIUS_API_KEY) {
+      return makeHeliusTokenFetcher(
+        import.meta.env.VITE_HELIUS_API_KEY,
+        { dollarBaseWager: 1 },
+      )
+    }
+  }
+)()
