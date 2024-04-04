@@ -1,10 +1,20 @@
-# Gamba Demo
+# Gamba Platform
 
-> This is a mirrored repo from the [gamba monorepo](https://github.com/gamba-labs/gamba/tree/main/apps/demo).
+> This is a mirrored repo from the [Gamba monorepo](https://github.com/gamba-labs/gamba/tree/main/apps/demo).
 
-A demo frontend featuring multiple casino games built on Gamba.
+An easily customizable Solana casino template featuring multiple on-chain games.
 
-Simply provide your own wallet address to the `<Gamba />` provider and start collecting fees on every bet made on your platform.
+Simply fork the repository, supply your own wallet address, and begin collecting fees on every bet made via your frontend. No liquidity is needed from your end as it is already provided on Gamba.
+
+![Preview](https://github.com/gamba-labs/platform/assets/128392411/1d0fe906-c0e7-4a8d-aa2f-365cf7d3f8f5)
+
+## Features
+
+* Multiple customizable on-chain arcade games
+
+* Custom SPL tokens
+
+* Provably fair results
 
 ## Quick Setup
 
@@ -12,4 +22,10 @@ Simply provide your own wallet address to the `<Gamba />` provider and start col
 
 2. [Connect your forked repo and deploy on Vercel](https://vercel.com/new).
 
-3. Set up your Environment variables in the .env file. (Use .env.example as reference)
+3. Update the values in src/constants.ts
+
+## More
+
+[Discord](https://discord.com/invite/xjBsW3e8fK)
+
+[NextJS version by @BankkRoll](https://github.com/BankkRoll/Gamba-V2-Next.js)

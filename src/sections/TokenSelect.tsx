@@ -1,6 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
 import { FAKE_TOKEN_MINT, GambaPlatformContext, GambaUi, PoolToken, TokenValue, useCurrentToken, useTokenBalance, useTokenMeta } from 'gamba-react-ui-v2'
-import { useGamba } from 'gamba-react-v2'
 import React from 'react'
 import styled from 'styled-components'
 import { Dropdown } from '../components/Dropdown'
