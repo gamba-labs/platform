@@ -184,9 +184,24 @@ function CustomRenderer() {
           </Splash>
           <GambaUi.PortalTarget target="error" />
           {ready && <GambaUi.PortalTarget target="screen" />}
-          <div style={{ position: 'absolute', bottom: '0', left: 0, width: '100%', padding: '10px' }}>
+          <div style={{
+            position: 'absolute',
+            bottom: '0',
+            left: 0,
+            width: '100%',
+            padding: '10px',
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'left',
+          }}>
             <IconButton onClick={() => audioStore.set(audioStore.masterGain ? 0 : .5)}>
               {audioStore.masterGain ? '🔈' : '🔇'}
+            </IconButton>
+            <IconButton onClick={() => setInfo(true)}>
+              <Icon.Info />
+            </IconButton>
+            <IconButton onClick={() => setProvablyFair(true)}>
+              <Icon.Fairness />
             </IconButton>
           </div>
         </Screen>
@@ -201,12 +216,7 @@ function CustomRenderer() {
                   <Spinner />
                 )}
               </IconButton> */}
-              <IconButton onClick={() => setInfo(true)}>
-                <Icon.Info />
-              </IconButton>
-              <IconButton onClick={() => setProvablyFair(true)}>
-                <Icon.Fairness />
-              </IconButton>
+             
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <GambaUi.PortalTarget target="controls" />
