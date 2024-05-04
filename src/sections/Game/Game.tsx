@@ -194,30 +194,29 @@ function CustomRenderer() {
             justifyContent: 'left',
             alignItems: 'left',
           }}>
-            <IconButton onClick={() => audioStore.set(audioStore.masterGain ? 0 : .5)}>
-              {audioStore.masterGain ? '🔈' : '🔇'}
-            </IconButton>
             <IconButton onClick={() => setInfo(true)}>
               <Icon.Info />
             </IconButton>
             <IconButton onClick={() => setProvablyFair(true)}>
               <Icon.Fairness />
             </IconButton>
+            <IconButton onClick={() => audioStore.set(audioStore.masterGain ? 0 : .5)}>
+              {audioStore.masterGain ? '🔈' : '🔇'}
+            </IconButton>
           </div>
         </Screen>
         <LoadingBar />
         <Controls>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <div style={{ display: 'flex' }}>
-              {/* <IconButton onClick={() => setTransactionModal(true)}>
+            {/* <div style={{ display: 'flex' }}>
+              <IconButton onClick={() => setTransactionModal(true)}>
                 {loading === -1 ? (
                   <Icon.Shuffle />
                 ) : (
                   <Spinner />
                 )}
-              </IconButton> */}
-             
-            </div>
+              </IconButton>
+            </div> */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <GambaUi.PortalTarget target="controls" />
               <GambaUi.PortalTarget target="play" />
