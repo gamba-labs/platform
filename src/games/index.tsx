@@ -98,4 +98,16 @@ export const GAMES: GameBundle[] = [
     },
     app: React.lazy(() => import('./Plinko')),
   },
+  {
+    id: 'crash',
+    meta: {
+      background: '#de95e8',
+      image: '/games/crash.png',
+      name: 'Crash',
+      description: `
+      Predict a multiplier target and watch a rocket attempt to reach it. If the rocket crashes before the target, the player loses; if it reaches or exceeds the target, the player wins.
+      `,
+    },
+    app: React.lazy(() => import('./CrashGame')),
+  },
 ]
