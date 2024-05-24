@@ -131,6 +131,18 @@ export const Controls = styled.div`
   }
 `
 
+export const MetaControls = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  z-index: 6;
+`
+
 export const spinnerAnimation = keyframes`
   from {
     transform: rotate(0deg);

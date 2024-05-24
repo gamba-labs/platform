@@ -1,17 +1,18 @@
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
+import { GambaUi } from 'gamba-react-ui-v2'
 import { useTransactionError } from 'gamba-react-v2'
 import React from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Modal } from './components/Modal'
-import { StyledSection } from './components/Slider'
 import { useToast } from './hooks/useToast'
+import { useUserStore } from './hooks/useUserStore'
 import Dashboard from './sections/Dashboard/Dashboard'
 import Game from './sections/Game/Game'
 import Header from './sections/Header'
 import RecentPlays from './sections/RecentPlays/RecentPlays'
 import Toasts from './sections/Toasts'
-import { useUserStore } from './hooks/useUserStore'
-import { GambaUi } from 'gamba-react-ui-v2'
+import { MainWrapper, TosInner, TosWrapper } from './styles'
+import { TOS_HTML } from './constants'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -30,7 +31,7 @@ function ErrorHandler() {
         walletModal.setVisible(true)
         return
       }
-      toast({ title: '❌ Transaction error', description: error?.error?.errorMessage ?? error.message })
+      toast({ title: '❌ Transaction error', description: error.error?.errorMessage ?? error.message })
     },
   )
 
@@ -54,20 +55,9 @@ export default function App() {
       {newcomer && (
         <Modal>
           <h1>Welcome</h1>
-          <div style={{ position: 'relative' }}>
-            <div style={{ maxHeight: '400px', padding: '10px', overflow: 'auto', position: 'relative' }}>
-              <p><b>1. Age Requirement:</b> Must be at least 18 years old.</p>
-              <p><b>2. Legal Compliance:</b> Follow local laws responsibly.</p>
-              <p><b>3. Risk Acknowledgement:</b> Games involve risk; no guaranteed winnings.</p>
-              <p><b>4. No Warranty:</b> Games provided "as is"; operate randomly.</p>
-              <p><b>5. Limitation of Liability:</b> We're not liable for damages.</p>
-              <p><b>6. Licensing Disclaimer:</b> Not a licensed casino; for simulation only.</p>
-              <p><b>7. Fair Play:</b> Games are conducted fairly and transparently.</p>
-              <p><b>8. Data Privacy:</b> Your privacy is important to us.</p>
-              <p><b>9. Responsible Gaming:</b> Play responsibly; seek help if needed.</p>
-            </div>
-            <div style={{ background: 'linear-gradient(180deg, transparent, #15151f)', height: '50px', pointerEvents: 'none', width: '100%', position: 'absolute', bottom: '0px', left: '0px' }}></div>
-          </div>
+          <TosWrapper>
+            <TosInner dangerouslySetInnerHTML={{ __html: TOS_HTML }} />
+          </TosWrapper>
           <p>
             By playing on our platform, you confirm your compliance.
           </p>
@@ -80,14 +70,14 @@ export default function App() {
       <ErrorHandler />
       <Header />
       <Toasts />
-      <StyledSection>
+      <MainWrapper>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/:gameId" element={<Game />} />
         </Routes>
         <h2 style={{ textAlign: 'center' }}>Recent Plays</h2>
         <RecentPlays />
-      </StyledSection>
+      </MainWrapper>
     </>
   )
 }

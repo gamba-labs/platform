@@ -4,17 +4,19 @@
 
 An easily customizable Solana casino template featuring multiple on-chain games.
 
-Simply fork the repository, supply your own wallet address, and begin collecting fees on every bet made via your frontend. No liquidity is needed from your end as it is already provided on Gamba.
+Simply fork the repository, provide your own Solana address, and begin collecting fees on every bet made via your frontend. No liquidity is needed from your end as it is already provided on Gamba.
 
 ![Preview](https://github.com/gamba-labs/platform/assets/128392411/1d0fe906-c0e7-4a8d-aa2f-365cf7d3f8f5)
 
 ## Features
 
-* Multiple customizable on-chain arcade games
+* Multiple customizable on-chain games
 
 * Custom SPL tokens
 
 * Provably fair results
+
+* Bonuses
 
 ## Quick Setup
 

@@ -35,12 +35,17 @@ function Root() {
               fetcher={TOKEN_METADATA_FETCHER}
             >
               <SendTransactionProvider priorityFee={400_201}>
-                <GambaProvider>
+                <GambaProvider
+                  __experimental_plugins={[
+                    // Custom fee (1%)
+                    // createCustomFeePlugin('<SOLANA ADDRESS>', .01),
+                  ]}
+                >
                   <GambaPlatformProvider
                     creator={PLATFORM_CREATOR_ADDRESS}
-                    defaultPool={DEFAULT_POOL}
                     defaultCreatorFee={PLATFORM_CREATOR_FEE}
                     defaultJackpotFee={PLATFORM_JACKPOT_FEE}
+                    defaultPool={DEFAULT_POOL}
                   >
                     <App />
                   </GambaPlatformProvider>

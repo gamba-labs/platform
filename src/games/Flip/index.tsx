@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import { GambaUi, useCurrentToken, useSound } from 'gamba-react-ui-v2'
+import { GambaUi, useSound } from 'gamba-react-ui-v2'
 import { useGamba } from 'gamba-react-v2'
 import React from 'react'
 import { Coin, TEXTURE_HEADS, TEXTURE_TAILS } from './Coin'
@@ -13,20 +13,17 @@ const SIDES = {
   heads: [2, 0],
   tails: [0, 2],
 }
+const WAGER_OPTIONS = [1, 5, 10, 50, 100]
 
 type Side = keyof typeof SIDES
 
 function Flip() {
   const game = GambaUi.useGame()
-  const token = useCurrentToken()
   const gamba = useGamba()
   const [flipping, setFlipping] = React.useState(false)
   const [win, setWin] = React.useState(false)
   const [resultIndex, setResultIndex] = React.useState(0)
   const [side, setSide] = React.useState<Side>('heads')
-
-  const WAGER_OPTIONS = [1, 5, 10, 50, 100].map((x) => x * token.baseWager)
-
   const [wager, setWager] = React.useState(WAGER_OPTIONS[0])
 
   const sounds = useSound({
@@ -105,7 +102,6 @@ function Flip() {
       </GambaUi.Portal>
       <GambaUi.Portal target="controls">
         <GambaUi.WagerInput
-          type="select"
           options={WAGER_OPTIONS}
           value={wager}
           onChange={setWager}

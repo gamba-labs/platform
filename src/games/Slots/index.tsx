@@ -1,6 +1,6 @@
 import { GameResult } from 'gamba-core-v2'
 import { EffectTest, GambaUi, TokenValue, useCurrentPool, useSound, useWagerInput } from 'gamba-react-ui-v2'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { ItemPreview } from './ItemPreview'
 import { Slot } from './Slot'
 import { StyledSlots } from './Slots.styles'
@@ -21,14 +21,14 @@ import {
 } from './constants'
 import { generateBetArray, getSlotCombination } from './utils'
 
-const Messages: React.FC<{messages: string[]}> = ({ messages }) => {
+function Messages({ messages }: {messages: string[]}) {
   const [messageIndex, setMessageIndex] = React.useState(0)
   React.useEffect(
     () => {
       const timeout = setInterval(() => {
         setMessageIndex((x) => (x + 1) % messages.length)
       }, 2500)
-      return () => clearTimeout(timeout)
+      return () => clearInterval(timeout)
     },
     [messages],
   )
@@ -51,7 +51,6 @@ export default function Slots() {
   const [combination, setCombination] = React.useState(
     Array.from({ length: NUM_SLOTS }).map(() => SLOT_ITEMS[0]),
   )
-
   const sounds = useSound({
     win: SOUND_WIN,
     lose: SOUND_LOSE,
@@ -60,13 +59,23 @@ export default function Slots() {
     spin: SOUND_SPIN,
     play: SOUND_PLAY,
   })
-
   const bet = React.useMemo(
     () => generateBetArray(pool.maxPayout, wager),
     [pool.maxPayout, wager],
   )
+  const timeout = useRef<any>()
 
-  const valid = bet.some((x) => x > 1)
+  const isValid = bet.some((x) => x > 1)
+
+  useEffect(
+    () => {
+      // Clear timeout when user leaves
+      return () => {
+        timeout.current && clearTimeout(timeout.current)
+      }
+    },
+    [],
+  )
 
   const revealSlot = (combination: SlotItem[], slot = 0) => {
     sounds.play('reveal', { playbackRate: 1.1 })
@@ -81,9 +90,16 @@ export default function Slots() {
 
     setRevealedSlots(slot + 1)
 
-    if (slot === NUM_SLOTS - 1) {
+    if (slot < NUM_SLOTS - 1) {
+      // Reveal next slot
+      timeout.current = setTimeout(
+        () => revealSlot(combination, slot + 1),
+        REVEAL_SLOT_DELAY,
+      )
+    } else if (slot === NUM_SLOTS - 1) {
+      // Show final results
       sounds.sounds.spin.player.stop()
-      setTimeout(() => {
+      timeout.current = setTimeout(() => {
         setSpinning(false)
         if (allSame) {
           setGood(true)
@@ -92,10 +108,6 @@ export default function Slots() {
           sounds.play('lose')
         }
       }, FINAL_DELAY)
-    }
-
-    if (slot < NUM_SLOTS - 1) {
-      setTimeout(() => revealSlot(combination, slot + 1), REVEAL_SLOT_DELAY)
     }
   }
 
@@ -130,7 +142,7 @@ export default function Slots() {
 
       setResult(result)
 
-      setTimeout(() => revealSlot(combination), revealDelay)
+      timeout.current = setTimeout(() => revealSlot(combination), revealDelay)
     } catch (err) {
       // Reset if there's an error
       setSpinning(false)
@@ -170,7 +182,7 @@ export default function Slots() {
                   <>
                     Payout: <TokenValue mint={result.token} amount={result.payout} />
                   </>
-                ) : valid ? (
+                ) : isValid ? (
                   <Messages
                     messages={[
                       'SPIN ME!',
@@ -189,7 +201,7 @@ export default function Slots() {
       </GambaUi.Portal>
       <GambaUi.Portal target="controls">
         <GambaUi.WagerInput value={wager} onChange={setWager} />
-        <GambaUi.PlayButton disabled={!valid} onClick={play}>
+        <GambaUi.PlayButton disabled={!isValid} onClick={play}>
           Spin
         </GambaUi.PlayButton>
       </GambaUi.Portal>
