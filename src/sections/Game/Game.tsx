@@ -97,7 +97,7 @@ function CustomRenderer() {
               <Icon.Fairness />
             </IconButton>
             <IconButton onClick={() => soundStore.set(soundStore.volume ? 0 : .5)}>
-              {soundStore.volume ? '🔈' : '🔇'}
+              {soundStore.volume ? <Icon.Volume /> : <Icon.VolumeMuted />}
             </IconButton>
           </MetaControls>
         </Screen>

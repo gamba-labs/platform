@@ -8,7 +8,6 @@ import { generateGrid, revealAllMines, revealGold } from './utils'
 
 function Mines() {
   const game = GambaUi.useGame()
-  const gamba = useGamba()
   const sounds = useSound({
     tick: SOUND_TICK,
     win: SOUND_WIN,
