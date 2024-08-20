@@ -23,6 +23,7 @@ export default function Dice() {
     rollUnderIndex: Math.floor(DICE_SIDES / 2),
     consecutiveWins: 0,
     isDoubleOrNothing: false,
+    lastWin: false,
   })
   const sounds = useSound({
     win: SOUND_WIN,
@@ -60,21 +61,26 @@ export default function Dice() {
       const result = await game.result()
 
       setGameState(prevState => {
-        const newState = { ...prevState, resultIndex: result.resultIndex, isDoubleOrNothing: false }
-        if (result.resultIndex < prevState.rollUnderIndex) {
-          sounds.play('win')
-          newState.consecutiveWins = prevState.consecutiveWins + 1
-        } else {
-          sounds.play('lose')
-          newState.consecutiveWins = 0
+        const isWin = result.resultIndex < prevState.rollUnderIndex
+        return {
+          ...prevState,
+          resultIndex: result.resultIndex,
+          isDoubleOrNothing: false,
+          consecutiveWins: isWin ? prevState.consecutiveWins + 1 : 0,
+          lastWin: isWin,
         }
-        return newState
       })
+
+      if (result.resultIndex < gameState.rollUnderIndex) {
+        sounds.play('win')
+      } else {
+        sounds.play('lose')
+      }
     } catch (error) {
       console.error("Error during play:", error)
       // Handle error (e.g., show error message to user)
     }
-  }, [game, wager, bet, gameState.isDoubleOrNothing, sounds])
+  }, [game, wager, bet, gameState.isDoubleOrNothing, gameState.rollUnderIndex, sounds])
 
   const handleDoubleOrNothing = React.useCallback(() => {
     setGameState(prevState => ({
@@ -88,6 +94,13 @@ export default function Dice() {
     setGameState(prevState => ({ ...prevState, rollUnderIndex: value }))
     sounds.play('tick')
   }, [sounds])
+
+  React.useEffect(() => {
+    if (gameState.lastWin) {
+      // Any additional actions after a win can be placed here
+      console.log("Win detected! Consecutive wins:", gameState.consecutiveWins)
+    }
+  }, [gameState.lastWin, gameState.consecutiveWins])
 
   return (
     <>
@@ -145,7 +158,7 @@ export default function Dice() {
         <GambaUi.PlayButton onClick={play} disabled={gamba.isPlaying}>
           {gameState.isDoubleOrNothing ? 'Double or Nothing!' : 'Roll'}
         </GambaUi.PlayButton>
-        {gameState.resultIndex > -1 && gameState.resultIndex < gameState.rollUnderIndex && !gameState.isDoubleOrNothing && (
+        {gameState.lastWin && !gameState.isDoubleOrNothing && (
           <GambaUi.Button onClick={handleDoubleOrNothing} disabled={gamba.isPlaying}>
             Double or Nothing
           </GambaUi.Button>
