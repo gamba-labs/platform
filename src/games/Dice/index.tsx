@@ -78,7 +78,7 @@ const RacingGame = () => {
             <div key={index} style={{ margin: '10px 0' }}>
               {racer} {'-'.repeat(raceProgress[index])}
               {index === winner && '🏆'}
-              {index === selectedRacer && ' (Your bet)'}
+              {index === selectedRacer && '💰'}
             </div>
           ))}
           {raceStatus === 'won' && <div style={{ color: 'green' }}>You won! 🎉</div>}
