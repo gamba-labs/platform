@@ -1,5 +1,4 @@
 import React from 'react'
-import { GambaUi } from 'gamba-react-ui-v2'
 import { useGamba } from 'gamba-react-v2'
 
 const LANES = 4
@@ -13,30 +12,31 @@ const BETS = {
   '3': [0, 0, 0, 3.5],
 }
 
-function MinimalRacingGame() {
-  const game = GambaUi.useGame()
+function BasicRacingGame() {
   const gamba = useGamba()
   const [wager, setWager] = React.useState(WAGER_OPTIONS[0])
   const [selectedLane, setSelectedLane] = React.useState(0)
   const [result, setResult] = React.useState(null)
+  const [error, setError] = React.useState(null)
 
   const play = async () => {
     try {
+      setError(null)
       setResult(null)
-      await game.play({
+      const result = await gamba.play({
         bet: BETS[selectedLane.toString()],
         wager,
       })
-      const gameResult = await game.result()
-      setResult(gameResult)
-    } catch (error) {
-      console.error("Error during play:", error)
+      setResult(result)
+    } catch (err) {
+      console.error("Error during play:", err)
+      setError(err.message)
     }
   }
 
   return (
     <div>
-      <h2>Minimal Racing Game</h2>
+      <h2>Basic Racing Game</h2>
       <div>
         {SYMBOLS.map((symbol, index) => (
           <button 
@@ -50,22 +50,23 @@ function MinimalRacingGame() {
       </div>
       <div>Selected: {SYMBOLS[selectedLane]}</div>
       <div>Balance: {gamba.balance.toString()}</div>
-      <GambaUi.WagerInput
-        options={WAGER_OPTIONS}
-        value={wager}
-        onChange={setWager}
-      />
-      <GambaUi.PlayButton onClick={play}>
+      <select value={wager} onChange={(e) => setWager(Number(e.target.value))}>
+        {WAGER_OPTIONS.map((option) => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+      <button onClick={play} disabled={gamba.isPlaying}>
         Play
-      </GambaUi.PlayButton>
+      </button>
       {result && (
         <div>
           Result: {result.payout > 0 ? 'Win!' : 'Lose'} 
           (Lane: {result.resultIndex + 1})
         </div>
       )}
+      {error && <div style={{color: 'red'}}>Error: {error}</div>}
     </div>
   )
 }
 
-export default MinimalRacingGame
+export default BasicRacingGame
