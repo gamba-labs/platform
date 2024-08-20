@@ -1,6 +1,5 @@
 import React from 'react'
-import { BPS_PER_WHOLE } from 'gamba-core-v2'
-import { GambaUi, TokenValue, useCurrentPool, useSound, useWagerInput } from 'gamba-react-ui-v2'
+import { GambaUi, useSound } from 'gamba-react-ui-v2'
 import { useGamba } from 'gamba-react-v2'
 import styled from 'styled-components'
 import { SOUND_LOSE, SOUND_PLAY, SOUND_WIN } from './constants'
@@ -8,14 +7,15 @@ import { SOUND_LOSE, SOUND_PLAY, SOUND_WIN } from './constants'
 const LANES = 4
 const SYMBOLS = ['!', '?', '$', '%']
 const RACE_DURATION = 4000 // 4 seconds in milliseconds
-const MULTIPLIER = 3.5 // Fixed multiplier for winning
+const MULTIPLIER = 3.5
 
-const CompactContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+// Correct bet array as per Gamba documentation
+const BET_ARRAY = [3.5, 0, 0, 0]
+
+const Container = styled.div`
   max-width: 400px;
   margin: 0 auto;
+  padding: 20px;
 `
 
 const RaceTrack = styled.div`
@@ -43,11 +43,24 @@ const Symbol = styled.div`
   transition: left 0.05s linear;
 `
 
+const Result = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.7);
+  color: white;
+  font-size: 24px;
+`
+
 function RacingGame() {
   const game = GambaUi.useGame()
   const gamba = useGamba()
-  const [wager, setWager] = useWagerInput()
-  const pool = useCurrentPool()
+  const [wager, setWager] = React.useState(1)
   const [selectedLane, setSelectedLane] = React.useState(0)
   const [raceProgress, setRaceProgress] = React.useState(Array(LANES).fill(0))
   const [isRacing, setIsRacing] = React.useState(false)
@@ -59,12 +72,6 @@ function RacingGame() {
     win: SOUND_WIN,
     lose: SOUND_LOSE,
   })
-
-  const bet = React.useMemo(() => {
-    const betArray = Array(LANES).fill(0)
-    betArray[selectedLane] = Number((BigInt(MULTIPLIER * BPS_PER_WHOLE) / BigInt(LANES)) * BigInt(BPS_PER_WHOLE) / BigInt(BPS_PER_WHOLE))
-    return betArray
-  }, [selectedLane])
 
   const runRace = (winningLane) => {
     setIsRacing(true)
@@ -95,8 +102,14 @@ function RacingGame() {
       setRaceProgress(Array(LANES).fill(0))
       sounds.play('play')
 
+      // Use the correct bet array and adjust it based on the selected lane
+      const adjustedBetArray = [...BET_ARRAY]
+      if (selectedLane !== 0) {
+        adjustedBetArray.unshift(...adjustedBetArray.splice(selectedLane))
+      }
+
       await game.play({
-        bet,
+        bet: adjustedBetArray,
         wager,
       })
 
@@ -120,10 +133,8 @@ function RacingGame() {
     }
   }
 
-  const maxPayout = MULTIPLIER * wager
-
   return (
-    <CompactContainer>
+    <Container>
       <h2>Symbol Racing Game</h2>
       <RaceTrack>
         {[0, 1, 2, 3].map((lane) => (
@@ -138,36 +149,28 @@ function RacingGame() {
           </Lane>
         ))}
         {resultIndex > -1 && !isRacing && (
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,0.7)',
-              color: 'white',
-              fontSize: '24px',
-            }}
-          >
+          <Result>
             {win ? 'You Won!' : 'You Lost'}
-          </div>
+          </Result>
         )}
       </RaceTrack>
-      <div>Balance: <TokenValue amount={gamba.balance} /></div>
+      <div>Balance: {gamba.balance.toString()}</div>
       <div>Selected: {SYMBOLS[selectedLane]}</div>
-      <div>Max Payout: <TokenValue amount={maxPayout} /></div>
+      <div>Potential Win: {(wager * MULTIPLIER).toFixed(2)}</div>
       <GambaUi.WagerInput
         value={wager}
         onChange={setWager}
       />
+      <GambaUi.Button 
+        disabled={isRacing} 
+        onClick={() => setSelectedLane((selectedLane + 1) % LANES)}
+      >
+        Change Lane
+      </GambaUi.Button>
       <GambaUi.PlayButton onClick={play} disabled={gamba.isPlaying || isRacing}>
         Start Race
       </GambaUi.PlayButton>
-    </CompactContainer>
+    </Container>
   )
 }
 
