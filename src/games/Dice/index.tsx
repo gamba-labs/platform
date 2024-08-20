@@ -35,18 +35,28 @@ const RacingGame = () => {
       const raceWinner = result.resultIndex;
 
       // Simulate race progress based on the smart contract result
-      for (let i = 0; i < RACE_LENGTH; i++) {
+      for (let step = 0; step < RACE_LENGTH; step++) {
         await new Promise(resolve => setTimeout(resolve, 500));
-        setRaceProgress(prev => prev.map((p, idx) => {
-          if (idx === raceWinner) {
-            // Winner always progresses by 1
-            return Math.min(p + 1, RACE_LENGTH);
-          } else {
-            // Other racers have a chance to progress, but never overtake the winner
-            const maxProgress = Math.min(raceWinner === idx ? RACE_LENGTH : RACE_LENGTH - 1, p + 1);
-            return Math.random() < 0.7 ? maxProgress : p;
+        setRaceProgress(prev => {
+          const newProgress = [...prev];
+          const maxProgressThisStep = step + 1;
+
+          // Ensure the winner is always in the lead or tied for the lead
+          newProgress[raceWinner] = maxProgressThisStep;
+
+          // Update other racers
+          for (let i = 0; i < newProgress.length; i++) {
+            if (i !== raceWinner) {
+              // Other racers progress randomly but never surpass the winner
+              newProgress[i] = Math.min(
+                newProgress[i] + (Math.random() < 0.7 ? 1 : 0),
+                maxProgressThisStep - 1
+              );
+            }
           }
-        }));
+
+          return newProgress;
+        });
       }
 
       setWinner(raceWinner);
@@ -65,7 +75,7 @@ const RacingGame = () => {
           {RACERS.map((racer, index) => (
             <div key={index} style={{ margin: '10px 0' }}>
               {racer} {'-'.repeat(raceProgress[index])}
-              {raceProgress[index] === RACE_LENGTH && '🏆'}
+              {index === winner && '🏆'}
             </div>
           ))}
           {raceStatus === 'won' && <div style={{ color: 'green' }}>You won! 🎉</div>}
