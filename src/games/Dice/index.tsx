@@ -5,7 +5,6 @@ import { useGamba } from 'gamba-react-v2';
 const RACE_LENGTH = 10;
 const WAGER_OPTIONS = [1, 5, 10, 50, 100];
 const RACERS = ['🚗', '🏎️', '🚙', '🚓'];
-
 // Fair bet array with varied odds
 const BET_ARRAY = [0, 0, 0, 4];
 
@@ -32,7 +31,7 @@ const RacingGame = () => {
       });
 
       const result = await game.result();
-      const raceWinner = result.resultIndex;
+      const raceWinner = result.payout > 0 ? selectedRacer : result.resultIndex;
 
       // Simulate race progress
       for (let i = 0; i < RACE_LENGTH; i++) {
