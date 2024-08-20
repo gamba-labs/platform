@@ -1,14 +1,20 @@
 import React from 'react'
-import { BPS_PER_WHOLE } from 'gamba-core-v2'
-import { GambaUi, TokenValue, useCurrentPool, useSound, useWagerInput } from 'gamba-react-ui-v2'
+import { GambaUi, useSound } from 'gamba-react-ui-v2'
 import { useGamba } from 'gamba-react-v2'
-import { SOUND_LOSE, SOUND_PLAY, SOUND_WIN } from './constants'
 import styled from 'styled-components'
+import { SOUND_LOSE, SOUND_PLAY, SOUND_WIN } from './constants'
 
 const LANES = 4
-const MULTIPLIER = 3.5 // Fixed multiplier for simplicity
-const RACE_DURATION = 4000 // 4 seconds in milliseconds
 const SYMBOLS = ['!', '?', '$', '%']
+const RACE_DURATION = 4000 // 4 seconds in milliseconds
+const WAGER_OPTIONS = [1, 5, 10, 50, 100]
+
+const BETS = {
+  '0': [3.5, 0, 0, 0],
+  '1': [0, 3.5, 0, 0],
+  '2': [0, 0, 3.5, 0],
+  '3': [0, 0, 0, 3.5],
+}
 
 const CompactContainer = styled.div`
   display: flex;
@@ -43,86 +49,74 @@ const Symbol = styled.div`
   transition: left 0.05s linear;
 `
 
-const Stats = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-`
-
-const StatItem = styled.div`
-  text-align: center;
-`
-
-const calculateOutcomes = () => {
-  const winProbability = 1 / LANES
-  const loseProbability = 1 - winProbability
-  
-  return Array(LANES).fill(0).map((_, index) => {
-    if (index === 0) {
-      // Winning outcome
-      return Number((BigInt(MULTIPLIER * BPS_PER_WHOLE) * BigInt(winProbability * BPS_PER_WHOLE)) / BigInt(BPS_PER_WHOLE))
-    } else {
-      // Losing outcomes
-      return Number((BigInt(loseProbability * BPS_PER_WHOLE) / BigInt(LANES - 1)))
-    }
-  })
-}
-
 function RacingGame() {
+  const game = GambaUi.useGame()
   const gamba = useGamba()
-  const [wager, setWager] = useWagerInput()
-  const pool = useCurrentPool()
-  const [resultIndex, setResultIndex] = React.useState(-1)
+  const [wager, setWager] = React.useState(WAGER_OPTIONS[0])
   const [selectedLane, setSelectedLane] = React.useState(0)
   const [raceProgress, setRaceProgress] = React.useState(Array(LANES).fill(0))
   const [isRacing, setIsRacing] = React.useState(false)
+  const [resultIndex, setResultIndex] = React.useState(-1)
+  const [win, setWin] = React.useState(false)
+  
   const sounds = useSound({
-    win: SOUND_WIN,
     play: SOUND_PLAY,
+    win: SOUND_WIN,
     lose: SOUND_LOSE,
   })
 
-  const bet = React.useMemo(() => calculateOutcomes(), [])
+  const runRace = (winningLane) => {
+    setIsRacing(true)
+    const startTime = Date.now()
+    const interval = setInterval(() => {
+      const elapsedTime = Date.now() - startTime
+      const progress = Math.min(elapsedTime / RACE_DURATION, 1)
+      
+      setRaceProgress(prevProgress => prevProgress.map((_, index) => {
+        if (index === winningLane) return progress
+        if (index === (winningLane + 1) % LANES) return Math.min(progress, 0.75)
+        if (index === (winningLane + 2) % LANES) return Math.min(progress, 0.5)
+        return Math.min(progress, 0.25)
+      }))
 
-  const maxWin = MULTIPLIER * wager
-
-  const game = GambaUi.useGame()
-
-  // ... [Keep the runRace function from the previous version] ...
+      if (progress >= 1) {
+        clearInterval(interval)
+        setIsRacing(false)
+      }
+    }, 50)
+  }
 
   const play = async () => {
-    sounds.play('play')
-    setResultIndex(-1)
-    setRaceProgress(Array(LANES).fill(0))
-
-    console.log("Current balance before bet:", gamba.balance)
-    console.log("Wager amount:", wager)
-    console.log("Bet array:", bet)
-
     try {
+      setWin(false)
+      setIsRacing(true)
+      setResultIndex(-1)
+      setRaceProgress(Array(LANES).fill(0))
+      sounds.play('play')
+
       await game.play({
+        bet: BETS[selectedLane.toString()],
         wager,
-        bet,
+        metadata: [selectedLane],
       })
 
       const result = await game.result()
-      console.log("Game result:", result)
-      
       runRace(result.resultIndex)
 
       setTimeout(() => {
         setResultIndex(result.resultIndex)
-        if (result.resultIndex === selectedLane) {
+        const win = result.payout > 0
+        setWin(win)
+        if (win) {
           sounds.play('win')
-          console.log("You won! Payout:", result.payout)
         } else {
           sounds.play('lose')
-          console.log("You lost.")
         }
-        console.log("New balance after bet:", gamba.balance)
       }, RACE_DURATION)
     } catch (error) {
       console.error("Error during play:", error)
+    } finally {
+      setIsRacing(false)
     }
   }
 
@@ -157,33 +151,24 @@ function RacingGame() {
               fontSize: '24px',
             }}
           >
-            {resultIndex === selectedLane ? 'You Won!' : 'You Lost'}
+            {win ? 'You Won!' : 'You Lost'}
           </div>
         )}
       </RaceTrack>
-      <Stats>
-        <StatItem>
-          <div>25%</div>
-          <div>Win Chance</div>
-        </StatItem>
-        <StatItem>
-          <div>{MULTIPLIER}x</div>
-          <div>Multiplier</div>
-        </StatItem>
-        <StatItem>
-          {maxWin > pool.maxPayout ? (
-            <div style={{ color: 'red' }}>Too high</div>
-          ) : (
-            <div><TokenValue suffix="" amount={maxWin} /></div>
-          )}
-          <div>Potential Win</div>
-        </StatItem>
-      </Stats>
-      <div>Balance: <TokenValue amount={gamba.balance} /></div>
-      <GambaUi.WagerInput value={wager} onChange={setWager} />
-      <GambaUi.PlayButton onClick={play} disabled={gamba.isPlaying || isRacing}>
-        Start Race
-      </GambaUi.PlayButton>
+      <div>Balance: {gamba.balance.toString()}</div>
+      <GambaUi.Portal target="controls">
+        <GambaUi.WagerInput
+          options={WAGER_OPTIONS}
+          value={wager}
+          onChange={setWager}
+        />
+        <GambaUi.Button disabled={gamba.isPlaying} onClick={() => setSelectedLane((selectedLane + 1) % LANES)}>
+          Selected: {SYMBOLS[selectedLane]}
+        </GambaUi.Button>
+        <GambaUi.PlayButton onClick={play}>
+          Start Race
+        </GambaUi.PlayButton>
+      </GambaUi.Portal>
     </CompactContainer>
   )
 }
