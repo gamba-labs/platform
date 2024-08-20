@@ -54,9 +54,18 @@ const StatItem = styled.div`
 `
 
 const calculateOutcomes = () => {
-  const payoutArray = Array(LANES).fill(MULTIPLIER)
-  const totalValue = payoutArray.reduce((p, x) => p + x, 0)
-  return payoutArray.map((x) => Number(BigInt(x * BPS_PER_WHOLE) / BigInt(totalValue) * BigInt(LANES)) / BPS_PER_WHOLE)
+  const winProbability = 1 / LANES
+  const loseProbability = 1 - winProbability
+  
+  return Array(LANES).fill(0).map((_, index) => {
+    if (index === 0) {
+      // Winning outcome
+      return Number((BigInt(MULTIPLIER * BPS_PER_WHOLE) * BigInt(winProbability * BPS_PER_WHOLE)) / BigInt(BPS_PER_WHOLE))
+    } else {
+      // Losing outcomes
+      return Number((BigInt(loseProbability * BPS_PER_WHOLE) / BigInt(LANES - 1)))
+    }
+  })
 }
 
 function RacingGame() {
@@ -79,48 +88,42 @@ function RacingGame() {
 
   const game = GambaUi.useGame()
 
-  const runRace = (winningLane) => {
-    setIsRacing(true)
-    const startTime = Date.now()
-    const interval = setInterval(() => {
-      const elapsedTime = Date.now() - startTime
-      const progress = Math.min(elapsedTime / RACE_DURATION, 1)
-      
-      setRaceProgress(prevProgress => prevProgress.map((_, index) => {
-        if (index === winningLane) return progress
-        if (index === (winningLane + 1) % LANES) return Math.min(progress, 0.75)
-        if (index === (winningLane + 2) % LANES) return Math.min(progress, 0.5)
-        return Math.min(progress, 0.25)
-      }))
-
-      if (progress >= 1) {
-        clearInterval(interval)
-        setIsRacing(false)
-      }
-    }, 50)
-  }
+  // ... [Keep the runRace function from the previous version] ...
 
   const play = async () => {
     sounds.play('play')
     setResultIndex(-1)
     setRaceProgress(Array(LANES).fill(0))
 
-    await game.play({
-      wager,
-      bet,
-    })
+    console.log("Current balance before bet:", gamba.balance)
+    console.log("Wager amount:", wager)
+    console.log("Bet array:", bet)
 
-    const result = await game.result()
-    runRace(result.resultIndex)
+    try {
+      await game.play({
+        wager,
+        bet,
+      })
 
-    setTimeout(() => {
-      setResultIndex(result.resultIndex)
-      if (result.resultIndex === selectedLane) {
-        sounds.play('win')
-      } else {
-        sounds.play('lose')
-      }
-    }, RACE_DURATION)
+      const result = await game.result()
+      console.log("Game result:", result)
+      
+      runRace(result.resultIndex)
+
+      setTimeout(() => {
+        setResultIndex(result.resultIndex)
+        if (result.resultIndex === selectedLane) {
+          sounds.play('win')
+          console.log("You won! Payout:", result.payout)
+        } else {
+          sounds.play('lose')
+          console.log("You lost.")
+        }
+        console.log("New balance after bet:", gamba.balance)
+      }, RACE_DURATION)
+    } catch (error) {
+      console.error("Error during play:", error)
+    }
   }
 
   return (
@@ -176,6 +179,7 @@ function RacingGame() {
           <div>Potential Win</div>
         </StatItem>
       </Stats>
+      <div>Balance: <TokenValue amount={gamba.balance} /></div>
       <GambaUi.WagerInput value={wager} onChange={setWager} />
       <GambaUi.PlayButton onClick={play} disabled={gamba.isPlaying || isRacing}>
         Start Race
