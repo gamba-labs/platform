@@ -8,23 +8,25 @@ import { Container, Result, RollUnder, Stats } from './styles'
 
 const DICE_SIDES = 100
 
-const calculateOutcomes = (length: number, multiplierCallback: (resultIndex: number) => number) => {
-  const payoutArray = Array.from({ length }, (_, resultIndex) => multiplierCallback(resultIndex))
+export const outcomes = (
+  length: number,
+  multiplierCallback: (resultIndex: number) => number | undefined,
+) => {
+  const payoutArray = Array.from({ length })
+    .map((_, resultIndex) => {
+      const payout = multiplierCallback(resultIndex) ?? 0
+      return payout
+    })
   const totalValue = payoutArray.reduce((p, x) => p + x, 0)
   return payoutArray.map((x) => Number(BigInt(x * BPS_PER_WHOLE) / BigInt(totalValue || 1) * BigInt(length)) / BPS_PER_WHOLE)
 }
 
-export default function Dice() {
+function Dice() {
   const gamba = useGamba()
   const [wager, setWager] = useWagerInput()
   const pool = useCurrentPool()
-  const [gameState, setGameState] = React.useState({
-    resultIndex: -1,
-    rollUnderIndex: Math.floor(DICE_SIDES / 2),
-    consecutiveWins: 0,
-    isDoubleOrNothing: false,
-    lastWin: false,
-  })
+  const [resultIndex, setResultIndex] = React.useState(-1)
+  const [rollUnderIndex, setRollUnderIndex] = React.useState(Math.floor(DICE_SIDES / 2))
   const sounds = useSound({
     win: SOUND_WIN,
     play: SOUND_PLAY,
@@ -32,138 +34,114 @@ export default function Dice() {
     tick: SOUND_TICK,
   })
 
-  const getMultiplier = React.useCallback((index: number) => {
-    let baseMultiplier = Number(BigInt(DICE_SIDES * BPS_PER_WHOLE) / BigInt(index)) / BPS_PER_WHOLE
-    baseMultiplier *= (1 + gameState.consecutiveWins * 0.1)
-    if (index === 7 || index === 77) {
-      baseMultiplier *= 2
-    }
-    return baseMultiplier
-  }, [gameState.consecutiveWins])
+  const multiplier = Number(BigInt(DICE_SIDES * BPS_PER_WHOLE) / BigInt(rollUnderIndex)) / BPS_PER_WHOLE
 
-  const multiplier = getMultiplier(gameState.rollUnderIndex)
-
-  const bet = React.useMemo(() => calculateOutcomes(
-    DICE_SIDES,
-    (resultIndex) => resultIndex < gameState.rollUnderIndex ? getMultiplier(gameState.rollUnderIndex) : 0
-  ), [gameState.rollUnderIndex, getMultiplier])
+  const bet = React.useMemo(
+    () => outcomes(
+      DICE_SIDES,
+      (resultIndex) => {
+        if (resultIndex < rollUnderIndex) {
+          return (DICE_SIDES - rollUnderIndex)
+        }
+      }),
+    [rollUnderIndex],
+  )
 
   const maxWin = multiplier * wager
 
   const game = GambaUi.useGame()
 
-  const play = React.useCallback(async () => {
-    try {
-      sounds.play('play')
-      const playWager = gameState.isDoubleOrNothing ? wager * 2 : wager
+  const play = async () => {
+    sounds.play('play')
 
-      await game.play({ wager: playWager, bet })
-      const result = await game.result()
+    await game.play({
+      wager,
+      bet,
+    })
 
-      setGameState(prevState => {
-        const isWin = result.resultIndex < prevState.rollUnderIndex
-        return {
-          ...prevState,
-          resultIndex: result.resultIndex,
-          isDoubleOrNothing: false,
-          consecutiveWins: isWin ? prevState.consecutiveWins + 1 : 0,
-          lastWin: isWin,
-        }
-      })
+    const result = await game.result()
 
-      if (result.resultIndex < gameState.rollUnderIndex) {
-        sounds.play('win')
-      } else {
-        sounds.play('lose')
-      }
-    } catch (error) {
-      console.error("Error during play:", error)
-      // Handle error (e.g., show error message to user)
+    setResultIndex(result.resultIndex)
+
+    if (result.resultIndex < rollUnderIndex) {
+      sounds.play('win')
+    } else {
+      sounds.play('lose')
     }
-  }, [game, wager, bet, gameState.isDoubleOrNothing, gameState.rollUnderIndex, sounds])
-
-  const handleDoubleOrNothing = React.useCallback(() => {
-    setGameState(prevState => ({
-      ...prevState,
-      isDoubleOrNothing: true,
-      rollUnderIndex: Math.max(prevState.rollUnderIndex - 10, 1)
-    }))
-  }, [])
-
-  const handleSliderChange = React.useCallback((value: number) => {
-    setGameState(prevState => ({ ...prevState, rollUnderIndex: value }))
-    sounds.play('tick')
-  }, [sounds])
-
-  React.useEffect(() => {
-    if (gameState.lastWin) {
-      // Any additional actions after a win can be placed here
-      console.log("Win detected! Consecutive wins:", gameState.consecutiveWins)
-    }
-  }, [gameState.lastWin, gameState.consecutiveWins])
+  }
 
   return (
-    <>
-      <GambaUi.Portal target="screen">
-        <GambaUi.Responsive>
-          <Container>
-            <RollUnder>
-              <div>
-                <div>{gameState.rollUnderIndex + 1}</div>
-                <div>Roll Under</div>
-              </div>
-            </RollUnder>
-            <Stats>
-              <div>
-                <div>{(gameState.rollUnderIndex / DICE_SIDES * 100).toFixed(0)}%</div>
-                <div>Win Chance</div>
-              </div>
-              <div>
-                <div>{multiplier.toFixed(2)}x</div>
-                <div>Multiplier</div>
-              </div>
-              <div>
-                {maxWin > pool.maxPayout ? (
-                  <div style={{ color: 'red' }}>Too high</div>
-                ) : (
-                  <div><TokenValue suffix="" amount={maxWin} /></div>
-                )}
-                <div>Payout</div>
-              </div>
-              <div>
-                <div>{gameState.consecutiveWins}</div>
-                <div>Win Streak</div>
-              </div>
-            </Stats>
-            <div style={{ position: 'relative' }}>
-              {gameState.resultIndex > -1 && (
-                <Result style={{ left: `${gameState.resultIndex / DICE_SIDES * 100}%` }}>
-                  <div key={gameState.resultIndex}>{gameState.resultIndex + 1}</div>
-                </Result>
-              )}
-              <Slider
-                disabled={gamba.isPlaying}
-                range={[0, DICE_SIDES]}
-                min={1}
-                max={DICE_SIDES - 5}
-                value={gameState.rollUnderIndex}
-                onChange={handleSliderChange}
-              />
+    <Container>
+      <RollUnder>
+        <div>
+          <div>{rollUnderIndex + 1}</div>
+          <div>Roll Under</div>
+        </div>
+      </RollUnder>
+      <Stats>
+        <div>
+          <div>
+            {(rollUnderIndex / DICE_SIDES * 100).toFixed(0)}%
+          </div>
+          <div>Win Chance</div>
+        </div>
+        <div>
+          <div>
+            {multiplier.toFixed(2)}x
+          </div>
+          <div>Multiplier</div>
+        </div>
+        <div>
+          {maxWin > pool.maxPayout ? (
+            <div style={{ color: 'red' }}>
+              Too high
             </div>
-          </Container>
-        </GambaUi.Responsive>
-      </GambaUi.Portal>
-      <GambaUi.Portal target="controls">
-        <GambaUi.WagerInput value={wager} onChange={setWager} />
-        <GambaUi.PlayButton onClick={play} disabled={gamba.isPlaying}>
-          {gameState.isDoubleOrNothing ? 'Double or Nothing!' : 'Roll'}
-        </GambaUi.PlayButton>
-        {gameState.lastWin && !gameState.isDoubleOrNothing && (
-          <GambaUi.Button onClick={handleDoubleOrNothing} disabled={gamba.isPlaying}>
-            Double or Nothing
-          </GambaUi.Button>
-        )}
-      </GambaUi.Portal>
-    </>
+          ) : (
+            <div>
+              <TokenValue suffix="" amount={maxWin} />
+            </div>
+          )}
+          <div>Payout</div>
+        </div>
+      </Stats>
+      <div style={{ position: 'relative' }}>
+        {resultIndex > -1 &&
+          <Result style={{ left: `${resultIndex / DICE_SIDES * 100}%` }}>
+            <div key={resultIndex}>
+              {resultIndex + 1}
+            </div>
+          </Result>
+        }
+        <Slider
+          disabled={gamba.isPlaying}
+          range={[0, DICE_SIDES]}
+          min={1}
+          max={DICE_SIDES - 5}
+          value={rollUnderIndex}
+          onChange={
+            (value) => {
+              setRollUnderIndex(value)
+              sounds.play('tick')
+            }
+          }
+        />
+      </div>
+      <GambaUi.WagerInput
+        value={wager}
+        onChange={setWager}
+      />
+      <GambaUi.PlayButton onClick={play}>
+        Roll
+      </GambaUi.PlayButton>
+    </Container>
+  )
+}
+
+export default function DoubleDice() {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+      <Dice />
+      <Dice />
+    </div>
   )
 }
