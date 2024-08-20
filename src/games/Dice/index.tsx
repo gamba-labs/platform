@@ -3,12 +3,55 @@ import { BPS_PER_WHOLE } from 'gamba-core-v2'
 import { GambaUi, TokenValue, useCurrentPool, useSound, useWagerInput } from 'gamba-react-ui-v2'
 import { useGamba } from 'gamba-react-v2'
 import { SOUND_LOSE, SOUND_PLAY, SOUND_WIN } from './constants'
-import { Container, Stats } from './styles'
+import styled from 'styled-components'
 
 const LANES = 4
 const MULTIPLIER = 3.5 // Fixed multiplier for simplicity
 const RACE_DURATION = 4000 // 4 seconds in milliseconds
 const SYMBOLS = ['!', '?', '$', '%']
+
+const CompactContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+`
+
+const RaceTrack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+  position: relative;
+`
+
+const Lane = styled.div`
+  height: 50px;
+  background-color: ${props => props.selected ? '#4CAF50' : '#ddd'};
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+`
+
+const Symbol = styled.div`
+  position: absolute;
+  left: ${props => props.progress * 100}%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  transition: left 0.05s linear;
+`
+
+const Stats = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`
+
+const StatItem = styled.div`
+  text-align: center;
+`
 
 const calculateOutcomes = () => {
   const payoutArray = Array(LANES).fill(MULTIPLIER)
@@ -54,7 +97,7 @@ function RacingGame() {
         clearInterval(interval)
         setIsRacing(false)
       }
-    }, 50) // Update every 50ms for smooth animation
+    }, 50)
   }
 
   const play = async () => {
@@ -81,33 +124,19 @@ function RacingGame() {
   }
 
   return (
-    <Container>
+    <CompactContainer>
       <h2>Symbol Racing Game</h2>
-      <div style={{ margin: '20px 0', position: 'relative' }}>
+      <RaceTrack>
         {[0, 1, 2, 3].map((lane) => (
-          <div
+          <Lane
             key={lane}
-            style={{
-              height: '50px',
-              backgroundColor: selectedLane === lane ? '#4CAF50' : '#ddd',
-              margin: '10px 0',
-              position: 'relative',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s'
-            }}
+            selected={selectedLane === lane}
             onClick={() => !isRacing && setSelectedLane(lane)}
           >
-            <div style={{ 
-              position: 'absolute', 
-              left: `${raceProgress[lane] * 100}%`, 
-              top: '50%', 
-              transform: 'translate(-50%, -50%)',
-              fontSize: '24px',
-              transition: 'left 0.05s linear'
-            }}>
+            <Symbol progress={raceProgress[lane]}>
               {SYMBOLS[lane]}
-            </div>
-          </div>
+            </Symbol>
+          </Lane>
         ))}
         {resultIndex > -1 && !isRacing && (
           <div
@@ -128,30 +157,30 @@ function RacingGame() {
             {resultIndex === selectedLane ? 'You Won!' : 'You Lost'}
           </div>
         )}
-      </div>
+      </RaceTrack>
       <Stats>
-        <div>
+        <StatItem>
           <div>25%</div>
           <div>Win Chance</div>
-        </div>
-        <div>
+        </StatItem>
+        <StatItem>
           <div>{MULTIPLIER}x</div>
           <div>Multiplier</div>
-        </div>
-        <div>
+        </StatItem>
+        <StatItem>
           {maxWin > pool.maxPayout ? (
             <div style={{ color: 'red' }}>Too high</div>
           ) : (
             <div><TokenValue suffix="" amount={maxWin} /></div>
           )}
           <div>Potential Win</div>
-        </div>
+        </StatItem>
       </Stats>
       <GambaUi.WagerInput value={wager} onChange={setWager} />
       <GambaUi.PlayButton onClick={play} disabled={gamba.isPlaying || isRacing}>
         Start Race
       </GambaUi.PlayButton>
-    </Container>
+    </CompactContainer>
   )
 }
 
