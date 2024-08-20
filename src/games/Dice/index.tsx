@@ -1,7 +1,7 @@
+import React from 'react'
 import { BPS_PER_WHOLE } from 'gamba-core-v2'
 import { GambaUi, TokenValue, useCurrentPool, useSound, useWagerInput } from 'gamba-react-ui-v2'
 import { useGamba } from 'gamba-react-v2'
-import React from 'react'
 import Slider from './Slider'
 import { SOUND_LOSE, SOUND_PLAY, SOUND_TICK, SOUND_WIN } from './constants'
 import { Container, Result, RollUnder, Stats } from './styles'
@@ -27,6 +27,8 @@ export default function Dice() {
   const pool = useCurrentPool()
   const [resultIndex, setResultIndex] = React.useState(-1)
   const [rollUnderIndex, setRollUnderIndex] = React.useState(Math.floor(DICE_SIDES / 2))
+  const [consecutiveWins, setConsecutiveWins] = React.useState(0)
+  const [isDoubleOrNothing, setIsDoubleOrNothing] = React.useState(false)
   const sounds = useSound({
     win: SOUND_WIN,
     play: SOUND_PLAY,
@@ -34,17 +36,31 @@ export default function Dice() {
     tick: SOUND_TICK,
   })
 
-  const multiplier = Number(BigInt(DICE_SIDES * BPS_PER_WHOLE) / BigInt(rollUnderIndex)) / BPS_PER_WHOLE
+  const getMultiplier = (index: number) => {
+    let baseMultiplier = Number(BigInt(DICE_SIDES * BPS_PER_WHOLE) / BigInt(index)) / BPS_PER_WHOLE
+    
+    // Streak bonus
+    baseMultiplier *= (1 + consecutiveWins * 0.1)
+    
+    // Special number bonus
+    if (index === 7 || index === 77) {
+      baseMultiplier *= 2
+    }
+    
+    return baseMultiplier
+  }
+
+  const multiplier = getMultiplier(rollUnderIndex)
 
   const bet = React.useMemo(
     () => outcomes(
       DICE_SIDES,
       (resultIndex) => {
         if (resultIndex < rollUnderIndex) {
-          return (DICE_SIDES - rollUnderIndex)
+          return getMultiplier(rollUnderIndex)
         }
       }),
-    [rollUnderIndex],
+    [rollUnderIndex, consecutiveWins]
   )
 
   const maxWin = multiplier * wager
@@ -55,7 +71,7 @@ export default function Dice() {
     sounds.play('play')
 
     await game.play({
-      wager,
+      wager: isDoubleOrNothing ? wager * 2 : wager,
       bet,
     })
 
@@ -65,9 +81,18 @@ export default function Dice() {
 
     if (result.resultIndex < rollUnderIndex) {
       sounds.play('win')
+      setConsecutiveWins(prev => prev + 1)
     } else {
       sounds.play('lose')
+      setConsecutiveWins(0)
     }
+
+    setIsDoubleOrNothing(false)
+  }
+
+  const handleDoubleOrNothing = () => {
+    setIsDoubleOrNothing(true)
+    setRollUnderIndex(prev => Math.max(prev - 10, 1))
   }
 
   return (
@@ -106,6 +131,10 @@ export default function Dice() {
                 )}
                 <div>Payout</div>
               </div>
+              <div>
+                <div>{consecutiveWins}</div>
+                <div>Win Streak</div>
+              </div>
             </Stats>
             <div style={{ position: 'relative' }}>
               {resultIndex > -1 &&
@@ -138,8 +167,13 @@ export default function Dice() {
           onChange={setWager}
         />
         <GambaUi.PlayButton onClick={play}>
-          Roll
+          {isDoubleOrNothing ? 'Double or Nothing!' : 'Roll'}
         </GambaUi.PlayButton>
+        {resultIndex > -1 && resultIndex < rollUnderIndex && !isDoubleOrNothing && (
+          <GambaUi.Button onClick={handleDoubleOrNothing}>
+            Double or Nothing
+          </GambaUi.Button>
+        )}
       </GambaUi.Portal>
     </>
   )
