@@ -5,6 +5,8 @@ import { useGamba } from 'gamba-react-v2';
 const RACE_LENGTH = 10;
 const WAGER_OPTIONS = [1, 5, 10, 50, 100];
 const RACERS = ['🚗', '🏎️', '🚙', '🚓'];
+
+// Fair bet array with varied odds
 const BET_ARRAY = [0, 0, 0, 4];
 
 const RacingGame = () => {
@@ -23,29 +25,31 @@ const RacingGame = () => {
       setRaceProgress(Array(RACERS.length).fill(0));
       setWinner(null);
 
-      const result = await game.play({
+      await game.play({
         bet: BET_ARRAY,
         wager,
         metadata: [selectedRacer],
       });
 
-      // Use the result to determine race progression
+      const result = await game.result();
+      const raceWinner = result.resultIndex;
+
+      // Simulate race progress based on the smart contract result
       for (let i = 0; i < RACE_LENGTH; i++) {
         await new Promise(resolve => setTimeout(resolve, 500));
-        setRaceProgress(prev => {
-          const newProgress = [...prev];
-          for (let j = 0; j < RACERS.length; j++) {
-            if (j === result.resultIndex) {
-              newProgress[j] = Math.min(newProgress[j] + 2, RACE_LENGTH);
-            } else {
-              newProgress[j] = Math.min(newProgress[j] + 1, RACE_LENGTH);
-            }
+        setRaceProgress(prev => prev.map((p, idx) => {
+          if (idx === raceWinner) {
+            // Winner always progresses by 1
+            return Math.min(p + 1, RACE_LENGTH);
+          } else {
+            // Other racers have a chance to progress, but never overtake the winner
+            const maxProgress = Math.min(raceWinner === idx ? RACE_LENGTH : RACE_LENGTH - 1, p + 1);
+            return Math.random() < 0.7 ? maxProgress : p;
           }
-          return newProgress;
-        });
+        }));
       }
 
-      setWinner(result.resultIndex);
+      setWinner(raceWinner);
       setRaceStatus(result.payout > 0 ? 'won' : 'lost');
     } catch (error) {
       console.error('Race error:', error);
