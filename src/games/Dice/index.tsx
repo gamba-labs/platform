@@ -19,12 +19,19 @@ const raceProgress = signal(Array(RACERS.length).fill(0));
 const winner = signal(null);
 const playerBet = signal(null);
 
+// Logging function
+const log = (message, data = {}) => {
+  console.log(`[${new Date().toISOString()}] ${message}`, data);
+};
+
 const RacingGame = () => {
   const [wager, setWager] = useWagerInput();
   const [selectedRacer, setSelectedRacer] = useState(0);
   const game = GambaUi.useGame();
   const gamba = useGamba();
   const pool = useCurrentPool();
+
+  log('Component rendered', { wager, selectedRacer });
 
   const sounds = useSound({
     win: '/path/to/win-sound.mp3',
@@ -36,59 +43,79 @@ const RacingGame = () => {
     const now = Date.now();
     const cyclePosition = now % TOTAL_CYCLE;
     
+    log('Updating game state', { now, cyclePosition });
+
     if (cyclePosition < BETTING_WINDOW) {
       gamePhase.value = 'betting';
       timeLeft.value = BETTING_WINDOW - cyclePosition;
+      log('Entered betting phase', { timeLeft: timeLeft.value });
     } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
       if (gamePhase.value !== 'racing') {
         gamePhase.value = 'racing';
+        log('Entered racing phase, calling runRace');
         runRace();
       }
       timeLeft.value = BETTING_WINDOW + RACE_DURATION - cyclePosition;
     } else {
       gamePhase.value = 'cooldown';
       timeLeft.value = TOTAL_CYCLE - cyclePosition;
+      log('Entered cooldown phase', { timeLeft: timeLeft.value });
     }
   }, []);
 
   useEffect(() => {
+    log('Setting up game loop');
     const gameLoop = setInterval(updateGameState, 1000);
     updateGameState(); // Initial update
-    return () => clearInterval(gameLoop);
+    return () => {
+      log('Clearing game loop');
+      clearInterval(gameLoop);
+    };
   }, [updateGameState]);
 
   const placeBet = async () => {
+    log('Attempting to place bet', { gamePhase: gamePhase.value, playerBet: playerBet.value });
     if (gamePhase.value !== 'betting' || playerBet.value) return;
     
     try {
+      log('Playing bet sound');
       sounds.play('play');
+      log('Calling game.play', { bet: BET_ARRAY, wager, selectedRacer });
       await game.play({
         bet: BET_ARRAY,
         wager,
         metadata: [selectedRacer],
       });
       playerBet.value = { racer: selectedRacer, wager };
+      log('Bet placed successfully', playerBet.value);
     } catch (error) {
+      log('Error placing bet', { error });
       console.error('Bet error:', error);
     }
   };
 
   const runRace = useCallback(async () => {
+    log('runRace called');
     raceProgress.value = Array(RACERS.length).fill(0);
     winner.value = null;
+    log('Race progress and winner reset', { raceProgress: raceProgress.value, winner: winner.value });
 
+    log('Awaiting game result');
     const result = await game.result();
+    log('Game result received', result);
     const raceWinner = result.resultIndex;
 
     const animateRace = (step) => {
+      log('animateRace called', { step });
       if (step >= RACE_LENGTH) {
         winner.value = raceWinner;
+        log('Race finished', { winner: winner.value });
         if (playerBet.value && playerBet.value.racer === raceWinner) {
+          log('Player won', { playerBet: playerBet.value, payout: result.payout });
           sounds.play('win');
-          console.log('You won!', result.payout);
         } else if (playerBet.value) {
+          log('Player lost', { playerBet: playerBet.value });
           sounds.play('lose');
-          console.log('You lost!');
         }
         return;
       }
@@ -97,23 +124,30 @@ const RacingGame = () => {
         if (index === raceWinner) return step + 1;
         return Math.min(progress + (Math.random() < 0.7 ? 1 : 0), step);
       });
+      log('Race progress updated', { raceProgress: raceProgress.value });
 
+      log('Scheduling next animation step');
       setTimeout(() => animateRace(step + 1), RACE_DURATION / RACE_LENGTH);
     };
 
+    log('Starting race animation');
     animateRace(0);
   }, [game, sounds]);
 
   useEffect(() => {
+    log('Game phase changed', { gamePhase: gamePhase.value });
     if (gamePhase.value === 'betting') {
       raceProgress.value = Array(RACERS.length).fill(0);
       winner.value = null;
       playerBet.value = null;
+      log('Reset for new betting round', { raceProgress: raceProgress.value, winner: winner.value, playerBet: playerBet.value });
     }
   }, [gamePhase.value]);
 
   const maxPayout = computed(() => wager * Math.max(...BET_ARRAY));
   const isMaxPayoutExceeded = computed(() => maxPayout.value > pool.maxPayout);
+
+  log('Computed values updated', { maxPayout: maxPayout.value, isMaxPayoutExceeded: isMaxPayoutExceeded.value });
 
   return (
     <>
@@ -140,12 +174,19 @@ const RacingGame = () => {
         <GambaUi.WagerInput
           options={WAGER_OPTIONS}
           value={wager}
-          onChange={setWager}
+          onChange={(newWager) => {
+            log('Wager changed', { oldWager: wager, newWager });
+            setWager(newWager);
+          }}
           disabled={gamePhase.value !== 'betting' || playerBet.value !== null}
         />
         <GambaUi.Button
           disabled={gamePhase.value !== 'betting' || playerBet.value !== null}
-          onClick={() => setSelectedRacer((selectedRacer + 1) % RACERS.length)}
+          onClick={() => {
+            const newSelectedRacer = (selectedRacer + 1) % RACERS.length;
+            log('Selected racer changed', { oldRacer: selectedRacer, newRacer: newSelectedRacer });
+            setSelectedRacer(newSelectedRacer);
+          }}
         >
           Selected: {RACERS[selectedRacer]}
         </GambaUi.Button>
