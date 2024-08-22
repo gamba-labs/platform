@@ -11,6 +11,17 @@ const RACE_DURATION = 20000; // 20 seconds
 const COOLDOWN = 10000; // 10 seconds
 const TOTAL_CYCLE = BETTING_WINDOW + RACE_DURATION + COOLDOWN;
 
+const getWorldTime = async () => {
+  try {
+    const response = await fetch("http://worldtimeapi.org/api/timezone/America/Los_Angeles");
+    const data = await response.json();
+    return data.unixtime * 1000; // Convert to milliseconds
+  } catch (error) {
+    console.error("Error fetching world time:", error);
+    return Date.now(); // Fallback to local time if API fails
+  }
+};
+
 const RacingGame = () => {
   const [wager, setWager] = useWagerInput();
   const [selectedRacer, setSelectedRacer] = useState(0);
@@ -19,41 +30,49 @@ const RacingGame = () => {
   const [winner, setWinner] = useState(null);
   const [timeLeft, setTimeLeft] = useState(BETTING_WINDOW);
   const [playerBet, setPlayerBet] = useState(null);
+  const [worldTimeOffset, setWorldTimeOffset] = useState(0);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
 
   useEffect(() => {
-    const gameLoop = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 0) {
-          switch (gamePhase) {
-            case 'betting':
-              setGamePhase('racing');
-              return RACE_DURATION;
-            case 'racing':
-              setGamePhase('cooldown');
-              return COOLDOWN;
-            case 'cooldown':
-              setGamePhase('betting');
-              setRaceProgress(Array(RACERS.length).fill(0));
-              setWinner(null);
-              setPlayerBet(null);
-              return BETTING_WINDOW;
-          }
-        }
-        return prevTime - 1000;
-      });
-    }, 1000);
+    const syncTime = async () => {
+      const worldTime = await getWorldTime();
+      const localTime = Date.now();
+      setWorldTimeOffset(worldTime - localTime);
+    };
 
-    return () => clearInterval(gameLoop);
-  }, [gamePhase]);
+    syncTime();
+    const syncInterval = setInterval(syncTime, 60000); // Sync every minute
+
+    return () => clearInterval(syncInterval);
+  }, []);
 
   useEffect(() => {
-    if (gamePhase === 'racing') {
-      runRace();
-    }
-  }, [gamePhase]);
+    const updateGameState = () => {
+      const now = Date.now() + worldTimeOffset;
+      const cyclePosition = now % TOTAL_CYCLE;
+      
+      if (cyclePosition < BETTING_WINDOW) {
+        setGamePhase('betting');
+        setTimeLeft(BETTING_WINDOW - cyclePosition);
+      } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
+        setGamePhase('racing');
+        setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
+        if (gamePhase !== 'racing') {
+          runRace();
+        }
+      } else {
+        setGamePhase('cooldown');
+        setTimeLeft(TOTAL_CYCLE - cyclePosition);
+      }
+    };
+
+    const gameLoop = setInterval(updateGameState, 1000);
+    updateGameState(); // Initial update
+
+    return () => clearInterval(gameLoop);
+  }, [worldTimeOffset, gamePhase]);
 
   const placeBet = async () => {
     if (gamePhase !== 'betting' || playerBet) return;
@@ -94,13 +113,19 @@ const RacingGame = () => {
     setWinner(raceWinner);
 
     if (playerBet && playerBet.racer === raceWinner) {
-      // Player won
       console.log('You won!', result.payout);
     } else if (playerBet) {
-      // Player lost
       console.log('You lost!');
     }
   };
+
+  useEffect(() => {
+    if (gamePhase === 'betting') {
+      setRaceProgress(Array(RACERS.length).fill(0));
+      setWinner(null);
+      setPlayerBet(null);
+    }
+  }, [gamePhase]);
 
   return (
     <>
