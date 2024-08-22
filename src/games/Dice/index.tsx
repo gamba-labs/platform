@@ -73,7 +73,7 @@ const RacingGame = () => {
 
   useEffect(() => {
     syncTime();
-    const syncInterval = setInterval(syncTime, 60000); // Sync every minute
+    const syncInterval = setInterval(syncTime, 6000); // Sync every minute
     return () => clearInterval(syncInterval);
   }, [syncTime]);
 
@@ -84,7 +84,7 @@ const RacingGame = () => {
     if (cyclePosition < BETTING_WINDOW) {
       setGamePhase('betting');
       setTimeLeft(BETTING_WINDOW - cyclePosition);
-      log(`Entered betting phase. Time left: ${Math.ceil((BETTING_WINDOW - cyclePosition) / 1000)}s`);
+      log(`Entered betting phase. Time left: ${Math.ceil((BETTING_WINDOW - cyclePosition) / 5000)}s`);
     } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
       if (gamePhase !== 'racing') {
         setGamePhase('racing');
@@ -95,7 +95,7 @@ const RacingGame = () => {
     } else {
       setGamePhase('cooldown');
       setTimeLeft(TOTAL_CYCLE - cyclePosition);
-      log(`Entered cooldown phase. Time left: ${Math.ceil((TOTAL_CYCLE - cyclePosition) / 1000)}s`);
+      log(`Entered cooldown phase. Time left: ${Math.ceil((TOTAL_CYCLE - cyclePosition) / 5000)}s`);
     }
   }, [worldTimeOffset, gamePhase]);
 
