@@ -30,8 +30,9 @@ const RacingGame = () => {
   const isRaceRunningRef = useRef(false);
 
   const log = useCallback((message) => {
-    console.log(message);
-    setDebugLog(prev => [...prev, `${new Date().toISOString()}: ${message}`]);
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp}: ${message}`);
+    setDebugLog(prev => [...prev, `${timestamp}: ${message}`]);
   }, []);
 
   const updateGameState = useCallback(() => {
@@ -48,11 +49,7 @@ const RacingGame = () => {
       setGamePhase(prev => {
         if (prev !== 'racing') {
           log('Transitioning to racing phase');
-          if (smartContractResultRef.current) {
-            log('Smart contract result is available for racing');
-          } else {
-            log('Warning: No smart contract result available for racing');
-          }
+          log(`Smart contract result: ${JSON.stringify(smartContractResultRef.current)}`);
         }
         return 'racing';
       });
@@ -85,15 +82,17 @@ const RacingGame = () => {
         wager,
         metadata: [selectedRacer],
       });
-      log(`Bet placed. Result: ${JSON.stringify(result)}`);
+      log(`Bet placed. Raw result: ${JSON.stringify(result)}`);
       setPlayerBet({ racer: selectedRacer, wager });
       smartContractResultRef.current = result;
+      log(`Stored smart contract result: ${JSON.stringify(smartContractResultRef.current)}`);
       
       // Wait for the result to be processed
       log('Waiting for bet result to be processed...');
       await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
       
       log('Bet result processed. Ready for race.');
+      log(`Final stored smart contract result: ${JSON.stringify(smartContractResultRef.current)}`);
     } catch (error) {
       log(`Bet error: ${error.message}`);
       setError(`Bet error: ${error.message}`);
@@ -109,6 +108,8 @@ const RacingGame = () => {
     }
 
     log('Attempting to start race');
+    log(`Current smart contract result: ${JSON.stringify(smartContractResultRef.current)}`);
+    
     if (!smartContractResultRef.current) {
       log('No smart contract result, cannot start race');
       setError('No smart contract result available');
@@ -118,7 +119,7 @@ const RacingGame = () => {
     isRaceRunningRef.current = true;
     try {
       const raceWinner = smartContractResultRef.current.resultIndex;
-      log(`Starting race animation. Winner: ${raceWinner}`);
+      log(`Starting race animation. Winner index: ${raceWinner}`);
 
       for (let step = 0; step <= RACE_LENGTH; step++) {
         setRaceProgress(prev => {
@@ -156,6 +157,7 @@ const RacingGame = () => {
   useEffect(() => {
     if (gamePhase === 'racing' && smartContractResultRef.current && !isRaceRunningRef.current) {
       log('Conditions met to start the race. Triggering runRace.');
+      log(`Smart contract result before race: ${JSON.stringify(smartContractResultRef.current)}`);
       runRace().catch(error => {
         log(`Unhandled error in runRace: ${error.message}`);
         setError(`Unhandled race error: ${error.message}`);
@@ -170,6 +172,7 @@ const RacingGame = () => {
       setWinner(null);
       setPlayerBet(null);
       smartContractResultRef.current = null;
+      log('Smart contract result cleared');
       isRaceRunningRef.current = false;
       setError(null);
     }
@@ -193,7 +196,7 @@ const RacingGame = () => {
             </div>
           )}
           {error && <div style={{ color: 'red' }}>Error: {error}</div>}
-          <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '12px', maxHeight: '150px', overflowY: 'auto' }}>
+          <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '12px', maxHeight: '200px', overflowY: 'auto' }}>
             Debug Log:
             {debugLog.map((log, index) => (
               <div key={index}>{log}</div>
