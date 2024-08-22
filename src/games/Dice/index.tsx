@@ -20,12 +20,13 @@ const RacingGame = () => {
   const [timeLeft, setTimeLeft] = useState(BETTING_WINDOW);
   const [playerBet, setPlayerBet] = useState(null);
   const [isPlacingBet, setIsPlacingBet] = useState(false);
-  const [raceResult, setRaceResult] = useState(null);
   const [debugLog, setDebugLog] = useState([]);
+  const [error, setError] = useState(null);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
   const gameLoopRef = useRef(null);
+  const smartContractResultRef = useRef(null);
 
   const log = useCallback((message) => {
     console.log(message);
@@ -67,67 +68,80 @@ const RacingGame = () => {
         wager,
         metadata: [selectedRacer],
       });
+      log(`Bet placed. Result: ${JSON.stringify(result)}`);
       setPlayerBet({ racer: selectedRacer, wager });
-      setRaceResult(result);
-      log('Bet placed and result received');
+      smartContractResultRef.current = result;
     } catch (error) {
       log(`Bet error: ${error.message}`);
+      setError(`Bet error: ${error.message}`);
     } finally {
       setIsPlacingBet(false);
     }
   };
 
   const runRace = useCallback(async () => {
-    if (!raceResult) {
-      log('No race result, cannot start race');
+    log('Attempting to start race');
+    if (!smartContractResultRef.current) {
+      log('No smart contract result, cannot start race');
+      setError('No smart contract result available');
       return;
     }
 
-    const raceWinner = raceResult.resultIndex;
-    log(`Starting race animation. Winner: ${raceWinner}`);
+    try {
+      const raceWinner = smartContractResultRef.current.resultIndex;
+      log(`Starting race animation. Winner: ${raceWinner}`);
 
-    for (let step = 0; step <= RACE_LENGTH; step++) {
-      setRaceProgress(prev => {
-        const newProgress = [...prev];
-        const maxProgressThisStep = step;
-        newProgress[raceWinner] = maxProgressThisStep;
-        for (let i = 0; i < newProgress.length; i++) {
-          if (i !== raceWinner) {
-            newProgress[i] = Math.min(
-              newProgress[i] + (Math.random() < 0.7 ? 1 : 0),
-              maxProgressThisStep - 1
-            );
+      for (let step = 0; step <= RACE_LENGTH; step++) {
+        setRaceProgress(prev => {
+          const newProgress = [...prev];
+          const maxProgressThisStep = step;
+          newProgress[raceWinner] = maxProgressThisStep;
+          for (let i = 0; i < newProgress.length; i++) {
+            if (i !== raceWinner) {
+              newProgress[i] = Math.min(
+                newProgress[i] + (Math.random() < 0.7 ? 1 : 0),
+                maxProgressThisStep - 1
+              );
+            }
           }
-        }
-        return newProgress;
-      });
+          return newProgress;
+        });
 
-      await new Promise(resolve => setTimeout(resolve, RACE_DURATION / RACE_LENGTH));
-    }
+        await new Promise(resolve => setTimeout(resolve, RACE_DURATION / RACE_LENGTH));
+      }
 
-    setWinner(raceWinner);
-    if (playerBet.racer === raceWinner) {
-      log(`You won! Payout: ${raceResult.payout}`);
-    } else {
-      log('You lost!');
+      setWinner(raceWinner);
+      if (playerBet && playerBet.racer === raceWinner) {
+        log(`You won! Payout: ${smartContractResultRef.current.payout}`);
+      } else {
+        log('You lost!');
+      }
+    } catch (error) {
+      log(`Error during race: ${error.message}`);
+      setError(`Race error: ${error.message}`);
     }
-  }, [raceResult, playerBet, log]);
+  }, [playerBet, log]);
 
   useEffect(() => {
-    if (gamePhase === 'racing' && raceResult) {
-      runRace();
+    if (gamePhase === 'racing' && smartContractResultRef.current) {
+      log('Game phase is racing and smart contract result is available. Triggering runRace.');
+      runRace().catch(error => {
+        log(`Unhandled error in runRace: ${error.message}`);
+        setError(`Unhandled race error: ${error.message}`);
+      });
     }
-  }, [gamePhase, raceResult, runRace]);
+  }, [gamePhase, runRace]);
 
   useEffect(() => {
     if (gamePhase === 'betting') {
+      log('Resetting game state for new betting phase');
       setRaceProgress(Array(RACERS.length).fill(0));
       setWinner(null);
       setPlayerBet(null);
-      setRaceResult(null);
-      log('Reset for new betting phase');
+      smartContractResultRef.current = null;
+      setError(null);
     }
-  }, [gamePhase, log]);
+  }, [gamePhase]);
 
   return (
     <>
@@ -146,9 +160,10 @@ const RacingGame = () => {
               {playerBet.racer === winner ? 'You won! 🎉' : 'You lost! 😢'}
             </div>
           )}
+          {error && <div style={{ color: 'red' }}>Error: {error}</div>}
           <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '12px' }}>
             Debug Log:
-            {debugLog.slice(-5).map((log, index) => (
+            {debugLog.slice(-10).map((log, index) => (
               <div key={index}>{log}</div>
             ))}
           </div>
