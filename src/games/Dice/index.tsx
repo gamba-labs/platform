@@ -20,11 +20,17 @@ const RacingGame = () => {
   const [timeLeft, setTimeLeft] = useState(BETTING_WINDOW);
   const [playerBet, setPlayerBet] = useState(null);
   const [isPlacingBet, setIsPlacingBet] = useState(false);
+  const [debugLog, setDebugLog] = useState([]);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
   const raceAnimationRef = useRef(null);
   const gameLoopRef = useRef(null);
+
+  const log = useCallback((message) => {
+    console.log(message);
+    setDebugLog(prev => [...prev, `${new Date().toISOString()}: ${message}`]);
+  }, []);
 
   const updateGameState = useCallback(() => {
     const now = Date.now();
@@ -34,16 +40,13 @@ const RacingGame = () => {
       setGamePhase('betting');
       setTimeLeft(BETTING_WINDOW - cyclePosition);
     } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
-      if (gamePhase !== 'racing') {
-        setGamePhase('racing');
-        runRace();
-      }
+      setGamePhase('racing');
       setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
     } else {
       setGamePhase('cooldown');
       setTimeLeft(TOTAL_CYCLE - cyclePosition);
     }
-  }, [gamePhase]);
+  }, []);
 
   useEffect(() => {
     updateGameState();
@@ -61,51 +64,44 @@ const RacingGame = () => {
     
     setIsPlacingBet(true);
     try {
+      log('Placing bet...');
       await game.play({
         bet: BET_ARRAY,
         wager,
         metadata: [selectedRacer],
       });
       setPlayerBet({ racer: selectedRacer, wager });
+      log('Bet placed successfully');
     } catch (error) {
-      console.error('Bet error:', error);
+      log(`Bet error: ${error.message}`);
     } finally {
       setIsPlacingBet(false);
     }
   };
 
   const runRace = useCallback(async () => {
-    if (raceAnimationRef.current) {
-      clearTimeout(raceAnimationRef.current);
+    if (!playerBet) {
+      log('No bet placed, skipping race');
+      return;
     }
 
-    setRaceProgress(Array(RACERS.length).fill(0));
-    setWinner(null);
-
+    log('Waiting for race result...');
     let result;
     try {
       result = await game.result();
+      log(`Race result received: ${JSON.stringify(result)}`);
     } catch (error) {
-      console.error('Error getting race result:', error);
+      log(`Error getting race result: ${error.message}`);
       return;
     }
 
     const raceWinner = result.resultIndex;
+    log(`Starting race animation. Winner: ${raceWinner}`);
 
-    const animateRace = (step) => {
-      if (step >= RACE_LENGTH) {
-        setWinner(raceWinner);
-        if (playerBet && playerBet.racer === raceWinner) {
-          console.log('You won!', result.payout);
-        } else if (playerBet) {
-          console.log('You lost!');
-        }
-        return;
-      }
-
+    for (let step = 0; step <= RACE_LENGTH; step++) {
       setRaceProgress(prev => {
         const newProgress = [...prev];
-        const maxProgressThisStep = step + 1;
+        const maxProgressThisStep = step;
         newProgress[raceWinner] = maxProgressThisStep;
         for (let i = 0; i < newProgress.length; i++) {
           if (i !== raceWinner) {
@@ -118,19 +114,31 @@ const RacingGame = () => {
         return newProgress;
       });
 
-      raceAnimationRef.current = setTimeout(() => animateRace(step + 1), RACE_DURATION / RACE_LENGTH);
-    };
+      await new Promise(resolve => setTimeout(resolve, RACE_DURATION / RACE_LENGTH));
+    }
 
-    animateRace(0);
-  }, [game, playerBet]);
+    setWinner(raceWinner);
+    if (playerBet.racer === raceWinner) {
+      log(`You won! Payout: ${result.payout}`);
+    } else {
+      log('You lost!');
+    }
+  }, [game, playerBet, log]);
+
+  useEffect(() => {
+    if (gamePhase === 'racing' && playerBet) {
+      runRace();
+    }
+  }, [gamePhase, playerBet, runRace]);
 
   useEffect(() => {
     if (gamePhase === 'betting') {
       setRaceProgress(Array(RACERS.length).fill(0));
       setWinner(null);
       setPlayerBet(null);
+      log('Reset for new betting phase');
     }
-  }, [gamePhase]);
+  }, [gamePhase, log]);
 
   return (
     <>
@@ -149,6 +157,12 @@ const RacingGame = () => {
               {playerBet.racer === winner ? 'You won! 🎉' : 'You lost! 😢'}
             </div>
           )}
+          <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '12px' }}>
+            Debug Log:
+            {debugLog.slice(-5).map((log, index) => (
+              <div key={index}>{log}</div>
+            ))}
+          </div>
         </div>
       </GambaUi.Portal>
       <GambaUi.Portal target="controls">
