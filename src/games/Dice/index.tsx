@@ -11,17 +11,6 @@ const RACE_DURATION = 20000; // 20 seconds
 const COOLDOWN = 10000; // 10 seconds
 const TOTAL_CYCLE = BETTING_WINDOW + RACE_DURATION + COOLDOWN;
 
-const getWorldTime = async () => {
-  try {
-    const response = await fetch("http://worldtimeapi.org/api/timezone/America/Los_Angeles");
-    const data = await response.json();
-    return data.unixtime * 1000; // Convert to milliseconds
-  } catch (error) {
-    console.error("Error fetching world time:", error);
-    return Date.now(); // Fallback to local time if API fails
-  }
-};
-
 const RacingGame = () => {
   const [wager, setWager] = useWagerInput();
   const [selectedRacer, setSelectedRacer] = useState(0);
@@ -30,27 +19,15 @@ const RacingGame = () => {
   const [winner, setWinner] = useState(null);
   const [timeLeft, setTimeLeft] = useState(BETTING_WINDOW);
   const [playerBet, setPlayerBet] = useState(null);
-  const [worldTimeOffset, setWorldTimeOffset] = useState(0);
   const [isPlacingBet, setIsPlacingBet] = useState(false);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
   const raceAnimationRef = useRef(null);
-
-  const syncTime = useCallback(async () => {
-    const worldTime = await getWorldTime();
-    const localTime = Date.now();
-    setWorldTimeOffset(worldTime - localTime);
-  }, []);
-
-  useEffect(() => {
-    syncTime();
-    const syncInterval = setInterval(syncTime, 60000); // Sync every minute
-    return () => clearInterval(syncInterval);
-  }, [syncTime]);
+  const gameLoopRef = useRef(null);
 
   const updateGameState = useCallback(() => {
-    const now = Date.now() + worldTimeOffset;
+    const now = Date.now();
     const cyclePosition = now % TOTAL_CYCLE;
     
     if (cyclePosition < BETTING_WINDOW) {
@@ -66,12 +43,17 @@ const RacingGame = () => {
       setGamePhase('cooldown');
       setTimeLeft(TOTAL_CYCLE - cyclePosition);
     }
-  }, [worldTimeOffset, gamePhase]);
+  }, [gamePhase]);
 
   useEffect(() => {
-    const gameLoop = setInterval(updateGameState, 1000);
-    updateGameState(); // Initial update
-    return () => clearInterval(gameLoop);
+    updateGameState();
+    gameLoopRef.current = setInterval(updateGameState, 1000);
+    return () => {
+      clearInterval(gameLoopRef.current);
+      if (raceAnimationRef.current) {
+        clearTimeout(raceAnimationRef.current);
+      }
+    };
   }, [updateGameState]);
 
   const placeBet = async () => {
@@ -100,7 +82,14 @@ const RacingGame = () => {
     setRaceProgress(Array(RACERS.length).fill(0));
     setWinner(null);
 
-    const result = await game.result();
+    let result;
+    try {
+      result = await game.result();
+    } catch (error) {
+      console.error('Error getting race result:', error);
+      return;
+    }
+
     const raceWinner = result.resultIndex;
 
     const animateRace = (step) => {
