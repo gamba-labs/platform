@@ -88,6 +88,12 @@ const RacingGame = () => {
       log(`Bet placed. Result: ${JSON.stringify(result)}`);
       setPlayerBet({ racer: selectedRacer, wager });
       smartContractResultRef.current = result;
+      
+      // Wait for the result to be processed
+      log('Waiting for bet result to be processed...');
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
+      
+      log('Bet result processed. Ready for race.');
     } catch (error) {
       log(`Bet error: ${error.message}`);
       setError(`Bet error: ${error.message}`);
