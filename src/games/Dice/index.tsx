@@ -22,7 +22,6 @@ const getWorldTime = async () => {
   }
 };
 
-// New logging component
 const LogDisplay = ({ logs }) => (
   <div style={{ 
     position: 'fixed', 
@@ -53,13 +52,12 @@ const RacingGame = () => {
   const [playerBet, setPlayerBet] = useState(null);
   const [worldTimeOffset, setWorldTimeOffset] = useState(0);
   const [isPlacingBet, setIsPlacingBet] = useState(false);
-  const [logs, setLogs] = useState([]); // New state for logs
+  const [logs, setLogs] = useState([]);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
   const raceAnimationRef = useRef(null);
 
-  // Modified logging function
   const log = (message) => {
     setLogs(prevLogs => [`[${new Date().toISOString()}] ${message}`, ...prevLogs.slice(0, 9)]);
   };
@@ -73,7 +71,7 @@ const RacingGame = () => {
 
   useEffect(() => {
     syncTime();
-    const syncInterval = setInterval(syncTime, 6000); // Sync every minute
+    const syncInterval = setInterval(syncTime, 60000); // Sync every minute
     return () => clearInterval(syncInterval);
   }, [syncTime]);
 
@@ -84,18 +82,17 @@ const RacingGame = () => {
     if (cyclePosition < BETTING_WINDOW) {
       setGamePhase('betting');
       setTimeLeft(BETTING_WINDOW - cyclePosition);
-      log(`Entered betting phase. Time left: ${Math.ceil((BETTING_WINDOW - cyclePosition) / 5000)}s`);
+      log(`Entered betting phase. Time left: ${Math.ceil((BETTING_WINDOW - cyclePosition) / 1000)}s`);
     } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
       if (gamePhase !== 'racing') {
         setGamePhase('racing');
         log('Entered racing phase. Starting race...');
-        runRace();
       }
       setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
     } else {
       setGamePhase('cooldown');
       setTimeLeft(TOTAL_CYCLE - cyclePosition);
-      log(`Entered cooldown phase. Time left: ${Math.ceil((TOTAL_CYCLE - cyclePosition) / 5000)}s`);
+      log(`Entered cooldown phase. Time left: ${Math.ceil((TOTAL_CYCLE - cyclePosition) / 1000)}s`);
     }
   }, [worldTimeOffset, gamePhase]);
 
@@ -135,43 +132,56 @@ const RacingGame = () => {
     setWinner(null);
     log('Race started. Waiting for result...');
 
-    const result = await game.result();
-    const raceWinner = result.resultIndex;
-    log(`Race result received. Winner: Racer ${raceWinner}`);
+    try {
+      const result = await game.result();
+      const raceWinner = result.resultIndex;
+      log(`Race result received. Winner: Racer ${raceWinner}`);
 
-    const animateRace = (step) => {
-      if (step >= RACE_LENGTH) {
-        setWinner(raceWinner);
-        log(`Race finished. Winner: Racer ${raceWinner}`);
-        if (playerBet && playerBet.racer === raceWinner) {
-          log(`Player won! Payout: ${result.payout}`);
-        } else if (playerBet) {
-          log('Player lost.');
-        }
-        return;
-      }
-
-      setRaceProgress(prev => {
-        const newProgress = [...prev];
-        const maxProgressThisStep = step + 1;
-        newProgress[raceWinner] = maxProgressThisStep;
-        for (let i = 0; i < newProgress.length; i++) {
-          if (i !== raceWinner) {
-            newProgress[i] = Math.min(
-              newProgress[i] + (Math.random() < 0.7 ? 1 : 0),
-              maxProgressThisStep - 1
-            );
+      const animateRace = (step) => {
+        log(`Animating race step ${step}`);
+        if (step >= RACE_LENGTH) {
+          setWinner(raceWinner);
+          log(`Race finished. Winner: Racer ${raceWinner}`);
+          if (playerBet && playerBet.racer === raceWinner) {
+            log(`Player won! Payout: ${result.payout}`);
+          } else if (playerBet) {
+            log('Player lost.');
           }
+          return;
         }
-        return newProgress;
-      });
 
-      log(`Race step ${step + 1} completed`);
-      raceAnimationRef.current = setTimeout(() => animateRace(step + 1), RACE_DURATION / RACE_LENGTH);
-    };
+        setRaceProgress(prev => {
+          const newProgress = [...prev];
+          const maxProgressThisStep = step + 1;
+          newProgress[raceWinner] = maxProgressThisStep;
+          for (let i = 0; i < newProgress.length; i++) {
+            if (i !== raceWinner) {
+              newProgress[i] = Math.min(
+                newProgress[i] + (Math.random() < 0.7 ? 1 : 0),
+                maxProgressThisStep - 1
+              );
+            }
+          }
+          return newProgress;
+        });
 
-    animateRace(0);
+        raceAnimationRef.current = setTimeout(() => animateRace(step + 1), RACE_DURATION / RACE_LENGTH);
+      };
+
+      log('Starting race animation');
+      animateRace(0);
+    } catch (error) {
+      log(`Error during race: ${error.message}`);
+      console.error('Race error:', error);
+    }
   }, [game, playerBet]);
+
+  useEffect(() => {
+    if (gamePhase === 'racing') {
+      log('Game phase changed to racing, calling runRace');
+      runRace();
+    }
+  }, [gamePhase, runRace]);
 
   useEffect(() => {
     if (gamePhase === 'betting') {
