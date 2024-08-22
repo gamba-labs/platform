@@ -6,6 +6,9 @@ const RACE_LENGTH = 10;
 const WAGER_OPTIONS = [1, 5, 10, 50, 100];
 const RACERS = ['🚗', '🏎️', '🚙', '🚓'];
 
+// Fair bet array with varied odds
+const BET_ARRAY = [0, 0, 0, 4];
+
 const RacingGame = () => {
   const [wager, setWager] = useWagerInput();
   const [selectedRacer, setSelectedRacer] = useState(0);
@@ -22,13 +25,8 @@ const RacingGame = () => {
       setRaceProgress(Array(RACERS.length).fill(0));
       setWinner(null);
 
-      // Create bet array based on selected racer
-      const betArray = RACERS.map((_, index) => 
-        index === selectedRacer ? RACERS.length - 1 : 0
-      );
-
       await game.play({
-        bet: betArray,
+        bet: BET_ARRAY,
         wager,
         metadata: [selectedRacer],
       });
@@ -78,7 +76,6 @@ const RacingGame = () => {
             <div key={index} style={{ margin: '10px 0' }}>
               {racer} {'-'.repeat(raceProgress[index])}
               {index === winner && '🏆'}
-              {index === selectedRacer && '💰'}
             </div>
           ))}
           {raceStatus === 'won' && <div style={{ color: 'green' }}>You won! 🎉</div>}
