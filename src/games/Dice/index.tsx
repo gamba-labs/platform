@@ -20,11 +20,11 @@ const RacingGame = () => {
   const [timeLeft, setTimeLeft] = useState(BETTING_WINDOW);
   const [playerBet, setPlayerBet] = useState(null);
   const [isPlacingBet, setIsPlacingBet] = useState(false);
+  const [raceResult, setRaceResult] = useState(null);
   const [debugLog, setDebugLog] = useState([]);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
-  const raceAnimationRef = useRef(null);
   const gameLoopRef = useRef(null);
 
   const log = useCallback((message) => {
@@ -53,9 +53,6 @@ const RacingGame = () => {
     gameLoopRef.current = setInterval(updateGameState, 1000);
     return () => {
       clearInterval(gameLoopRef.current);
-      if (raceAnimationRef.current) {
-        clearTimeout(raceAnimationRef.current);
-      }
     };
   }, [updateGameState]);
 
@@ -65,13 +62,14 @@ const RacingGame = () => {
     setIsPlacingBet(true);
     try {
       log('Placing bet...');
-      await game.play({
+      const result = await game.play({
         bet: BET_ARRAY,
         wager,
         metadata: [selectedRacer],
       });
       setPlayerBet({ racer: selectedRacer, wager });
-      log('Bet placed successfully');
+      setRaceResult(result);
+      log('Bet placed and result received');
     } catch (error) {
       log(`Bet error: ${error.message}`);
     } finally {
@@ -80,22 +78,12 @@ const RacingGame = () => {
   };
 
   const runRace = useCallback(async () => {
-    if (!playerBet) {
-      log('No bet placed, skipping race');
+    if (!raceResult) {
+      log('No race result, cannot start race');
       return;
     }
 
-    log('Waiting for race result...');
-    let result;
-    try {
-      result = await game.result();
-      log(`Race result received: ${JSON.stringify(result)}`);
-    } catch (error) {
-      log(`Error getting race result: ${error.message}`);
-      return;
-    }
-
-    const raceWinner = result.resultIndex;
+    const raceWinner = raceResult.resultIndex;
     log(`Starting race animation. Winner: ${raceWinner}`);
 
     for (let step = 0; step <= RACE_LENGTH; step++) {
@@ -119,23 +107,24 @@ const RacingGame = () => {
 
     setWinner(raceWinner);
     if (playerBet.racer === raceWinner) {
-      log(`You won! Payout: ${result.payout}`);
+      log(`You won! Payout: ${raceResult.payout}`);
     } else {
       log('You lost!');
     }
-  }, [game, playerBet, log]);
+  }, [raceResult, playerBet, log]);
 
   useEffect(() => {
-    if (gamePhase === 'racing' && playerBet) {
+    if (gamePhase === 'racing' && raceResult) {
       runRace();
     }
-  }, [gamePhase, playerBet, runRace]);
+  }, [gamePhase, raceResult, runRace]);
 
   useEffect(() => {
     if (gamePhase === 'betting') {
       setRaceProgress(Array(RACERS.length).fill(0));
       setWinner(null);
       setPlayerBet(null);
+      setRaceResult(null);
       log('Reset for new betting phase');
     }
   }, [gamePhase, log]);
