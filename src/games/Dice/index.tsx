@@ -18,11 +18,33 @@ const timeLeft = signal(BETTING_WINDOW);
 const raceProgress = signal(Array(RACERS.length).fill(0));
 const winner = signal(null);
 const playerBet = signal(null);
+const logs = signal([]);
 
 // Logging function
 const log = (message, data = {}) => {
-  console.log(`[${new Date().toISOString()}] ${message}`, data);
+  const logEntry = `[${new Date().toISOString()}] ${message} ${JSON.stringify(data)}`;
+  logs.value = [logEntry, ...logs.value.slice(0, 9)]; // Keep only the last 10 logs
 };
+
+const LogDisplay = () => (
+  <div style={{ 
+    position: 'fixed', 
+    bottom: '10px', 
+    left: '10px', 
+    right: '10px', 
+    background: 'rgba(0,0,0,0.8)', 
+    color: 'white', 
+    padding: '10px', 
+    fontFamily: 'monospace', 
+    fontSize: '12px', 
+    maxHeight: '200px', 
+    overflowY: 'auto' 
+  }}>
+    {logs.value.map((logEntry, index) => (
+      <div key={index}>{logEntry}</div>
+    ))}
+  </div>
+);
 
 const RacingGame = () => {
   const [wager, setWager] = useWagerInput();
@@ -89,7 +111,7 @@ const RacingGame = () => {
       playerBet.value = { racer: selectedRacer, wager };
       log('Bet placed successfully', playerBet.value);
     } catch (error) {
-      log('Error placing bet', { error });
+      log('Error placing bet', { error: error.message });
       console.error('Bet error:', error);
     }
   };
@@ -169,6 +191,7 @@ const RacingGame = () => {
             </div>
           )}
         </div>
+        <LogDisplay />
       </GambaUi.Portal>
       <GambaUi.Portal target="controls">
         <GambaUi.WagerInput
