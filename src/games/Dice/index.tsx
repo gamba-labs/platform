@@ -10,7 +10,6 @@ const BETTING_WINDOW = 30000; // 30 seconds
 const RACE_DURATION = 20000; // 20 seconds
 const COOLDOWN = 10000; // 10 seconds
 const TOTAL_CYCLE = BETTING_WINDOW + RACE_DURATION + COOLDOWN;
-const [isRaceStarted, setIsRaceStarted] = useState(false);
 
 const getWorldTime = async () => {
   try {
@@ -54,6 +53,7 @@ const RacingGame = () => {
   const [worldTimeOffset, setWorldTimeOffset] = useState(0);
   const [isPlacingBet, setIsPlacingBet] = useState(false);
   const [logs, setLogs] = useState([]);
+  const [isRaceStarted, setIsRaceStarted] = useState(false);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
@@ -75,60 +75,6 @@ const RacingGame = () => {
     const syncInterval = setInterval(syncTime, 60000); // Sync every minute
     return () => clearInterval(syncInterval);
   }, [syncTime]);
-
-  const updateGameState = useCallback(() => {
-  const now = Date.now() + worldTimeOffset;
-  const cyclePosition = now % TOTAL_CYCLE;
-  
-  if (cyclePosition < BETTING_WINDOW) {
-    setGamePhase('betting');
-    setTimeLeft(BETTING_WINDOW - cyclePosition);
-    setIsRaceStarted(false);
-    log(`Entered betting phase. Time left: ${Math.ceil((BETTING_WINDOW - cyclePosition) / 1000)}s`);
-  } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
-    if (gamePhase !== 'racing') {
-      setGamePhase('racing');
-      log('Entered racing phase.');
-      if (!isRaceStarted) {
-        setIsRaceStarted(true);
-        log('Starting race...');
-        runRace();
-      }
-    }
-    setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
-  } else {
-    setGamePhase('cooldown');
-    setTimeLeft(TOTAL_CYCLE - cyclePosition);
-    log(`Entered cooldown phase. Time left: ${Math.ceil((TOTAL_CYCLE - cyclePosition) / 1000)}s`);
-  }
-}, [worldTimeOffset, gamePhase, isRaceStarted, runRace]);
-
-  useEffect(() => {
-    const gameLoop = setInterval(updateGameState, 1000);
-    updateGameState(); // Initial update
-    return () => clearInterval(gameLoop);
-  }, [updateGameState]);
-
-  const placeBet = async () => {
-    if (gamePhase !== 'betting' || playerBet || isPlacingBet) return;
-    
-    setIsPlacingBet(true);
-    log(`Attempting to place bet on racer ${selectedRacer}`);
-    try {
-      await game.play({
-        bet: BET_ARRAY,
-        wager,
-        metadata: [selectedRacer],
-      });
-      setPlayerBet({ racer: selectedRacer, wager });
-      log(`Bet placed successfully on racer ${selectedRacer}`);
-    } catch (error) {
-      log(`Error placing bet: ${error.message}`);
-      console.error('Bet error:', error);
-    } finally {
-      setIsPlacingBet(false);
-    }
-  };
 
   const runRace = useCallback(async () => {
     if (raceAnimationRef.current) {
@@ -183,12 +129,59 @@ const RacingGame = () => {
     }
   }, [game, playerBet]);
 
-  useEffect(() => {
-    if (gamePhase === 'racing') {
-      log('Game phase changed to racing, calling runRace');
-      runRace();
+  const updateGameState = useCallback(() => {
+    const now = Date.now() + worldTimeOffset;
+    const cyclePosition = now % TOTAL_CYCLE;
+    
+    if (cyclePosition < BETTING_WINDOW) {
+      setGamePhase('betting');
+      setTimeLeft(BETTING_WINDOW - cyclePosition);
+      setIsRaceStarted(false);
+      log(`Entered betting phase. Time left: ${Math.ceil((BETTING_WINDOW - cyclePosition) / 1000)}s`);
+    } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
+      if (gamePhase !== 'racing') {
+        setGamePhase('racing');
+        log('Entered racing phase.');
+        if (!isRaceStarted) {
+          setIsRaceStarted(true);
+          log('Starting race...');
+          runRace();
+        }
+      }
+      setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
+    } else {
+      setGamePhase('cooldown');
+      setTimeLeft(TOTAL_CYCLE - cyclePosition);
+      log(`Entered cooldown phase. Time left: ${Math.ceil((TOTAL_CYCLE - cyclePosition) / 1000)}s`);
     }
-  }, [gamePhase, runRace]);
+  }, [worldTimeOffset, gamePhase, isRaceStarted, runRace]);
+
+  useEffect(() => {
+    const gameLoop = setInterval(updateGameState, 1000);
+    updateGameState(); // Initial update
+    return () => clearInterval(gameLoop);
+  }, [updateGameState]);
+
+  const placeBet = async () => {
+    if (gamePhase !== 'betting' || playerBet || isPlacingBet) return;
+    
+    setIsPlacingBet(true);
+    log(`Attempting to place bet on racer ${selectedRacer}`);
+    try {
+      await game.play({
+        bet: BET_ARRAY,
+        wager,
+        metadata: [selectedRacer],
+      });
+      setPlayerBet({ racer: selectedRacer, wager });
+      log(`Bet placed successfully on racer ${selectedRacer}`);
+    } catch (error) {
+      log(`Error placing bet: ${error.message}`);
+      console.error('Bet error:', error);
+    } finally {
+      setIsPlacingBet(false);
+    }
+  };
 
   useEffect(() => {
     if (gamePhase === 'betting') {
