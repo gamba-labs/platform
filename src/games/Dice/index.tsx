@@ -27,6 +27,7 @@ const RacingGame = () => {
   const gamba = useGamba();
   const gameLoopRef = useRef(null);
   const smartContractResultRef = useRef(null);
+  const isRaceRunningRef = useRef(false);
 
   const log = useCallback((message) => {
     console.log(message);
@@ -38,16 +39,32 @@ const RacingGame = () => {
     const cyclePosition = now % TOTAL_CYCLE;
     
     if (cyclePosition < BETTING_WINDOW) {
-      setGamePhase('betting');
+      setGamePhase(prev => {
+        if (prev !== 'betting') log('Transitioning to betting phase');
+        return 'betting';
+      });
       setTimeLeft(BETTING_WINDOW - cyclePosition);
     } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
-      setGamePhase('racing');
+      setGamePhase(prev => {
+        if (prev !== 'racing') {
+          log('Transitioning to racing phase');
+          if (smartContractResultRef.current) {
+            log('Smart contract result is available for racing');
+          } else {
+            log('Warning: No smart contract result available for racing');
+          }
+        }
+        return 'racing';
+      });
       setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
     } else {
-      setGamePhase('cooldown');
+      setGamePhase(prev => {
+        if (prev !== 'cooldown') log('Transitioning to cooldown phase');
+        return 'cooldown';
+      });
       setTimeLeft(TOTAL_CYCLE - cyclePosition);
     }
-  }, []);
+  }, [log]);
 
   useEffect(() => {
     updateGameState();
@@ -80,6 +97,11 @@ const RacingGame = () => {
   };
 
   const runRace = useCallback(async () => {
+    if (isRaceRunningRef.current) {
+      log('Race is already running, skipping');
+      return;
+    }
+
     log('Attempting to start race');
     if (!smartContractResultRef.current) {
       log('No smart contract result, cannot start race');
@@ -87,6 +109,7 @@ const RacingGame = () => {
       return;
     }
 
+    isRaceRunningRef.current = true;
     try {
       const raceWinner = smartContractResultRef.current.resultIndex;
       log(`Starting race animation. Winner: ${raceWinner}`);
@@ -119,12 +142,14 @@ const RacingGame = () => {
     } catch (error) {
       log(`Error during race: ${error.message}`);
       setError(`Race error: ${error.message}`);
+    } finally {
+      isRaceRunningRef.current = false;
     }
   }, [playerBet, log]);
 
   useEffect(() => {
-    if (gamePhase === 'racing' && smartContractResultRef.current) {
-      log('Game phase is racing and smart contract result is available. Triggering runRace.');
+    if (gamePhase === 'racing' && smartContractResultRef.current && !isRaceRunningRef.current) {
+      log('Conditions met to start the race. Triggering runRace.');
       runRace().catch(error => {
         log(`Unhandled error in runRace: ${error.message}`);
         setError(`Unhandled race error: ${error.message}`);
@@ -139,6 +164,7 @@ const RacingGame = () => {
       setWinner(null);
       setPlayerBet(null);
       smartContractResultRef.current = null;
+      isRaceRunningRef.current = false;
       setError(null);
     }
   }, [gamePhase]);
@@ -161,9 +187,9 @@ const RacingGame = () => {
             </div>
           )}
           {error && <div style={{ color: 'red' }}>Error: {error}</div>}
-          <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '12px' }}>
+          <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '12px', maxHeight: '150px', overflowY: 'auto' }}>
             Debug Log:
-            {debugLog.slice(-10).map((log, index) => (
+            {debugLog.map((log, index) => (
               <div key={index}>{log}</div>
             ))}
           </div>
