@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GambaUi, useWagerInput } from 'gamba-react-ui-v2';
 import { useGamba } from 'gamba-react-v2';
 
@@ -31,52 +31,53 @@ const RacingGame = () => {
   const [timeLeft, setTimeLeft] = useState(BETTING_WINDOW);
   const [playerBet, setPlayerBet] = useState(null);
   const [worldTimeOffset, setWorldTimeOffset] = useState(0);
+  const [isPlacingBet, setIsPlacingBet] = useState(false);
 
   const game = GambaUi.useGame();
   const gamba = useGamba();
+  const raceAnimationRef = useRef(null);
 
-  useEffect(() => {
-    const syncTime = async () => {
-      const worldTime = await getWorldTime();
-      const localTime = Date.now();
-      setWorldTimeOffset(worldTime - localTime);
-    };
-
-    syncTime();
-    const syncInterval = setInterval(syncTime, 60000); // Sync every minute
-
-    return () => clearInterval(syncInterval);
+  const syncTime = useCallback(async () => {
+    const worldTime = await getWorldTime();
+    const localTime = Date.now();
+    setWorldTimeOffset(worldTime - localTime);
   }, []);
 
   useEffect(() => {
-    const updateGameState = () => {
-      const now = Date.now() + worldTimeOffset;
-      const cyclePosition = now % TOTAL_CYCLE;
-      
-      if (cyclePosition < BETTING_WINDOW) {
-        setGamePhase('betting');
-        setTimeLeft(BETTING_WINDOW - cyclePosition);
-      } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
+    syncTime();
+    const syncInterval = setInterval(syncTime, 60000); // Sync every minute
+    return () => clearInterval(syncInterval);
+  }, [syncTime]);
+
+  const updateGameState = useCallback(() => {
+    const now = Date.now() + worldTimeOffset;
+    const cyclePosition = now % TOTAL_CYCLE;
+    
+    if (cyclePosition < BETTING_WINDOW) {
+      setGamePhase('betting');
+      setTimeLeft(BETTING_WINDOW - cyclePosition);
+    } else if (cyclePosition < BETTING_WINDOW + RACE_DURATION) {
+      if (gamePhase !== 'racing') {
         setGamePhase('racing');
-        setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
-        if (gamePhase !== 'racing') {
-          runRace();
-        }
-      } else {
-        setGamePhase('cooldown');
-        setTimeLeft(TOTAL_CYCLE - cyclePosition);
+        runRace();
       }
-    };
-
-    const gameLoop = setInterval(updateGameState, 1000);
-    updateGameState(); // Initial update
-
-    return () => clearInterval(gameLoop);
+      setTimeLeft(BETTING_WINDOW + RACE_DURATION - cyclePosition);
+    } else {
+      setGamePhase('cooldown');
+      setTimeLeft(TOTAL_CYCLE - cyclePosition);
+    }
   }, [worldTimeOffset, gamePhase]);
 
+  useEffect(() => {
+    const gameLoop = setInterval(updateGameState, 1000);
+    updateGameState(); // Initial update
+    return () => clearInterval(gameLoop);
+  }, [updateGameState]);
+
   const placeBet = async () => {
-    if (gamePhase !== 'betting' || playerBet) return;
+    if (gamePhase !== 'betting' || playerBet || isPlacingBet) return;
     
+    setIsPlacingBet(true);
     try {
       await game.play({
         bet: BET_ARRAY,
@@ -86,15 +87,33 @@ const RacingGame = () => {
       setPlayerBet({ racer: selectedRacer, wager });
     } catch (error) {
       console.error('Bet error:', error);
+    } finally {
+      setIsPlacingBet(false);
     }
   };
 
-  const runRace = async () => {
+  const runRace = useCallback(async () => {
+    if (raceAnimationRef.current) {
+      clearTimeout(raceAnimationRef.current);
+    }
+
+    setRaceProgress(Array(RACERS.length).fill(0));
+    setWinner(null);
+
     const result = await game.result();
     const raceWinner = result.resultIndex;
 
-    for (let step = 0; step < RACE_LENGTH; step++) {
-      await new Promise(resolve => setTimeout(resolve, RACE_DURATION / RACE_LENGTH));
+    const animateRace = (step) => {
+      if (step >= RACE_LENGTH) {
+        setWinner(raceWinner);
+        if (playerBet && playerBet.racer === raceWinner) {
+          console.log('You won!', result.payout);
+        } else if (playerBet) {
+          console.log('You lost!');
+        }
+        return;
+      }
+
       setRaceProgress(prev => {
         const newProgress = [...prev];
         const maxProgressThisStep = step + 1;
@@ -109,15 +128,12 @@ const RacingGame = () => {
         }
         return newProgress;
       });
-    }
-    setWinner(raceWinner);
 
-    if (playerBet && playerBet.racer === raceWinner) {
-      console.log('You won!', result.payout);
-    } else if (playerBet) {
-      console.log('You lost!');
-    }
-  };
+      raceAnimationRef.current = setTimeout(() => animateRace(step + 1), RACE_DURATION / RACE_LENGTH);
+    };
+
+    animateRace(0);
+  }, [game, playerBet]);
 
   useEffect(() => {
     if (gamePhase === 'betting') {
@@ -151,19 +167,19 @@ const RacingGame = () => {
           options={WAGER_OPTIONS}
           value={wager}
           onChange={setWager}
-          disabled={gamePhase !== 'betting' || playerBet !== null}
+          disabled={gamePhase !== 'betting' || playerBet !== null || isPlacingBet}
         />
         <GambaUi.Button
-          disabled={gamePhase !== 'betting' || playerBet !== null}
+          disabled={gamePhase !== 'betting' || playerBet !== null || isPlacingBet}
           onClick={() => setSelectedRacer((selectedRacer + 1) % RACERS.length)}
         >
           Selected: {RACERS[selectedRacer]}
         </GambaUi.Button>
         <GambaUi.PlayButton
           onClick={placeBet}
-          disabled={gamePhase !== 'betting' || playerBet !== null || gamba.isPlaying}
+          disabled={gamePhase !== 'betting' || playerBet !== null || isPlacingBet || gamba.isPlaying}
         >
-          Place Bet
+          {isPlacingBet ? 'Placing Bet...' : 'Place Bet'}
         </GambaUi.PlayButton>
       </GambaUi.Portal>
     </>
