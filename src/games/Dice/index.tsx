@@ -1,6 +1,24 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { GambaUi, useWagerInput, useSound } from 'gamba-react-ui-v2';
 import { useGamba } from 'gamba-react-v2';
+import firebase from 'firebase/app';
+import 'firebase/database';
+
+// Initialize Firebase (replace with your own config)
+const firebaseConfig = {
+  apiKey: "AIzaSyCrZw1nIwHHoglV-L1AcOrcXasDRrFg0A8",
+  authDomain: "raceme-54047.firebaseapp.com",
+  databaseURL: "https://raceme-54047-default-rtdb.firebaseio.com",
+  projectId: "raceme-54047",
+  storageBucket: "raceme-54047.appspot.com",
+  messagingSenderId: "530870651607",
+  appId: "1:530870651607:web:6806b1b42ea85d1d5a7e92",
+  measurementId: "G-S7RNR562MT"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const RACE_LENGTH = 10;
 const WAGER_OPTIONS = [1, 5, 10, 50, 100];
@@ -18,6 +36,61 @@ const LogDisplay = ({ logs }) => (
     ))}
   </div>
 );
+
+const ChatRoom = () => {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+
+  useEffect(() => {
+    const messagesRef = firebase.database().ref('messages');
+    messagesRef.on('value', (snapshot) => {
+      const messagesData = snapshot.val();
+      if (messagesData) {
+        const messageList = Object.entries(messagesData).map(([key, value]) => ({
+          id: key,
+          ...value
+        }));
+        setMessages(messageList);
+      }
+    });
+
+    return () => messagesRef.off();
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (newMessage.trim()) {
+      const messagesRef = firebase.database().ref('messages');
+      const newMessageRef = messagesRef.push();
+      newMessageRef.set({
+        text: newMessage,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+      });
+      setNewMessage('');
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: '300px', margin: '20px auto' }}>
+      <h3>Chat Room</h3>
+      <div style={{ height: '200px', overflowY: 'scroll', border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
+        {messages.map((message) => (
+          <div key={message.id}>{message.text}</div>
+        ))}
+      </div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Type a message..."
+          style={{ width: '70%' }}
+        />
+        <button type="submit" style={{ width: '28%', marginLeft: '2%' }}>Send</button>
+      </form>
+    </div>
+  );
+};
 
 const RacingGame = () => {
   const [wager, setWager] = useWagerInput();
@@ -114,6 +187,7 @@ const RacingGame = () => {
               {winner ? 'You won! 🎉' : 'You lost! 😢'}
             </div>
           )}
+          <ChatRoom />
         </div>
         <LogDisplay logs={logs} />
       </GambaUi.Portal>
