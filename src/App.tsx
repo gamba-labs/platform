@@ -13,9 +13,9 @@ import RecentPlays from './sections/RecentPlays/RecentPlays'
 import Toasts from './sections/Toasts'
 import { MainWrapper, TosInner, TosWrapper } from './styles'
 import { PLATFORM_CREATOR_ADDRESS, TOS_HTML } from './constants'
-import { getReferalAddressFromHash } from './@referal'
+import { getReferralAddressFromHash } from './@referral'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { fetchReferal, getRefererPda } from './@referal/program'
+import { fetchReferral, getReferrerPda } from './@referral/program'
 import { PublicKey } from '@solana/web3.js'
 import { AnchorProvider } from '@coral-xyz/anchor'
 
@@ -52,34 +52,34 @@ function ErrorHandler() {
   )
 }
 
-function useReferal() {
+function useReferral() {
   const wallet = useWallet()
   const anchor = useGambaProvider()
 
   useEffect(() => {
-    const pda = getRefererPda(PLATFORM_CREATOR_ADDRESS, wallet.publicKey ?? PublicKey.default)
-    fetchReferal(anchor.anchorProvider, pda)
-      .then((referer) => {
-        if (referer)
-          window.sessionStorage.setItem('referalAddressOnChain', referer.toString())
+    const pda = getReferrerPda(PLATFORM_CREATOR_ADDRESS, wallet.publicKey ?? PublicKey.default)
+    fetchReferral(anchor.anchorProvider, pda)
+      .then((referrer) => {
+        if (referrer)
+          window.sessionStorage.setItem('referralAddressOnChain', referrer.toString())
       })
       .catch((err) => {
-        console.error('Referal', err)
+        console.error('Referral', err)
       })
   }, [anchor, wallet.publicKey])
 
   useEffect(() => {
-    const checkReferal = () => {
-      const address = getReferalAddressFromHash()
+    const checkReferral = () => {
+      const address = getReferralAddressFromHash()
       if (address) {
         history.replaceState({}, document.title, '.')
-        window.sessionStorage.setItem('referalAddress', address.toString())
+        window.sessionStorage.setItem('referralAddress', address.toString())
       }
     }
-    checkReferal()
-    addEventListener('hashchange', checkReferal)
+    checkReferral()
+    addEventListener('hashchange', checkReferral)
     return () => {
-      removeEventListener('hashchange', checkReferal)
+      removeEventListener('hashchange', checkReferral)
     }
   }, [])
 }
@@ -88,7 +88,7 @@ export default function App() {
   const newcomer = useUserStore((state) => state.newcomer)
   const set = useUserStore((state) => state.set)
 
-  useReferal()
+  useReferral()
 
   return (
     <>

@@ -41,7 +41,7 @@ function ConnectedButton() {
       return walletModal.setVisible(true)
     }
 
-    const referralLink = location.host + '#' + wallet.publicKey.toString()
+    const referralLink = 'https://' + location.host + '?' + 'ref=' + wallet.publicKey.toString()
     navigator.clipboard.writeText(referralLink)
     toast({
       title: '📋 Copied to clipboard',

@@ -3,18 +3,18 @@ import '@solana/wallet-adapter-react-ui/styles.css'
 import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js'
 import { GambaPlugin } from 'gamba-react-v2'
 import { PLATFORM_REFERRAL_FEE } from '../constants'
-import { createReferal } from './program'
+import { createReferral } from './program'
 
 const getRecipientFromStorage = () => {
   try {
-    const referalAddressOnChain = sessionStorage.getItem('referalAddressOnChain')
-    const referalAddressLocal = sessionStorage.getItem('referalAddress')
-    const referalAddress = referalAddressOnChain ?? referalAddressLocal
-    console.log(referalAddressOnChain, referalAddressLocal)
-    if (!referalAddress) return null
+    const referralAddressOnChain = sessionStorage.getItem('referralAddressOnChain')
+    const referralAddressLocal = sessionStorage.getItem('referralAddress')
+    const referralAddress = referralAddressOnChain ?? referralAddressLocal
+    console.log(referralAddressOnChain, referralAddressLocal)
+    if (!referralAddress) return null
     return {
-      recipient: new PublicKey(referalAddress),
-      onChain: !!referalAddressOnChain,
+      recipient: new PublicKey(referralAddress),
+      onChain: !!referralAddressOnChain,
     }
   } catch {
     return null
@@ -24,21 +24,21 @@ const getRecipientFromStorage = () => {
 /**
  * This function returns additional instructions that will be executed before playing
  */
-export const makeReferalPlugin = (
+export const makeReferralPlugin = (
   feePercent = PLATFORM_REFERRAL_FEE,
 ): GambaPlugin => async (input, context) => {
-  const referal = getRecipientFromStorage()
-  if (!referal) return []
+  const referral = getRecipientFromStorage()
+  if (!referral) return []
 
   const instructions: TransactionInstruction[] = []
   const tokenAmount = BigInt(Math.floor(input.wager * feePercent))
 
-  const { recipient, onChain } = referal
+  const { recipient, onChain } = referral
 
   if (!onChain) {
-    // Save the referal address on-chain
+    // Save the referral address on-chain
     instructions.push(
-      await createReferal(context.provider.anchorProvider!, input.creator, recipient),
+      await createReferral(context.provider.anchorProvider!, input.creator, recipient),
     )
   }
 
