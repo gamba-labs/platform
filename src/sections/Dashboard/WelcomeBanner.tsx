@@ -110,8 +110,8 @@ export function WelcomeBanner() {
     if (!wallet.publicKey) {
       return walletModal.setVisible(true)
     }
-    const referalLink = location.host + '#' + wallet.publicKey.toString()
-    navigator.clipboard.writeText(referalLink)
+    const referralLink = 'https://' + location.host + '?' + 'ref=' + wallet.publicKey.toString()
+    navigator.clipboard.writeText(referralLink)
     toast({
       title: '📋 Copied to clipboard',
       description: `Share your link to earn a ${(PLATFORM_REFERRAL_FEE * 100)}% fee when players use this platform`,
