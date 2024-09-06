@@ -32,7 +32,8 @@ h1, h2 {
 }
 
 body {
-  background: var(--background-color);
+  background: var(--background-color) url('./skibidi.png') no-repeat center center fixed;
+  background-size: cover; /* Ensures the image covers the entire background */
   color: var(--text-color);
   cursor: default;
   margin: 0;
