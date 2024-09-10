@@ -16,13 +16,16 @@ export const EXPLORER_URL = 'https://explorer.gamba.so'
 export const PLATFORM_SHARABLE_URL = 'play.gamba.so'
 
 // Creator fee (in %)
-export const PLATFORM_CREATOR_FEE = 0.01 // 1% !!max 7%!!
+export const PLATFORM_CREATOR_FEE = 0.01 // 1% !!max 5%!!
 
 // Jackpot fee (in %)
 export const PLATFORM_JACKPOT_FEE = 0.001 // 0.1%
 
-// Referral fee (in %) - this gets deducted from the creator fee
+// Referral fee (in %)
 export const PLATFORM_REFERRAL_FEE = 0.0025 // 0.25%
+
+/** If the user should be able to revoke an invite after they've accepted an invite */
+export const PLATFORM_ALLOW_REFERRER_REMOVAL = true
 
 // Just a helper function
 const lp = (tokenMint: PublicKey | string, poolAuthority?: PublicKey | string): PoolToken => ({

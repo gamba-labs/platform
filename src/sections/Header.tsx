@@ -3,6 +3,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { Modal } from '../components/Modal'
+import { PLATFORM_JACKPOT_FEE } from '../constants'
 import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
 
@@ -16,7 +17,7 @@ const Bonus = styled.button`
   font-size: 12px;
   text-transform: uppercase;
   font-weight: bold;
-  transition: background .2s;
+  transition: background-color .2s;
   &:hover {
     background: white;
   }
@@ -76,12 +77,15 @@ export default function Header() {
             The Jackpot is a prize pool that grows with every bet made. As the Jackpot grows, so does your chance of winning. Once a winner is selected, the value of the Jackpot resets and grows from there until a new winner is selected.
           </p>
           <p>
-            You will be paying a maximum of {(context.defaultJackpotFee * 100).toLocaleString(undefined, { maximumFractionDigits: 4 })}% for each wager for a chance to win.
+            You will be paying a maximum of {(PLATFORM_JACKPOT_FEE * 100).toLocaleString(undefined, { maximumFractionDigits: 4 })}% for each wager for a chance to win.
           </p>
-          <GambaUi.Switch
-            checked={context.defaultJackpotFee > 0}
-            onChange={(checked) => context.setDefaultJackpotFee(checked ? 0.01 : 0)}
-          />
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {context.defaultJackpotFee === 0 ? 'DISABLED' : 'ENABLED'}
+            <GambaUi.Switch
+              checked={context.defaultJackpotFee > 0}
+              onChange={(checked) => context.setDefaultJackpotFee(checked ? PLATFORM_JACKPOT_FEE : 0)}
+            />
+          </label>
         </Modal>
       )}
       <StyledHeader>

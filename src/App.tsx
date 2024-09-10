@@ -1,9 +1,10 @@
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { GambaUi } from 'gamba-react-ui-v2'
-import { useGambaProvider, useTransactionError } from 'gamba-react-v2'
-import React, { useEffect } from 'react'
+import { useTransactionError } from 'gamba-react-v2'
+import React from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Modal } from './components/Modal'
+import { TOS_HTML } from './constants'
 import { useToast } from './hooks/useToast'
 import { useUserStore } from './hooks/useUserStore'
 import Dashboard from './sections/Dashboard/Dashboard'
@@ -12,12 +13,6 @@ import Header from './sections/Header'
 import RecentPlays from './sections/RecentPlays/RecentPlays'
 import Toasts from './sections/Toasts'
 import { MainWrapper, TosInner, TosWrapper } from './styles'
-import { PLATFORM_CREATOR_ADDRESS, TOS_HTML } from './constants'
-import { getReferralAddressFromHash } from './@referral'
-import { useWallet } from '@solana/wallet-adapter-react'
-import { fetchReferral, getReferrerPda } from './@referral/program'
-import { PublicKey } from '@solana/web3.js'
-import { AnchorProvider } from '@coral-xyz/anchor'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -52,43 +47,9 @@ function ErrorHandler() {
   )
 }
 
-function useReferral() {
-  const wallet = useWallet()
-  const anchor = useGambaProvider()
-
-  useEffect(() => {
-    const pda = getReferrerPda(PLATFORM_CREATOR_ADDRESS, wallet.publicKey ?? PublicKey.default)
-    fetchReferral(anchor.anchorProvider, pda)
-      .then((referrer) => {
-        if (referrer)
-          window.sessionStorage.setItem('referralAddressOnChain', referrer.toString())
-      })
-      .catch((err) => {
-        console.error('Referral', err)
-      })
-  }, [anchor, wallet.publicKey])
-
-  useEffect(() => {
-    const checkReferral = () => {
-      const address = getReferralAddressFromHash()
-      if (address) {
-        history.replaceState({}, document.title, '.')
-        window.sessionStorage.setItem('referralAddress', address.toString())
-      }
-    }
-    checkReferral()
-    addEventListener('hashchange', checkReferral)
-    return () => {
-      removeEventListener('hashchange', checkReferral)
-    }
-  }, [])
-}
-
 export default function App() {
   const newcomer = useUserStore((state) => state.newcomer)
   const set = useUserStore((state) => state.set)
-
-  useReferral()
 
   return (
     <>

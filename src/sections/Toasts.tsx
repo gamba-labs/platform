@@ -8,7 +8,7 @@ const StyledToasts = styled.div`
   right: 0;
   top: 60px;
   pointer-events: none;
-  z-index: 101;
+  z-index: 1001;
   display: flex;
   flex-direction: column-reverse;
   gap: 10px;

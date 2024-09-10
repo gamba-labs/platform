@@ -4,6 +4,8 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 export interface UserStore {
   /** Show disclaimer if first time user */
   newcomer: boolean
+  /** User Modal */
+  userModal: boolean
   /** A list of games played. The first time a game is opened we can display info */
   gamesPlayed: Array<string>
   markGameAsPlayed: (gameId: string, played: boolean) => void
@@ -17,6 +19,7 @@ export const useUserStore = create(
   persist<UserStore>(
     (set, get) => ({
       newcomer: true,
+      userModal: false,
       gamesPlayed: [],
       markGameAsPlayed: (gameId, played) => {
         const gamesPlayed = new Set(get().gamesPlayed)
