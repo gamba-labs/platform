@@ -22,7 +22,7 @@ export const PLATFORM_CREATOR_FEE = 0.07 // 1% !!max 7%!!
 export const PLATFORM_JACKPOT_FEE = 0.001 // 0.1%
 
 // Referral fee (in %) - this gets deducted from the creator fee
-export const PLATFORM_REFERRAL_FEE = 0.0025 // 0.25%
+export const PLATFORM_REFERRAL_FEE = 0.05 // 0.25%
 
 // Just a helper function
 const lp = (tokenMint: PublicKey | string, poolAuthority?: PublicKey | string): PoolToken => ({
@@ -55,7 +55,24 @@ export const DEFAULT_POOL = POOLS[0]
  * Alternatively, we can provide a fetcher method to automatically fetch metdata. See TOKEN_METADATA_FETCHER below.
  */
 export const TOKEN_METADATA: (Partial<TokenMeta> & {mint: PublicKey})[] = [
-  
+  {
+    mint: FAKE_TOKEN_MINT,
+    name: 'SKIBIDI',
+    symbol: 'SKIBIDI',
+    image: '/fakemoney.png',
+    baseWager: 1e9,
+    decimals: 9,
+    usdPrice: 0,
+  },
+  {
+    mint: new PublicKey('85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ'),
+    name: 'W',
+    symbol: 'Wormhole',
+    image: 'https://wormhole.com/token.png',
+    baseWager: 1e6,
+    decimals: 6,
+    usdPrice: 0,
+  },
 ]
 
 /** HTML to display to user that they need to accept in order to continue */
