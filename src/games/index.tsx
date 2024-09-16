@@ -1,5 +1,6 @@
 import { GameBundle } from 'gamba-react-ui-v2'
 import React from 'react'
+import { Analytics } from '@vercel/analytics/react'
 
 export const GAMES: GameBundle[] = [
   // {
