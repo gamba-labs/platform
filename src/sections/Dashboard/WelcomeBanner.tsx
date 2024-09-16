@@ -122,7 +122,7 @@ export function WelcomeBanner() {
       <div>
         <h1>Welcome to SKIBIDI 👋</h1>
         <p>
-          A fair, simple and decentralized casino on Solana.
+          A fair, simple and decentralized casino on Solana. Take the SKIBIDI token for a free run. 
         </p>
       </div>
       <Buttons>
@@ -130,10 +130,10 @@ export function WelcomeBanner() {
           💸 Copy Invite for Referral Bonus
         </button>
         <button onClick={() => window.open('https://www.skibidi.bet/', '_blank')}>
-          🚀 Add Liquidity
+          🚀 Add Liquidity (SOON)
         </button>
         <button onClick={() => window.open('https://skibidi.bet', '_blank')}>
-          💬 Discord
+          💬 Discord (SOON)
         </button>
       </Buttons>
     </Welcome>
