@@ -20,6 +20,7 @@ import { PublicKey } from '@solana/web3.js'
 import { AnchorProvider } from '@coral-xyz/anchor'
 import { Analytics } from '@vercel/analytics/react'
 
+        <Analytics />
 
 function ScrollToTop() {
   const { pathname } = useLocation()
