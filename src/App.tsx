@@ -20,6 +20,24 @@ import { PublicKey } from '@solana/web3.js'
 import { AnchorProvider } from '@coral-xyz/anchor'
 import { Analytics } from '@vercel/analytics/react'
 
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <head>
+        <title>Next.js</title>
+      </head>
+      <body>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+  
 function ScrollToTop() {
   const { pathname } = useLocation()
   React.useEffect(() => window.scrollTo(0, 0), [pathname])
