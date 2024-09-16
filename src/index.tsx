@@ -13,6 +13,8 @@ import { makeReferralPlugin } from './@referral/plugin'
 import './styles.css'
 import { Analytics } from '@vercel/analytics/react'
 
+        <Analytics />
+
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
 function Root() {
