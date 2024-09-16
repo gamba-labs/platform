@@ -18,6 +18,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { fetchReferral, getReferrerPda } from './@referral/program'
 import { PublicKey } from '@solana/web3.js'
 import { AnchorProvider } from '@coral-xyz/anchor'
+import { Analytics } from '@vercel/analytics/react'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
