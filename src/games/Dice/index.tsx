@@ -6,19 +6,32 @@ import Slider from './Slider'
 import { SOUND_LOSE, SOUND_PLAY, SOUND_TICK, SOUND_WIN } from './constants'
 import { Container, Result, RollUnder, Stats } from './styles'
 
-const DICE_SIDES = 100
+const calculateArraySize = (odds: number): number => {
+  const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a)
+  return 100 / gcd(100, odds)
+}
 
-export const outcomes = (
-  length: number,
-  multiplierCallback: (resultIndex: number) => number | undefined,
-) => {
-  const payoutArray = Array.from({ length })
-    .map((_, resultIndex) => {
-      const payout = multiplierCallback(resultIndex) ?? 0
-      return payout
-    })
-  const totalValue = payoutArray.reduce((p, x) => p + x, 0)
-  return payoutArray.map((x) => Number(BigInt(x * BPS_PER_WHOLE) / BigInt(totalValue || 1) * BigInt(length)) / BPS_PER_WHOLE)
+export const outcomes = (odds: number) => {
+  const arraySize = calculateArraySize(odds)
+  const payout = (100 / odds).toFixed(4)
+
+  let payoutArray = Array.from({ length: arraySize }).map((_, index) =>
+    index < (arraySize * (odds / 100)) ? parseFloat(payout) : 0
+  )
+
+  const totalValue = payoutArray.reduce((acc, curr) => acc + curr, 0)
+
+  if (totalValue > arraySize) {
+    for (let i = payoutArray.length - 1; i >= 0; i--) {
+      if (payoutArray[i] > 0) {
+        payoutArray[i] -= totalValue - arraySize
+        payoutArray[i] = parseFloat(payoutArray[i].toFixed(4))
+        break
+      }
+    }
+  }
+
+  return payoutArray
 }
 
 export default function Dice() {
@@ -26,7 +39,7 @@ export default function Dice() {
   const [wager, setWager] = useWagerInput()
   const pool = useCurrentPool()
   const [resultIndex, setResultIndex] = React.useState(-1)
-  const [rollUnderIndex, setRollUnderIndex] = React.useState(Math.floor(DICE_SIDES / 2))
+  const [rollUnderIndex, setRollUnderIndex] = React.useState(Math.floor(100 / 2))
   const sounds = useSound({
     win: SOUND_WIN,
     play: SOUND_PLAY,
@@ -34,18 +47,10 @@ export default function Dice() {
     tick: SOUND_TICK,
   })
 
-  const multiplier = Number(BigInt(DICE_SIDES * BPS_PER_WHOLE) / BigInt(rollUnderIndex)) / BPS_PER_WHOLE
+  const odds = Math.floor((rollUnderIndex / 100) * 100)
+  const multiplier = Number(BigInt(100 * BPS_PER_WHOLE) / BigInt(rollUnderIndex)) / BPS_PER_WHOLE
 
-  const bet = React.useMemo(
-    () => outcomes(
-      DICE_SIDES,
-      (resultIndex) => {
-        if (resultIndex < rollUnderIndex) {
-          return (DICE_SIDES - rollUnderIndex)
-        }
-      }),
-    [rollUnderIndex],
-  )
+  const bet = React.useMemo(() => outcomes(odds), [rollUnderIndex])
 
   const maxWin = multiplier * wager
 
@@ -61,13 +66,15 @@ export default function Dice() {
 
     const result = await game.result()
 
-    setResultIndex(result.resultIndex)
+    const win = result.payout > 0
 
-    if (result.resultIndex < rollUnderIndex) {
-      sounds.play('win')
-    } else {
-      sounds.play('lose')
-    }
+    const resultNum = win
+      ? Math.floor(Math.random() * rollUnderIndex)
+      : Math.floor(Math.random() * (100 - rollUnderIndex) + rollUnderIndex)
+
+    setResultIndex(resultNum)
+
+    win ? sounds.play('win') : sounds.play('lose')
   }
 
   return (
@@ -83,63 +90,46 @@ export default function Dice() {
             </RollUnder>
             <Stats>
               <div>
-                <div>
-                  {(rollUnderIndex / DICE_SIDES * 100).toFixed(0)}%
-                </div>
+                <div>{(rollUnderIndex / 100 * 100).toFixed(0)}%</div>
                 <div>Win Chance</div>
               </div>
               <div>
-                <div>
-                  {multiplier.toFixed(2)}x
-                </div>
+                <div>{multiplier.toFixed(2)}x</div>
                 <div>Multiplier</div>
               </div>
               <div>
                 {maxWin > pool.maxPayout ? (
-                  <div style={{ color: 'red' }}>
-                    Too high
-                  </div>
+                  <div style={{ color: 'red' }}>Too high</div>
                 ) : (
-                  <div>
-                    <TokenValue suffix="" amount={maxWin} />
-                  </div>
+                  <div><TokenValue suffix="" amount={maxWin} /></div>
                 )}
                 <div>Payout</div>
               </div>
             </Stats>
             <div style={{ position: 'relative' }}>
-              {resultIndex > -1 &&
-                <Result style={{ left: `${resultIndex / DICE_SIDES * 100}%` }}>
-                  <div key={resultIndex}>
-                    {resultIndex + 1}
-                  </div>
+              {resultIndex > -1 && (
+                <Result style={{ left: `${resultIndex / 100 * 100}%` }}>
+                  <div key={resultIndex}>{resultIndex + 1}</div>
                 </Result>
-              }
+              )}
               <Slider
                 disabled={gamba.isPlaying}
-                range={[0, DICE_SIDES]}
+                range={[0, 100]}
                 min={1}
-                max={DICE_SIDES - 5}
+                max={100 - 5}
                 value={rollUnderIndex}
-                onChange={
-                  (value) => {
-                    setRollUnderIndex(value)
-                    sounds.play('tick')
-                  }
-                }
+                onChange={(value) => {
+                  setRollUnderIndex(value)
+                  sounds.play('tick')
+                }}
               />
             </div>
           </Container>
         </GambaUi.Responsive>
       </GambaUi.Portal>
       <GambaUi.Portal target="controls">
-        <GambaUi.WagerInput
-          value={wager}
-          onChange={setWager}
-        />
-        <GambaUi.PlayButton onClick={play}>
-          Roll
-        </GambaUi.PlayButton>
+        <GambaUi.WagerInput value={wager} onChange={setWager} />
+        <GambaUi.PlayButton onClick={play}>Roll</GambaUi.PlayButton>
       </GambaUi.Portal>
     </>
   )
