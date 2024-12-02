@@ -110,4 +110,16 @@ export const GAMES: GameBundle[] = [
     },
     app: React.lazy(() => import('./CrashGame')),
   },
+  {
+    id: 'blackjack',
+    meta: {
+      background: '#084700',
+      image: '/games/blackjack.png',
+      name: 'BlackJack',
+      description: `
+        A simplified blackjack game where you and the dealer each get two cards. Win 2.5x your wager with a blackjack (21 with two cards), or 2x if your total beats the dealer's without exceeding 21. Ties or lower totals result in a loss. Enjoy quick gameplay without the usual complexities.
+      `,
+    },
+    app: React.lazy(() => import('./BlackJack')),
+  },
 ]
