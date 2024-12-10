@@ -3,14 +3,11 @@ import Matter from 'matter-js'
 const WIDTH = 700
 const HEIGHT = 700
 
-// How many plinkos to simulate to find desired result. More is slower but more likely to yield desired result
 const SIMULATIONS = 100
-// Size of the plinko
 export const PLINKO_RAIUS = 9
 export const PEG_RADIUS = 11
 const RESTISTUTION = .4
 const GRAVITY = 1
-// How far from the center plinkos can spawn
 const SPAWN_OFFSET_RANGE = 10
 
 export const bucketWallHeight = 60
@@ -31,9 +28,15 @@ export interface PlinkoProps {
   rows: number
 }
 
+interface SimulationResult {
+  bucketIndex: number
+  plinkoIndex: number
+  path: {x:number,y:number}[]
+  collisions: { frame: number, event: PlinkoContactEvent }[]
+}
+
 export class Plinko {
   width = WIDTH
-
   height = HEIGHT
 
   private engine = Matter.Engine.create({
@@ -42,25 +45,27 @@ export class Plinko {
   })
 
   private runner = Matter.Runner.create()
-
   private props: PlinkoProps
-
   private ballComposite = Matter.Composite.create()
   private bucketComposite = Matter.Composite.create()
-
   private startPositions: number[]
+  private currentPath: {x:number,y:number}[] | null = null
+  private replayCollisions: { frame: number, event: PlinkoContactEvent }[] = []
+  private currentFrame: number = 0
+  private replayBall: Matter.Body | null = null
+  private animationId: number | null = null
+  private visualizePath: boolean = false
+
+  setVisualizePath(enabled: boolean) {
+    this.visualizePath = enabled
+  }
 
   private makeBuckets() {
     const unique = Array.from(new Set(this.props.multipliers))
-
     const secondHalf = [...unique].slice(1)
     const firstHalf = [...secondHalf].reverse()
     const center = [unique[0], unique[0], unique[0]]
-    const buckets = [
-      ...firstHalf,
-      ...center,
-      ...secondHalf,
-    ]
+    const buckets = [...firstHalf, ...center, ...secondHalf]
     const numBuckets = buckets.length
     const bucketWidth = this.width / numBuckets
     const barriers = Array.from({ length: numBuckets + 1 }).map((_, i) => {
@@ -71,19 +76,18 @@ export class Plinko {
         chamfer: { radius: 2 },
       })
     })
-    const sensors = buckets.map(
-      (bucketMultiplier, bucketIndex) => {
-        const x = bucketIndex * bucketWidth + bucketWidth / 2
-        return Matter.Bodies.rectangle(x, this.height - bucketHeight / 2, bucketWidth - barrierWidth, bucketHeight, {
-          isStatic: true,
-          isSensor: true,
-          label: 'Bucket',
-          plugin: {
-            bucketIndex,
-            bucketMultiplier,
-          },
-        })
+    const sensors = buckets.map((bucketMultiplier, bucketIndex) => {
+      const x = bucketIndex * bucketWidth + bucketWidth / 2
+      return Matter.Bodies.rectangle(x, this.height - bucketHeight / 2, bucketWidth - barrierWidth, bucketHeight, {
+        isStatic: true,
+        isSensor: true,
+        label: 'Bucket',
+        plugin: {
+          bucketIndex,
+          bucketMultiplier,
+        },
       })
+    })
 
     return [...sensors, ...barriers]
   }
@@ -113,6 +117,10 @@ export class Plinko {
   cleanup() {
     Matter.World.clear(this.engine.world, false)
     Matter.Engine.clear(this.engine)
+    if (this.animationId !== null) {
+      cancelAnimationFrame(this.animationId)
+      this.animationId = null
+    }
   }
 
   private makePlinkos() {
@@ -125,7 +133,7 @@ export class Plinko {
 
   constructor(props: PlinkoProps) {
     this.props = props
-    this.startPositions = Array.from({ length: SIMULATIONS }).map((_, i) => Matter.Common.random(-SPAWN_OFFSET_RANGE / 2, SPAWN_OFFSET_RANGE / 2))
+    this.startPositions = Array.from({ length: SIMULATIONS }).map(() => Matter.Common.random(-SPAWN_OFFSET_RANGE / 2, SPAWN_OFFSET_RANGE / 2))
 
     const rowSize = this.height / (this.props.rows + 2)
     const pegs = Array.from({ length: this.props.rows })
@@ -145,7 +153,6 @@ export class Plinko {
           })
       }).slice(1)
 
-
     Matter.Composite.add(
       this.bucketComposite,
       this.makeBuckets(),
@@ -164,43 +171,76 @@ export class Plinko {
     Matter.Composite.add(this.ballComposite, this.makePlinkos())
   }
 
-  simulate(desiredBucketIndex: number) {
-    const results = this.startPositions.map((_, i) => -1)
+  private recordContactEvent(event: Matter.IEventCollision<Matter.Engine>, frame: number, collisions: { frame: number, event: PlinkoContactEvent }[]) {
+    for (const pair of event.pairs) {
+      const contactEvent: PlinkoContactEvent = {}
+      const assignBody = (key: keyof PlinkoContactEvent, label: string) => {
+        if (pair.bodyA.label === label) contactEvent[key] = pair.bodyA
+        if (pair.bodyB.label === label) contactEvent[key] = pair.bodyB
+      }
+      assignBody('peg', 'Peg')
+      assignBody('bucket', 'Bucket')
+      assignBody('barrier', 'Barrier')
+      assignBody('plinko', 'Plinko')
 
-    const handleCollision = (plinko: Matter.Body, bucket: Matter.Body) => {
-      results[plinko.plugin.startPositionIndex] = bucket.plugin.bucketIndex
+      if (contactEvent.peg || contactEvent.bucket || contactEvent.barrier || contactEvent.plinko) {
+        collisions.push({ frame, event: contactEvent })
+      }
+    }
+  }
+
+  simulate(desiredBucketIndex: number) {
+    const results: Omit<SimulationResult, 'collisions'>[] = []
+    const paths: {x:number,y:number}[][] = this.startPositions.map(() => [])
+    const allCollisions: { frame: number, event: PlinkoContactEvent }[] = []
+
+    let simFrame = 0
+    const simHandler = (ev: Matter.IEventCollision<Matter.Engine>) => {
+      this.recordContactEvent(ev, simFrame, allCollisions)
     }
 
-    const handler = (event: Matter.IEventCollision<Matter.Engine>) => {
-      event.pairs.forEach((pair) => {
-        if (pair.bodyA.label === 'Bucket' && pair.bodyB.label === 'Plinko') {
-          handleCollision(pair.bodyB, pair.bodyA)
-        }
-        if (pair.bodyA.label === 'Plinko' && pair.bodyB.label === 'Bucket') {
-          handleCollision(pair.bodyA, pair.bodyB)
+    Matter.Events.on(this.engine, 'collisionStart', simHandler)
+    this.reset()
+
+    for (let i = 0; i < 1000; i++) {
+      simFrame = i
+      Matter.Runner.tick(this.runner, this.engine, 1)
+      const bodies = Matter.Composite.allBodies(this.ballComposite)
+      bodies.forEach((b) => {
+        if (b.label === 'Plinko') {
+          const idx = b.plugin.startPositionIndex
+          paths[idx].push({ x: b.position.x, y: b.position.y })
         }
       })
     }
 
-    Matter.Events.on(this.engine, 'collisionStart', handler)
-
-    // 1. Simulate
-    this.reset()
-
-    for (let i = 0; i < 1000; i++) {
-      Matter.Runner.tick(this.runner, this.engine, 1)
-    }
-
-    Matter.Events.off(this.engine, 'collisionStart', handler)
-
+    Matter.Events.off(this.engine, 'collisionStart', simHandler)
     Matter.Runner.stop(this.runner)
     Matter.Composite.clear(this.ballComposite, false)
 
-    const desiredResults = results
-      .map((bucketIndex, plinkoIndex) => ({ bucketIndex, plinkoIndex }))
-      .filter(({ bucketIndex }) => bucketIndex === desiredBucketIndex)
+    const bucketHits: { [plinkoIndex: number]: number } = {}
+    allCollisions.forEach(({frame, event}) => {
+      if (event.plinko && event.bucket) {
+        const plinkoIndex = event.plinko.plugin.startPositionIndex
+        if (bucketHits[plinkoIndex] === undefined) {
+          bucketHits[plinkoIndex] = event.bucket.plugin.bucketIndex
+        }
+      }
+    })
 
-    return desiredResults
+    const finalResults = []
+    for (let i=0; i<this.startPositions.length; i++) {
+      if (bucketHits[i] !== undefined) {
+        finalResults.push({
+          bucketIndex: bucketHits[i],
+          plinkoIndex: i,
+          path: paths[i],
+          collisions: allCollisions
+        })
+      }
+    }
+
+    return finalResults.filter(({ bucketIndex }) => bucketIndex === desiredBucketIndex)
   }
 
   collisionHandler = (event: Matter.IEventCollision<Matter.Engine>) => {
@@ -215,7 +255,6 @@ export class Plinko {
       assignBody('barrier', 'Barrier')
       assignBody('plinko', 'Plinko')
     }
-
     this.props.onContact && this.props.onContact(contactEvent)
   }
 
@@ -236,21 +275,52 @@ export class Plinko {
     const bucket = Matter.Common.choose(
       this.bucketComposite.bodies.filter((x) => x.plugin.bucketMultiplier === desiredMultiplier),
     )
-    // 1. Simulate
     const candidates = this.simulate(bucket.plugin.bucketIndex)
-
-    if (!candidates.length) throw new Error('Failed to simulate')
-
-    console.log(candidates)
+    if (!candidates.length) throw new Error('Failed to simulate desired outcome')
 
     const chosen = Matter.Common.choose(candidates)
-    // 2. Run simulation with desired outcome
-    Matter.Events.on(this.engine, 'collisionStart', this.collisionHandler)
-    Matter.Composite.add(
-      this.ballComposite,
-      this.makePlinko(this.startPositions[chosen.plinkoIndex], chosen.plinkoIndex),
-    )
 
-    Matter.Runner.run(this.runner, this.engine)
+    if (this.visualizePath) {
+      console.log("Chosen path:", chosen.path)
+    }
+
+    this.currentPath = chosen.path
+    this.currentFrame = 0
+
+    const chosenIndex = chosen.plinkoIndex
+    const chosenCollisions = chosen.collisions.filter(({event}) => {
+      return event.plinko && event.plinko.plugin.startPositionIndex === chosenIndex
+    })
+    this.replayCollisions = chosenCollisions
+
+    const ball = this.makePlinko(this.startPositions[chosenIndex], chosenIndex)
+    Matter.Composite.add(this.ballComposite, ball)
+    this.replayBall = ball
+
+    Matter.Runner.stop(this.runner)
+    this.startReplayAnimation()
+  }
+
+  private startReplayAnimation() {
+    if (this.animationId !== null) {
+      cancelAnimationFrame(this.animationId)
+    }
+    const animate = () => {
+      if (!this.currentPath || !this.replayBall) return
+      if (this.currentFrame >= this.currentPath.length) {
+        return
+      }
+      const pos = this.currentPath[this.currentFrame]
+      Matter.Body.setPosition(this.replayBall, { x: pos.x, y: pos.y })
+
+      const frameCollisions = this.replayCollisions.filter(c => c.frame === this.currentFrame)
+      frameCollisions.forEach(({event}) => {
+        this.props.onContact(event)
+      })
+
+      this.currentFrame++
+      this.animationId = requestAnimationFrame(animate)
+    }
+    this.animationId = requestAnimationFrame(animate)
   }
 }
