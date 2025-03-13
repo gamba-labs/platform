@@ -62,7 +62,7 @@ export const TOKEN_METADATA: (Partial<TokenMeta> & {mint: PublicKey})[] = [
     name: 'POG',
     symbol: 'POG Coin',
     image: 'https://storage.googleapis.com/pogcoin/pogs.png',
-    baseWager: 1e9,
+    baseWager: 1e11,
     decimals: 8,
     usdPrice: 0,
   },
