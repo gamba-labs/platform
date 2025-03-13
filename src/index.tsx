@@ -26,7 +26,7 @@ function Root() {
     <BrowserRouter>
       <ConnectionProvider
         endpoint={RPC_ENDPOINT}
-        config={{ commitment: 'processed' }}
+        config={{ commitment: 'confirmed' }}
       >
         <WalletProvider autoConnect wallets={wallets}>
           <WalletModalProvider>

@@ -115,9 +115,9 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-        <h1>Welcome to Gamba v2 👋</h1>
+        <h1>Welcome to POG COIN CARNIVAL!!!</h1>
         <p>
-          A fair, simple and decentralized casino on Solana.
+          A fair, simple and decentralized coinsino on Solana. Coming to Base soon.
         </p>
       </div>
       <Buttons>
