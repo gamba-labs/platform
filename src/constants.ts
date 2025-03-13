@@ -40,7 +40,7 @@ const lp = (tokenMint: PublicKey | string, poolAuthority?: PublicKey | string): 
  */
 export const POOLS = [
   // POG Coin:
-  lp('BDqrbzsn1sshuv8MexFhDetSJqCfSqGgLoeDuU8HFuxn'),
+  lp('Fqv7Q7Tm5Aobetwu2WcXFq1rLb5ch5QMuPn2Hacbn7co'),
   // SOL:
   lp('So11111111111111111111111111111111111111112'),
   // USDC:

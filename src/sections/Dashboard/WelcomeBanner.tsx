@@ -127,7 +127,7 @@ export function WelcomeBanner() {
         <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
           🚀 Add Liquidity
         </button>
-        <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
+        <button onClick={() => window.open('https://discord.gg/POGDigital', '_blank')}>
           💬 Discord
         </button>
       </Buttons>
