@@ -31,7 +31,7 @@ function UserModal() {
   const revokeInvite = async () => {
     try {
       setRemoving(true)
-      await referral.removeReferral()
+      await referral.removeInvite()
     } finally {
       setRemoving(false)
     }
@@ -51,13 +51,13 @@ function UserModal() {
             Share your link with new users to earn {(PLATFORM_REFERRAL_FEE * 100)}% every time they play on this platform.
           </div>
         </div>
-        {PLATFORM_ALLOW_REFERRER_REMOVAL && referral.recipient && (
+        {PLATFORM_ALLOW_REFERRER_REMOVAL && (
           <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', width: '100%' }}>
             <GambaUi.Button disabled={removing} onClick={revokeInvite}>
               Revoke invite
             </GambaUi.Button>
             <div style={{ opacity: '.8', fontSize: '80%' }}>
-              You were invited by <a target="_blank" href={`https://solscan.io/account/${referral.recipient.toString()}`} rel="noreferrer">{referral.recipient.toString()}</a>
+              You were invited by someone
             </div>
           </div>
         )}
@@ -76,9 +76,19 @@ export function UserButton() {
 
   const connect = () => {
     if (wallet.wallet) {
-      wallet.connect()
+      try {
+        wallet.connect().catch(error => {
+          console.error("Wallet connection error:", error);
+          // Try again after a short delay
+          setTimeout(() => {
+            wallet.connect().catch(e => console.error("Retry failed:", e));
+          }, 1000);
+        });
+      } catch (error) {
+        console.error("Wallet connection error:", error);
+      }
     } else {
-      walletModal.setVisible(true)
+      walletModal.setVisible(true);
     }
   }
 
@@ -93,8 +103,8 @@ export function UserButton() {
             onClick={() => user.set({ userModal: true })}
           >
             <div style={{ display: 'flex', gap: '.5em', alignItems: 'center' }}>
-              <img src={wallet.wallet?.adapter.icon} height="20px" />
-              {truncateString(wallet.publicKey?.toBase58(), 3)}
+              <img src={wallet.wallet?.adapter.icon} height="20px" alt="Wallet icon" />
+              {truncateString(wallet.publicKey?.toBase58() || '', 3)}
             </div>
           </GambaUi.Button>
         </div>
