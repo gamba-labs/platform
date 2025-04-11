@@ -25,7 +25,7 @@ const Buttons = styled.div`
   }
 
   & > button {
-    border: none;
+    border: yes;
     width: 100%;
     border-radius: 10px;
     padding: 10px;
@@ -61,10 +61,10 @@ const Welcome = styled.div`
     }
   }
 
-  background: linear-gradient(-45deg, #ffb07c, #ff3e88, #2969ff, #ef3cff, #ff3c87);
-  background-size: 300% 300%;
-  animation: welcome-fade-in .5s ease, backgroundGradient 30s ease infinite;
-  border-radius: 10px;
+  background-image: url(https://iili.io/3cT9XgR.png;); 
+  background-size: cover; 
+ 
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -115,22 +115,24 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-        <h1>Welcome to Gamba v2 👋</h1>
-        <p>
-          A fair, simple and decentralized casino on Solana.
-        </p>
+
       </div>
       <Buttons>
         <button onClick={copyInvite}>
-          💸 Copy Invite
+          💸 COPY INVITE
         </button>
         <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
-          🚀 Add Liquidity
+          🚀 ROADMAP
         </button>
         <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
-          💬 Discord
+          💬 TELEGRAM
         </button>
+        <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
+          🐦 TWITTER
+        </button>
+
       </Buttons>
     </Welcome>
+
   )
 }
