@@ -119,10 +119,10 @@ export function WelcomeBanner() {
       </div>
       <Buttons>
         <button onClick={copyInvite}>
-          💸 COPY INVITE
+          💸 INVITE
         </button>
         <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
-          🚀 ROADMAP
+          🚀 TWITTER
         </button>
         <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
           💬 TELEGRAM
