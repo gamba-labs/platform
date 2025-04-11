@@ -62,7 +62,7 @@ export const TOKEN_METADATA: (Partial<TokenMeta> & {mint: PublicKey})[] = [
   {
     mint: FAKE_TOKEN_MINT,
     name: 'Banabets',
-    symbol: 'Bananas',
+    symbol: 'Ban',
     image: '/logocasino.png',
     baseWager: 1e9,
     decimals: 9,
