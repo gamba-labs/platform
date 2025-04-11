@@ -127,9 +127,7 @@ export function WelcomeBanner() {
         <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
           💬 TELEGRAM
         </button>
-        <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
-          🐦 TWITTER
-        </button>
+
 
       </Buttons>
     </Welcome>
