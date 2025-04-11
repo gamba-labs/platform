@@ -19,7 +19,7 @@ const StyledGameCard = styled(NavLink)<{$small: boolean, $background: string}>`
     width: 100%;
   }
 
-  aspect-ratio: ${(props) => props.$small ? '1/.5' : '1/.6'};
+  aspect-ratio: ${(props) => props.$small ? '1/.9' : '1/.9'};
   background-size: cover;
   border-radius: 10px;
 
@@ -51,10 +51,10 @@ const StyledGameCard = styled(NavLink)<{$small: boolean, $background: string}>`
     top: 0;
     width: 100%;
     height: 100%;
-    background-size: 90% auto;
+    background-size: 100% auto;
     background-position: center;
     background-repeat: no-repeat;
-    transform: scale(.9);
+
     transition: transform .2s ease;
   }
 
