@@ -10,7 +10,7 @@ export const PLATFORM_CREATOR_ADDRESS = new PublicKey(
 )
 
 // Gamba explorer URL - Appears in RecentPlays
-export const EXPLORER_URL = 'https://solscan.io'
+export const EXPLORER_URL = 'https://explorer.solana.com'
 
 // Platform URL - Appears in ShareModal
 export const PLATFORM_SHARABLE_URL = 'banabets.io'
