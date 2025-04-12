@@ -10,7 +10,7 @@ const Buttons = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 25px;
+  gap: 10px;
 
   @media (min-width: 800px) {
     height: 100%;
