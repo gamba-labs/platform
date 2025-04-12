@@ -61,9 +61,9 @@ const Welcome = styled.div`
     }
   }
 
-  background-image: url(https://iili.io/3cT9XgR.png);
-  background-size: cover;
-  background-position: left center; /* Imagen de fondo centrada por defecto */
+  background-image: url(https://iili.io/3cT9XgR.png;); 
+  background-size: cover; 
+ background-position: auto;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -99,12 +99,6 @@ const Welcome = styled.div`
       padding: 40px;
     }
   }
-
-  /* Desplazar la imagen de fondo hacia la derecha en móviles */
-  @media (max-width: 800px) {
-    background-position: center center; /* Mueve la imagen a la derecha en pantallas pequeñas */
-    padding: 15px;
-  }
 `
 
 export function WelcomeBanner() {
@@ -120,21 +114,26 @@ export function WelcomeBanner() {
 
   return (
     <Welcome>
-      <div></div>
+      <div>
+
+      </div>
       <Buttons>
         <button onClick={copyInvite}>
-          💸 COPY INVITE
+          💸 INVITE
         </button>
-        <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
-          🚀 ROADMAP
-        </button>
-        <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
+        <button onClick={copyInvite}>
           💬 TELEGRAM
         </button>
-        <button onClick={() => window.open('https://discord.gg/HSTtFFwR', '_blank')}>
-          🐦 TWITTER
+        <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
+          🚀 TWITTER
         </button>
+        <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
+          🍌 BUY $BANANA
+        </button>
+
+
       </Buttons>
     </Welcome>
+
   )
 }
