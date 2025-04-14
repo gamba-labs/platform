@@ -13,13 +13,13 @@ export const PLATFORM_CREATOR_ADDRESS = new PublicKey(
 export const EXPLORER_URL = 'https://solscan.io'
 
 // Platform URL - Appears in ShareModal
-export const PLATFORM_SHARABLE_URL = 'banabets.io'
+export const PLATFORM_SHARABLE_URL = 'banabets.com'
 
 // Creator fee (in %)
-export const PLATFORM_CREATOR_FEE = 0.01 // 1% !!max 5%!!
+export const PLATFORM_CREATOR_FEE = 0.02 // 1% !!max 5%!!
 
 // Jackpot fee (in %)
-export const PLATFORM_JACKPOT_FEE = 0.001 // 0.1%
+export const PLATFORM_JACKPOT_FEE = 0.002 // 0.1%
 
 // Referral fee (in %)
 export const PLATFORM_REFERRAL_FEE = 0.05 // 0.25%
