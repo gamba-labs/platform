@@ -121,13 +121,13 @@ export function WelcomeBanner() {
         <button onClick={copyInvite}>
           💸 INVITE
         </button>
-        <button onClick={copyInvite}>
+          <button onClick={() => window.open('https://banabets.com', '_blank')}>
           💬 TELEGRAM
         </button>
-        <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
+        <button onClick={() => window.open('https://x.com/banabets', '_blank')}>
           🚀 TWITTER
         </button>
-        <button onClick={() => window.open('https://v2.gamba.so/', '_blank')}>
+        <button onClick={() => window.open('https://banabets.com', '_blank')}>
           🍌 BUY $BANANA
         </button>
 
