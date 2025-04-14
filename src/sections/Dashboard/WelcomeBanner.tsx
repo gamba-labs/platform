@@ -122,13 +122,13 @@ export function WelcomeBanner() {
           💸 INVITE
         </button>
           <button onClick={() => window.open('https://banabets.com', '_blank')}>
-          💬 TELEGRAM
+          💬 DISCORD
         </button>
         <button onClick={() => window.open('https://x.com/banabets', '_blank')}>
           🚀 TWITTER
         </button>
         <button onClick={() => window.open('https://banabets.com', '_blank')}>
-          🍌 BUY $BANANA
+          🍌 BUY $BANANA (SOON)
         </button>
 
 
