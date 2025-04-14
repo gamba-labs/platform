@@ -61,7 +61,7 @@ const Welcome = styled.div`
     }
   }
 
-  background-image: url(https://iili.io/3cT9XgR.png;); 
+  background-image: url(https://iili.io/3lZWB0G.png;); 
   background-size: cover; 
  background-position: auto;
   border-radius: 20px;
