@@ -115,7 +115,10 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-       <center> <p> 
+       <center>
+ㅤ
+ㅤ
+ㅤ
         <h1>ㅤㅤㅤㅤGET THOSE SOLANA'S WITH ㅤㅤㅤㅤㅤYOUR BANANAS! 🍌</h1> </center>
 
          <p>ㅤ
