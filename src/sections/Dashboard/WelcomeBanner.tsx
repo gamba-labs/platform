@@ -127,9 +127,7 @@ export function WelcomeBanner() {
         <button onClick={() => window.open('https://x.com/banabets', '_blank')}>
           🚀 TWITTER
         </button>
-        <button onClick={() => window.open('https://banabets.com', '_blank')}>
-          🍌 BUY $BANANA (SOON)
-        </button>
+
 
 
       </Buttons>
