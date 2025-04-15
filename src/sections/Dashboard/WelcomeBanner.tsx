@@ -116,7 +116,7 @@ export function WelcomeBanner() {
     <Welcome>
       <div>
        <center>
-<h1>ㅤㅤㅤㅤㅤ‎Get those Solana's with your bananas! 🍌</h1></center>
+<h1>ㅤㅤㅤㅤㅤGET THOSE SOLANA'S WITH YOUR BANANS! 🍌</h1></center>
 
          <p> ㅤ
         </p>
