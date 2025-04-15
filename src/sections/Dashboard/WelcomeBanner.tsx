@@ -119,10 +119,10 @@ export function WelcomeBanner() {
 ㅤ
 ㅤ
 ㅤ
+ㅤ
+ㅤ
         <h1>ㅤㅤㅤㅤGET THOSE SOLANA'S WITH ㅤㅤㅤㅤㅤYOUR BANANAS! 🍌</h1> </center>
 
-         <p>ㅤ
-        </p>
       </div>
       <Buttons>
         <button onClick={copyInvite}>
