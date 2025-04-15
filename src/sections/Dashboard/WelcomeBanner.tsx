@@ -120,6 +120,10 @@ export function WelcomeBanner() {
           ‎ 
         </p>
       </div>
+
+
+  )
+}
       <Buttons>
         <button onClick={copyInvite}>
           💸 INVITE
@@ -130,11 +134,5 @@ export function WelcomeBanner() {
         <button onClick={() => window.open('https://x.com/banabets', '_blank')}>
           🚀 TWITTER
         </button>
-
-
-
       </Buttons>
     </Welcome>
-
-  )
-}
