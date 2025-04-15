@@ -116,7 +116,7 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-        <h1>‎ㅤ </h1>
+        <h1>‎ㅤ ㅤㅤㅤㅤㅤㅤWELCOME</h1>
         <p>
           ㅤ
         </p>
