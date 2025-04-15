@@ -64,7 +64,6 @@ const Welcome = styled.div`
   background-image: url(https://iili.io/30HguVI.png;); 
   background-size: cover; 
  background-position: auto;
-background-repeat: no-repeat
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -116,7 +115,7 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-        <h1>‎ㅤ ㅤㅤㅤㅤㅤㅤWELCOME</h1>
+        <h1>‎ㅤ ㅤㅤㅤㅤWelcome to Banabets Casino 👋</h1>
         <p>
           ㅤ
         </p>
