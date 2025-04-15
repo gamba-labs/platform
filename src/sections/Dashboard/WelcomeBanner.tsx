@@ -119,6 +119,10 @@ export function WelcomeBanner() {
         <p>
           ‎ 
         </p>
+        <h1>‎ </h1>
+        <p>
+          ‎ 
+        </p>
       </div>
       <Buttons>
         <button onClick={copyInvite}>
