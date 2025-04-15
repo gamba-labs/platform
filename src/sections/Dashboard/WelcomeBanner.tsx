@@ -114,8 +114,11 @@ export function WelcomeBanner() {
 
   return (
     <Welcome>
-      <div>
-Welcome to Banabets.com
+     <div>
+        <h1>Welcome to Banabets👋</h1>
+        <p>
+          A fair, simple and decentralized casino on Solana.
+        </p>
       </div>
       <Buttons>
         <button onClick={copyInvite}>
