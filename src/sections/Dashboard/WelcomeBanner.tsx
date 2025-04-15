@@ -115,7 +115,7 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-
+Welcome to Banabets.com
       </div>
       <Buttons>
         <button onClick={copyInvite}>
