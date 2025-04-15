@@ -120,10 +120,6 @@ export function WelcomeBanner() {
           ‎ 
         </p>
       </div>
-
-
-  )
-}
       <Buttons>
         <button onClick={copyInvite}>
           💸 INVITE
@@ -136,3 +132,6 @@ export function WelcomeBanner() {
         </button>
       </Buttons>
     </Welcome>
+
+  )
+}
