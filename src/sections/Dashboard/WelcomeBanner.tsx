@@ -114,11 +114,12 @@ export function WelcomeBanner() {
 
   return (
     <Welcome>
-     <div>
+      <div>
         <h1>‎ </h1>
         <p>
           ‎ 
         </p>
+      </div>
       <Buttons>
         <button onClick={copyInvite}>
           💸 INVITE
