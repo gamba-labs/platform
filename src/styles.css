@@ -34,6 +34,8 @@ h1, h2 {
 body {
   background-image: url(https://iili.io/3cMScwN.jpg;); 
   background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat
   color: var(--text-color);
   cursor: default;
   margin: 0;
