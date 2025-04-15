@@ -115,9 +115,9 @@ export function WelcomeBanner() {
   return (
     <Welcome>
       <div>
-        <h1>‎ </h1>
+        <h1>‎Welcome to Banabets 👋 </h1>
         <p>
-          ‎ 
+          Play & Earn with your favorite Solana Wallet.
         </p>
       </div>
       <Buttons>
