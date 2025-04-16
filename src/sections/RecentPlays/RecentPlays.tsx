@@ -90,9 +90,7 @@ export default function RecentPlays() {
           </Recent>
         ),
       )}
-      <GambaUi.Button main onClick={() => window.open(`https://x.com/banabets`)}>
-        🚀 Twitter
-      </GambaUi.Button>
+
     </Container>
   )
 }
