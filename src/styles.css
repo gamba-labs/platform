@@ -33,6 +33,7 @@ body {
   background-image: url(https://iili.io/30G6512.jpg;); 
   background-size: cover; 
 background-position: auto;
+background-attachment: fixed;
   color: var(--text-color);
   cursor: default;
   margin: 0;
