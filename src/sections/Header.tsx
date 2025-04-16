@@ -8,11 +8,11 @@ import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
 
 const Bonus = styled.button`
-  all: unset;
+all: unset;
   cursor: pointer;
-  color: #003c00;
+  color: #ffe42d;
   border-radius: 10px;
-  background: #03ffa4;
+  background: ;
   padding: 2px 10px;
   font-size: 12px;
   text-transform: uppercase;
