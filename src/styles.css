@@ -32,8 +32,9 @@ h1, h2 {
 }
 
 body {
-  background-image: url(https://iili.io/3cMScwN.jpg;); 
-  background-size: auto; 
+  background-image: url(https://iili.io/30G6512.jpg;); 
+  background-size: cover; 
+background-position: auto;
   color: var(--text-color);
   cursor: default;
   margin: 0;
