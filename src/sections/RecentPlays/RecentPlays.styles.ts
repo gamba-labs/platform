@@ -48,7 +48,7 @@ export const Profit = styled.div<{$win: boolean}>`
   display: flex;
   gap: .5em;
   align-items: center;
-  background: ${props => props.$win ? '#00ff4021' : '#ffffff11'};
+  background: ${props => props.$win ? '#ffe42d' : '#ffffff11'};
   border-radius: 10px;
   padding: 2px 5px;
 `
