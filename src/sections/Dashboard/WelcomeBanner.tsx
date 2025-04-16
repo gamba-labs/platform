@@ -65,6 +65,7 @@ const Welcome = styled.div`
   background-image: url(https://iili.io/30H7A4s.png;); 
   background-size: cover; 
  background-position: center;
+background-attachment: fixed;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
