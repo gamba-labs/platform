@@ -14,7 +14,7 @@ all: unset;
   border-radius: 10px;
   background: ;
   padding: 2px 10px;
-  font-size: 10px;
+  font-size: 7px;
   text-transform: uppercase;
   font-weight: bold;
   transition: background-color .2s;
