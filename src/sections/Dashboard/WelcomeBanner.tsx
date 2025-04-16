@@ -24,19 +24,19 @@ const Buttons = styled.div`
     padding-top: 0!important;
   }
 
-  & > button {
-    border: none;
-    width: 100%;
-    border-radius: 10px;
-    padding: 10px;
-    background: #ffffffdf;
-    transition: background-color .2s ease;
-    color: black;
-    cursor: pointer;
-    &:hover {
-      background: white;
-    }
+& > button {
+  border: none;
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  background: transparent; 
+  transition: background-color .2s ease;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background: transparent; 
   }
+}
 `
 
 const Welcome = styled.div`
