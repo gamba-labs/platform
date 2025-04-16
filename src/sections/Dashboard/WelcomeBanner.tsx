@@ -32,7 +32,7 @@ const Buttons = styled.div`
   background: transparent; 
   transition: background-color .2s ease;
   color: white;
-font-size: 18px;
+font-size: 17px;
   cursor: pointer;
   &:hover {
     background: transparent; 
