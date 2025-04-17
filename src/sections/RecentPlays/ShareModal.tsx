@@ -10,8 +10,8 @@ import { extractMetadata } from '../../utils'
 
 const Container = styled.div`
   display: grid;
-  gap: 10px;
-  padding: 20px;
+  gap: 20px;
+  padding: 15px;
   padding-bottom: 0;
   width: 100%;
 `
@@ -22,8 +22,10 @@ const Inner = styled.div`
 
 const Content = styled.div`
   border-radius: 10px;
-  padding: 20px;
-  background: linear-gradient(156deg, #52527822, #12121700);
+  padding: 55px;
+  background-image: url(https://iili.io/31RyUHx.png;); 
+  background-size: cover; 
+background-position: auto;
 `
 
 export function ShareModal({ event, onClose }: {event: GambaTransaction<'GameSettled'>, onClose: () => void}) {
@@ -44,30 +46,30 @@ export function ShareModal({ event, onClose }: {event: GambaTransaction<'GameSet
       <Container>
         <Inner>
           <Content ref={ref}>
-            <div style={{ display: 'grid', gap: '5px', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', padding: '10px' }}>
-              <img src={tokenMeta.image} style={{ borderRadius: '50%', height: '40px' }} />
-              <div style={{ fontSize: '24px', color: percentChange >= 0 ? '#9bffad' : '#ff4f4f', padding: '10px' }}>
+            <div style={{ display: 'grid', gap: '0px', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', padding: '10px' }}>
+              <img src={tokenMeta.image} style={{ borderRadius: '50%', height: '35px' }} />
+              <div style={{ fontSize: '30px', color: percentChange >= 0 ? '#9bffad' : '#ff4f4f', padding: '10px' }}>
                 <b>
                   {profit >= 0 ? '+' : '-'}
                   <TokenValue exact amount={Math.abs(profit)} mint={event.data.tokenMint} />
                 </b>
-                <div style={{ fontSize: '18px' }}>
+                <div style={{ fontSize: '20px' }}>
                   {(event.data.multiplierBps / 10_000).toLocaleString()}x
                 </div>
               </div>
               <div style={{ padding: '10px', textAlign: 'center' }}>
-                <img src={game?.meta?.image} width="100px" />
+                
               </div>
             </div>
-            <div style={{ background: '#121217CC', color: '#ffffffcc', fontStyle: 'italic', display: 'flex', alignContent: 'center', gap: '10px', padding: '10px', borderRadius: '10px' }}>
-              <img src="/gamba.svg" height="25px" />
+            <div style={{  color: '#ffffffcc', fontStyle: 'italic', display: 'flex', alignContent: 'center', gap: '1px', padding: '10px', borderRadius: '10px' }}>
+            
               <div>play on <b>{PLATFORM_SHARABLE_URL}</b></div>
             </div>
           </Content>
         </Inner>
         <Flex>
           <GambaUi.Button size="small" onClick={() => window.open(`${EXPLORER_URL}/tx/${event.signature}`, '_blank')}>
-            Verify
+            Verify Solscan
           </GambaUi.Button>
           <GambaUi.Button size="small" onClick={gotoGame}>
             Play {game?.meta?.name}
