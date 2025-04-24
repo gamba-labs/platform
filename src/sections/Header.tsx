@@ -8,7 +8,7 @@ import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
 
 const Bonus = styled.button`
-all: unset;
+  all: unset;
   cursor: pointer;
   color: #ffe42d;
   border-radius: 10px;
@@ -47,12 +47,56 @@ const Logo = styled(NavLink)`
   }
 `
 
+// Estilos para el popup emergente
+const PopupContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 512px;
+  height: 512px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  z-index: 2000;
+`
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  &:hover {
+    color: #ffe42d;
+  }
+`
+
+const ClaimButton = styled.button`
+  background-color: #ffe42d;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+  &:hover {
+    background-color: #ffcc00;
+  }
+`
+
 export default function Header() {
   const pool = useCurrentPool()
   const context = useGambaPlatformContext()
   const balance = useUserBalance()
   const [bonusHelp, setBonusHelp] = React.useState(false)
   const [jackpotHelp, setJackpotHelp] = React.useState(false)
+  const [showDailyChest, setShowDailyChest] = React.useState(false)
 
   return (
     <>
@@ -88,6 +132,17 @@ export default function Header() {
           </label>
         </Modal>
       )}
+
+      {/* Popup para Daily Chest */}
+      {showDailyChest && (
+        <PopupContainer>
+          <CloseButton onClick={() => setShowDailyChest(false)}>×</CloseButton>
+          <h2>Daily Chest</h2>
+          <p>Claim your daily chest to get more chances to win!</p>
+          <ClaimButton onClick={() => alert('Claimed Daily Chest!')}>Claim</ClaimButton>
+        </PopupContainer>
+      )}
+
       <StyledHeader>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <Logo to="/">
@@ -107,6 +162,7 @@ export default function Header() {
           )}
           <TokenSelect />
           <UserButton />
+          <Bonus onClick={() => setShowDailyChest(true)}>🎁 </Bonus> {/* Botón para mostrar el popup */}
         </div>
       </StyledHeader>
     </>
