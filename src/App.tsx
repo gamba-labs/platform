@@ -13,6 +13,7 @@ import Header from './sections/Header'
 import RecentPlays from './sections/RecentPlays/RecentPlays'
 import Toasts from './sections/Toasts'
 import { MainWrapper, TosInner, TosWrapper } from './styles'
+import LeaderboardsModal from './components/LeaderboardsModal'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
