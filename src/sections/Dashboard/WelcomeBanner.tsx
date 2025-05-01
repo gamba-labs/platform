@@ -136,6 +136,9 @@ export function WelcomeBanner() {
         <button onClick={() => window.open('https://t.me/banabets', '_blank')}>
           🤖 TELEGRAM
         </button>
+        <button onClick={() => window.open('https://docs.banabets.com', '_blank')}>
+          📜 DOCS
+        </button>
       </Buttons>
     </Welcome>
 
