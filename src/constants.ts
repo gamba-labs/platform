@@ -112,4 +112,4 @@ export const TOKEN_METADATA_FETCHER = (
 )()
 
 export const ENABLE_LEADERBOARD = true 
-export const ENABLE_TROLLBOX = false // Requires setup in vercel (check tutorial in discord)
+export const ENABLE_TROLLBOX = true // Requires setup in vercel (check tutorial in discord)
