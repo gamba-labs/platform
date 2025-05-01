@@ -4,7 +4,7 @@ import { useTransactionError } from 'gamba-react-v2'
 import React from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Modal } from './components/Modal'
-import { TOS_HTML } from './constants'
+import { TOS_HTML, ENABLE_TROLLBOX } from './constants'
 import { useToast } from './hooks/useToast'
 import { useUserStore } from './hooks/useUserStore'
 import Dashboard from './sections/Dashboard/Dashboard'
@@ -80,7 +80,7 @@ export default function App() {
         </Routes>
         <h2 style={{ textAlign: 'center' }}>Recent Plays</h2>
         <RecentPlays />
-        <TrollBox />
+        {ENABLE_TROLLBOX && <TrollBox />}
       </MainWrapper>
     </>
   )
