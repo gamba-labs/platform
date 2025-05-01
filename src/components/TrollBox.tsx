@@ -161,8 +161,8 @@ const SendBtn = styled.button`
   font-weight:600;
   color:#fff;
   font-size:0.9rem;
-  &:hover:not(:disabled) { background:#6f5aff; }
-  &:active:not(:disabled) { background:#4d38cc; transform:scale(0.98); }
+  &:hover:not(:disabled) { background:#ffe42d; }
+  &:active:not(:disabled) { background:#ffe416; transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
 `
 const LoadingText = styled.div`
