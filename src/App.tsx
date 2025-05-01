@@ -14,6 +14,7 @@ import RecentPlays from './sections/RecentPlays/RecentPlays'
 import Toasts from './sections/Toasts'
 import { MainWrapper, TosInner, TosWrapper } from './styles'
 import LeaderboardsModal from './components/LeaderboardsModal'
+import TrollBox from './components/TrollBox'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -79,6 +80,7 @@ export default function App() {
         </Routes>
         <h2 style={{ textAlign: 'center' }}>Recent Plays</h2>
         <RecentPlays />
+        <TrollBox />
       </MainWrapper>
     </>
   )
