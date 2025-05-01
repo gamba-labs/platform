@@ -154,7 +154,7 @@ const TextInput = styled.input`
   &::placeholder { color:#777; opacity:0.8; }
 `
 const SendBtn = styled.button`
-  background:#5e47ff;
+  background:#ffe42d;
   border:none;
   padding:0 18px;
   cursor:pointer;
