@@ -1,10 +1,11 @@
 import { PublicKey } from '@solana/web3.js'
 import { FAKE_TOKEN_MINT, GambaPlatformContext, GambaUi, PoolToken, TokenValue, useCurrentToken, useTokenBalance, useTokenMeta } from 'gamba-react-ui-v2'
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Dropdown } from '../components/Dropdown'
 import { Modal } from '../components/Modal'
 import { POOLS } from '../constants'
+import { useUserStore } from '../hooks/useUserStore'
 
 const StyledToken = styled.div`
   display: flex;
@@ -59,18 +60,34 @@ export default function TokenSelect() {
   const [warning, setWarning] = React.useState(false)
   const context = React.useContext(GambaPlatformContext)
   const selectedToken = useCurrentToken()
+  const userStore = useUserStore()
   const balance = useTokenBalance()
 
+  // Update the platform context with the last selected token from localStorage
+  useEffect(() => {
+    if (userStore.lastSelectedPool) {
+      context.setPool(userStore.lastSelectedPool.token, userStore.lastSelectedPool.authority)
+    }
+  }, [])
+
   const selectPool = (pool: PoolToken) => {
-    // if (gamba.isPlaying) return
-    context.setPool(pool.token, pool.authority)
     setVisible(false)
+    // Check if platform has real plays disabled
     if (
       import.meta.env.VITE_REAL_PLAYS_DISABLED &&
       !pool.token.equals(FAKE_TOKEN_MINT)
     ) {
       setWarning(true)
+      return
     }
+    // Update selected pool
+    context.setPool(pool.token, pool.authority)
+    userStore.set({
+      lastSelectedPool: {
+        token: pool.token.toString(),
+        authority: pool.authority?.toString(),
+      },
+    })
   }
 
   const click = () => {
@@ -87,12 +104,9 @@ export default function TokenSelect() {
           </p>
           <GambaUi.Button
             main
-            onClick={() => {
-              setWarning(false)
-              context.setPool(FAKE_TOKEN_MINT)
-            }}
+            onClick={() => setWarning(false)}
           >
-            Switch to fake tokens
+            Okay
           </GambaUi.Button>
         </Modal>
       )}

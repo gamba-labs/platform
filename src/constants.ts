@@ -47,7 +47,8 @@ export const POOLS = [
   lp('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'),
   // Wormhole:
   lp('85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ'),
-  lp('H8cstTfTxPEm5qP3UXgga8Bdzm2MCDGAghJTgovPy6Y1', 'H83nsJJe11WY7TjhiVoDq5xmiYs7rU2iY4FweJuahVz2'),
+  //private pool example (mint + authority)
+  lp('So11111111111111111111111111111111111111112', 'Fki4Yah4ZXvFmDUw8WspxRAEmfERPth7PPEwPYt3bior'),
 ]
 
 // The default token to be selected
@@ -105,3 +106,6 @@ export const TOKEN_METADATA_FETCHER = (
     }
   }
 )()
+
+export const ENABLE_LEADERBOARD = true 
+export const ENABLE_TROLLBOX = true // Requires setup in vercel (check tutorial in discord)

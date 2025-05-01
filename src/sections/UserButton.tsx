@@ -28,10 +28,10 @@ function UserModal() {
     }
   }
 
-  const revokeInvite = async () => {
+  const removeInvite = async () => {
     try {
       setRemoving(true)
-      await referral.removeReferral()
+      await referral.removeInvite()
     } finally {
       setRemoving(false)
     }
@@ -51,13 +51,21 @@ function UserModal() {
             Share your link with new users to earn {(PLATFORM_REFERRAL_FEE * 100)}% every time they play on this platform.
           </div>
         </div>
-        {PLATFORM_ALLOW_REFERRER_REMOVAL && referral.recipient && (
+        {PLATFORM_ALLOW_REFERRER_REMOVAL && referral.referrerAddress && (
           <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', width: '100%' }}>
-            <GambaUi.Button disabled={removing} onClick={revokeInvite}>
-              Revoke invite
+            <GambaUi.Button disabled={removing} onClick={removeInvite}>
+              Remove invite
             </GambaUi.Button>
             <div style={{ opacity: '.8', fontSize: '80%' }}>
-              You were invited by <a target="_blank" href={`https://solscan.io/account/${referral.recipient.toString()}`} rel="noreferrer">{referral.recipient.toString()}</a>
+              {!removing ? (
+                <>
+                  You were invited by <a target="_blank" href={`https://solscan.io/account/${referral.referrerAddress.toString()}`} rel="noreferrer">
+                    {truncateString(referral.referrerAddress.toString(), 6, 6)}
+                  </a>.
+                </>
+              ) : (
+                <>Removing invite...</>
+              )}
             </div>
           </div>
         )}

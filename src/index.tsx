@@ -2,7 +2,7 @@ import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import '@solana/wallet-adapter-react-ui/styles.css'
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { GambaPlatformProvider, ReferralProvider, TokenMetaProvider } from 'gamba-react-ui-v2'
+import { GambaPlatformProvider, TokenMetaProvider } from 'gamba-react-ui-v2'
 import { GambaProvider, SendTransactionProvider } from 'gamba-react-v2'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
@@ -41,13 +41,12 @@ function Root() {
                     defaultCreatorFee={PLATFORM_CREATOR_FEE}
                     defaultJackpotFee={PLATFORM_JACKPOT_FEE}
                     defaultPool={DEFAULT_POOL}
+                    referral={{
+                      fee: PLATFORM_REFERRAL_FEE,
+                      prefix: 'code',
+                    }}
                   >
-                    <ReferralProvider
-                      prefix="code"
-                      fee={PLATFORM_REFERRAL_FEE}
-                    >
-                      <App />
-                    </ReferralProvider>
+                    <App />
                   </GambaPlatformProvider>
                 </GambaProvider>
               </SendTransactionProvider>

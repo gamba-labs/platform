@@ -4,7 +4,7 @@ import { useTransactionError } from 'gamba-react-v2'
 import React from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Modal } from './components/Modal'
-import { TOS_HTML } from './constants'
+import { TOS_HTML, ENABLE_TROLLBOX } from './constants'
 import { useToast } from './hooks/useToast'
 import { useUserStore } from './hooks/useUserStore'
 import Dashboard from './sections/Dashboard/Dashboard'
@@ -13,6 +13,7 @@ import Header from './sections/Header'
 import RecentPlays from './sections/RecentPlays/RecentPlays'
 import Toasts from './sections/Toasts'
 import { MainWrapper, TosInner, TosWrapper } from './styles'
+import TrollBox from './components/TrollBox'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -79,6 +80,7 @@ export default function App() {
         <h2 style={{ textAlign: 'center' }}>Recent Plays</h2>
         <RecentPlays />
       </MainWrapper>
+      {ENABLE_TROLLBOX && <TrollBox />}
     </>
   )
 }

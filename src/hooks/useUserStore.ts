@@ -8,6 +8,8 @@ export interface UserStore {
   userModal: boolean
   /** A list of games played. The first time a game is opened we can display info */
   gamesPlayed: Array<string>
+  /** The last pool a user had selected */
+  lastSelectedPool: { token: string, authority?: string } | null
   markGameAsPlayed: (gameId: string, played: boolean) => void
   set: StoreApi<UserStore>['setState']
 }
@@ -20,6 +22,7 @@ export const useUserStore = create(
     (set, get) => ({
       newcomer: true,
       userModal: false,
+      lastSelectedPool: null,
       gamesPlayed: [],
       markGameAsPlayed: (gameId, played) => {
         const gamesPlayed = new Set(get().gamesPlayed)
