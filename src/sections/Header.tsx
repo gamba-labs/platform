@@ -51,7 +51,7 @@ const Logo = styled(NavLink)`
   height: 35px;
   margin: 0 15px;
   & > img {
-    height: 70%;
+    height: 120%;
   }
 `
 
