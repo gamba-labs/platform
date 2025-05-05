@@ -37,14 +37,17 @@ const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 10px;
-  background: #000000cc;
+  width: fit-content; /* ajusta el ancho al contenido */
+  padding: 30px 50px;
+  background: rgba(0, 0, 0, 0.6); /* fondo semi-transparente */
   backdrop-filter: blur(20px);
-  position: fixed;
-  top: 0;
-  left: 0;
+  border-radius: 12px;
+  position: relative;
+  top: 20px; /* espacio arriba */
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* opcional: sombra sutil */
 `
 
 const Logo = styled(NavLink)`
