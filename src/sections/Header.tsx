@@ -38,7 +38,7 @@ const StyledHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   width: fit-content; /* ajusta el ancho al contenido */
-  padding: 30px 50px;
+  padding: 30px 500px;
   background: rgba(0, 0, 0, 0.6); /* fondo semi-transparente */
   backdrop-filter: blur(20px);
   border-radius: 12px;
