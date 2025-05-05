@@ -38,7 +38,7 @@ const StyledHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   width: fit-content; /* ajusta el ancho al contenido */
-  padding: 30px 500px;
+  padding: 30px 50px;
   background: rgba(0, 0, 0, 0.6); /* fondo semi-transparente */
   backdrop-filter: blur(20px);
   border-radius: 12px;
@@ -52,7 +52,7 @@ const StyledHeader = styled.div`
 
 const Logo = styled(NavLink)`
   height: 30px;
-  margin: 0 5px;
+  margin: 0 400px;
   & > img {
     height: 120%;
   }
