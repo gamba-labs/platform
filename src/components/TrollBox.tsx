@@ -39,7 +39,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   right: 20px;
   z-index: 998;
   border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '12px'};
-  background: ${({ $isMinimized }) => $isMinimized ? '#5e47ff' : 'rgba(28,28,35,0.85)'};
+  background: ${({ $isMinimized }) => $isMinimized ? '#ffe42d' : 'rgba(28,28,35,0.85)'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
   font-size: 0.9rem;
