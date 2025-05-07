@@ -32,7 +32,7 @@ const Buttons = styled.div`
   background: transparent; 
   transition: background-color .2s ease;
   color: white;
-  font-size: 17px;
+font-size: 17px;
   cursor: pointer;
   &:hover {
     background: transparent; 
@@ -64,7 +64,7 @@ const Welcome = styled.div`
 
   background-image: url(https://iili.io/30VoMKJ.png); 
   background-size: cover; 
-  background-position: center;
+ background-position: center;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -102,15 +102,6 @@ const Welcome = styled.div`
   }
 `
 
-// Se incluye la fuente en el estilo global
-const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap');
-
-  body {
-    font-family: 'Fredericka the Great', cursive;
-  }
-`;
-
 export function WelcomeBanner() {
   const wallet = useWallet()
   const walletModal = useWalletModal()
@@ -123,32 +114,30 @@ export function WelcomeBanner() {
   }
 
   return (
-    <>
-      <GlobalStyle />
-      <Welcome>
-        <div>
-          <center>
-            ㅤ
-            ㅤ
-            ㅤ
-            <h1>GET THOSE SOLANA'S WITH YOUR BANANAS! 🍌</h1>
-          </center>
-        </div>
-        <Buttons>
+    <Welcome>
+      <div>
+       <center>
+ㅤ
+ㅤ
+ㅤ
+        <h1>GET THOSE SOLANA'S WITH YOUR BANANAS! 🍌</h1> </center>
+
+      </div>
+      <Buttons>
           <button onClick={() => window.open('https://discord.gg/banabets', '_blank')}>
-            💬 DISCORD
-          </button>
-          <button onClick={() => window.open('https://x.com/banabets', '_blank')}>
-            🚀 TWITTER
-          </button>
-          <button onClick={() => window.open('https://t.me/banabets', '_blank')}>
-            🤖 TELEGRAM
-          </button>
-          <button onClick={() => window.open('https://docs.banabets.com', '_blank')}>
-            📜 DOCS
-          </button>
-        </Buttons>
-      </Welcome>
-    </>
+          💬 DISCORD
+        </button>
+        <button onClick={() => window.open('https://x.com/banabets', '_blank')}>
+          🚀 TWITTER
+        </button>
+        <button onClick={() => window.open('https://t.me/banabets', '_blank')}>
+          🤖 TELEGRAM
+        </button>
+        <button onClick={() => window.open('https://docs.banabets.com', '_blank')}>
+          📜 DOCS
+        </button>
+      </Buttons>
+    </Welcome>
+
   )
 }
