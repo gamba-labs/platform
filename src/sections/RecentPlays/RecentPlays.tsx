@@ -8,7 +8,7 @@ import { Container, Jackpot, Profit, Recent, Skeleton } from './RecentPlays.styl
 import { ShareModal } from './ShareModal'
 import { useRecentPlays } from './useRecentPlays'
 
-function TimeDiff({ time, suffix = 'ago' }: {time: number, suffix?: string}) {
+function TimeDiff({ time, suffix = 'ago' }: { time: number, suffix?: string }) {
   const diff = (Date.now() - time)
   return React.useMemo(() => {
     const seconds = Math.floor(diff / 1000)
@@ -24,7 +24,7 @@ function TimeDiff({ time, suffix = 'ago' }: {time: number, suffix?: string}) {
   }, [diff])
 }
 
-function RecentPlay({ event }: {event: GambaTransaction<'GameSettled'>}) {
+function RecentPlay({ event }: { event: GambaTransaction<'GameSettled'> }) {
   const data = event.data
   const token = useTokenMeta(data.tokenMint)
   const md = useMediaQuery('md')
@@ -38,7 +38,17 @@ function RecentPlay({ event }: {event: GambaTransaction<'GameSettled'>}) {
 
   return (
     <>
-      <img src={game?.meta.image} style={{ height: '1.5em' }} />
+      <img
+        src={game?.meta.image}
+        style={{
+          height: '2.5em',
+          width: '2.5em',
+          objectFit: 'cover',
+          borderRadius: '6px',
+          border: '2px solid gold',
+          boxShadow: '0 0 8px rgba(255, 215, 0, 0.6)',
+        }}
+      />
       <div style={{ color: 'var(--gamba-ui-primary-color)' }}>
         {data.user.toBase58().substring(0, 4)}...
       </div>
@@ -90,7 +100,6 @@ export default function RecentPlays() {
           </Recent>
         ),
       )}
-
     </Container>
   )
 }
