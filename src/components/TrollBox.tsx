@@ -16,18 +16,6 @@ const stringToHslColor = (str: string, s: number, l: number): string => {
   return `hsl(${hash % 360}, ${s}%, ${l}%)`
 }
 
-const MinimizeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-)
-const ChatIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-  </svg>
-)
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -42,7 +30,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
-  font-size: 1rem; /* Aumentado tamaño de fuente */
+  font-size: 1rem;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   ${({ $isMinimized }) => !$isMinimized && `backdrop-filter: blur(10px);`}
   overflow: hidden;
@@ -57,13 +45,11 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       max-height: 56px;
       justify-content: center;
       align-items: center;
-      color: #fff;
-      & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 400px; /* Aumentado ancho */
-      max-height: 600px; /* Aumentada altura */
-      min-height: 200px; /* Aumentada altura mínima */
+      width: 400px;
+      max-height: 600px;
+      min-height: 200px;
     `}
   @media (max-width:480px) {
     ${({ $isMinimized }) => $isMinimized
@@ -82,7 +68,7 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
 `
 
 const Header = styled.div`
-  padding: 15px 20px; /* Aumentado padding */
+  padding: 15px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -94,25 +80,18 @@ const Header = styled.div`
 
 const HeaderTitle = styled.span`
   flex-grow: 1;
-  font-size: 1.4rem; /* Aumentado tamaño de fuente */
+  font-size: 1.4rem;
   font-weight: bold;
   display: flex;
   align-items: center;
 `
 
 const OnlineStatus = styled.div`
-  width: 10px; /* Aumentado tamaño del punto */
-  height: 10px; /* Aumentado tamaño del punto */
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: #28a745;
   margin-left: 10px;
-`
-
-const HeaderStatus = styled.span`
-  font-size:0.85rem; /* Aumentado tamaño de fuente */
-  color:#a0a0a0;
-  opacity:0.8;
-  margin:0 10px;
 `
 
 const MinimizeButton = styled.button`
@@ -125,50 +104,58 @@ const MinimizeButton = styled.button`
   &:hover { background:rgba(255,255,255,0.1); color:#fff; }
 `
 
-const ExpandIconWrapper = styled.div`
-  display:flex;
-  align-items:center;
-  justify-content:center;
-`
-
 const Log = styled.div`
   flex:1;
   overflow-y:auto;
-  padding:20px 25px; /* Aumentado padding */
+  padding:20px 25px;
   display:flex;
   flex-direction:column;
-  gap:1rem; /* Reducido el espacio entre mensajes */
-  min-height:200px; /* Aumentada altura mínima */
-  background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
+  gap:1rem;
+  min-height:200px;
+  background: rgba(47, 49, 54, 0.8);
   border-radius: 10px;
-  margin-top: 10px; /* Aumentado margen superior */
-  &::-webkit-scrollbar { width:8px; } /* Ancho aumentado de la barra de desplazamiento */
+  margin-top: 10px;
+  &::-webkit-scrollbar { width:8px; }
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
 
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
-  line-height:1.6; /* Aumentado el interlineado */
   animation:${fadeIn} 0.3s ease-out;
   background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
   border-radius: 8px;
-  padding: 12px 16px; /* Aumentado padding */
-  max-width: 85%; /* Aumentado máximo ancho */
+  padding: 12px 16px;
+  max-width: 85%;
   color: white;
-  margin-bottom: 5px; /* Reducido margen inferior */
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
+  display: flex;
+  flex-direction: column;
 `
 
 const Username = styled.strong<{ userColor: string }>`
   font-weight:600;
   color:${p => p.userColor};
   margin-right:0.5em;
+  font-size: 0.95rem;
 `
 
 const Timestamp = styled.span`
-  font-size:0.85em; /* Aumentado tamaño de la hora */
-  color: #aaa; /* Cambié el color a un gris más suave */
+  font-size:0.85em;
+  color: #aaa;
   opacity:1;
-  margin-left:0.5em;
+`
+
+const MsgHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 6px;
+`
+
+const MsgText = styled.div`
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-size: 1rem;
 `
 
 const InputRow = styled.div`
@@ -177,29 +164,29 @@ const InputRow = styled.div`
   background:#202225;
   flex-shrink:0;
   align-items: center;
-  padding: 10px 15px; /* Aumentado padding */
+  padding: 10px 15px;
 `
 
 const TextInput = styled.input`
   flex:1;
   background:#40444b;
   border:none;
-  padding:15px 20px; /* Aumentado padding */
+  padding:15px 20px;
   color:#fff;
   outline:none;
-  font-size:1.1rem; /* Aumentado tamaño de fuente */
-  border-radius: 10px; /* Aumentado radio de borde */
+  font-size:1.1rem;
+  border-radius: 10px;
   &::placeholder { color:#777; opacity:0.8; }
 `
 
 const SendBtn = styled.button`
-  background:none; /* Sin fondo */
-  border:none; /* Sin borde */
-  padding:0 20px; /* Aumentado padding */
+  background:none;
+  border:none;
+  padding:0 20px;
   cursor:pointer;
   font-weight:600;
   color:#fff;
-  font-size:1.1rem; /* Aumentado tamaño de fuente */
+  font-size:1.1rem;
   &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
   &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
@@ -210,7 +197,7 @@ const LoadingText = styled.div`
   color:#a0a0a0;
   padding:2rem 0;
   font-style:italic;
-  font-size:1rem; /* Aumentado tamaño de fuente */
+  font-size:1rem;
 `
 
 export default function TrollBox() {
@@ -219,29 +206,17 @@ export default function TrollBox() {
   const [isMinimized, setIsMinimized] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
-  // derive username
-  const anonFallback = useMemo(
-    () => 'anon' + Math.floor(Math.random() * 1e4).toString().padStart(4, '0'),
-    [],
-  )
-  const userName = connected && publicKey
-    ? publicKey.toBase58().slice(0, 6)
-    : anonFallback
+  const anonFallback = useMemo(() => 'anon' + Math.floor(Math.random() * 1e4).toString().padStart(4, '0'), [])
+  const userName = connected && publicKey ? publicKey.toBase58().slice(0, 6) : anonFallback
 
-  // SWR setup
-  const swrKey = isMinimized || (typeof document !== 'undefined' && document.hidden)
-    ? null : '/api/chat'
-  const { data: messages = [], error, mutate } = useSWR<Msg[]>(
-    swrKey, fetcher,
-    { refreshInterval: 8000, dedupingInterval: 7500 },
-  )
+  const swrKey = isMinimized || (typeof document !== 'undefined' && document.hidden) ? null : '/api/chat'
+  const { data: messages = [], error, mutate } = useSWR<Msg[]>(swrKey, fetcher, { refreshInterval: 8000, dedupingInterval: 7500 })
 
   const [text, setText] = useState('')
   const [isSending, setIsSending] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // color map
   const userColors = useMemo(() => {
     const map: Record<string, string> = {}
     messages.forEach(m => {
@@ -251,7 +226,6 @@ export default function TrollBox() {
     return map
   }, [messages, userName])
 
-  // send with optimistic UI + cooldown
   async function send() {
     if (!connected) return walletModal.setVisible(true)
     const txt = text.trim()
@@ -277,14 +251,12 @@ export default function TrollBox() {
     }
   }
 
-  // scroll to bottom on every message load
   useEffect(() => {
     if (!isMinimized && logRef.current) {
       logRef.current.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' })
     }
   }, [messages, isMinimized])
 
-  // focus when expanded
   useEffect(() => {
     if (!isMinimized) {
       const t = setTimeout(() => inputRef.current?.focus(), 300)
@@ -292,7 +264,6 @@ export default function TrollBox() {
     }
   }, [isMinimized])
 
-  // cooldown countdown
   useEffect(() => {
     if (cooldown <= 0) return
     const timer = setTimeout(() => setCooldown(cooldown - 1), 1000)
@@ -306,39 +277,26 @@ export default function TrollBox() {
 
   const toggleMinimize = () => setIsMinimized(v => !v)
 
-  const onlineUsers = useMemo(() => {
-    const uniqueUsers = new Set(messages.map(m => m.user));
-    return uniqueUsers.size;
-  }, [messages]);
-
   return (
     <Wrapper $isMinimized={isMinimized}>
-      {isMinimized && (
-        <ExpandIconWrapper onClick={toggleMinimize}>
-          <ChatIcon/>
-        </ExpandIconWrapper>
-      )}
       <ContentContainer $isMinimized={isMinimized}>
         <Header onClick={toggleMinimize}>
           <HeaderTitle>
             #banabets-chat
             <OnlineStatus />
           </HeaderTitle>
-          <HeaderStatus>
-            {messages.length ? `${messages.length} msgs` : 'Connecting…'}
-          </HeaderStatus>
-          <MinimizeButton><MinimizeIcon/></MinimizeButton>
+          <MinimizeButton>_</MinimizeButton>
         </Header>
         <Log ref={logRef}>
           {!messages.length && !error && <LoadingText>Loading messages…</LoadingText>}
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
             <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
-              <Username userColor={userColors[m.user]}>
-                {m.user.slice(0, 6)}
-              </Username>
-              : {m.text}
-              <Timestamp>{fmtTime(m.ts)}</Timestamp>
+              <MsgHeader>
+                <Username userColor={userColors[m.user]}>{m.user.slice(0, 6)}</Username>
+                <Timestamp>{fmtTime(m.ts)}</Timestamp>
+              </MsgHeader>
+              <MsgText>{m.text}</MsgText>
             </MessageItem>
           ))}
         </Log>
@@ -349,7 +307,7 @@ export default function TrollBox() {
             placeholder={connected ? 'Say something…' : 'Connect wallet to chat'}
             onChange={ e => setText(e.target.value)}
             onClick={ () => !connected && walletModal.setVisible(true)}
-            onKeyDown={ e =>{ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }}}
+            onKeyDown={ e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }}}
             disabled={isSending || !swrKey}
             maxLength={200}
           />
@@ -357,8 +315,7 @@ export default function TrollBox() {
             onClick={send}
             disabled={!connected || isSending || cooldown > 0 || !text.trim() || !swrKey}
           >
-            { isSending ? '…'
-              : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
+            { isSending ? '…' : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
           </SendBtn>
         </InputRow>
       </ContentContainer>
