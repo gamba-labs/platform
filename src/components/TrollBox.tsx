@@ -164,22 +164,21 @@ const MessageItem = styled.div<{ $isOwn?: boolean }>`
 const Username = styled.strong<{ userColor: string }>`
   font-weight:600;
   color:${p => p.userColor};
-  margin-right:0.5em;
-  position: relative;
+  margin-right:0.3em; /* ajustado para que quede más pegado */
 `
 
 const GuestBadge = styled.span`
   background: #5865F2;
   color: #fff;
-  font-size: 0.55rem; /* más pequeño */
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 1px 4px;
-  margin-left: 4px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin-left: 4px; /* antes era 6px */
   text-transform: uppercase;
   line-height: 1;
-  position: relative;
-  top: -2px; /* subido para verse como badge */
+  display: inline-flex;
+  align-items: center;
 `
 
 const Timestamp = styled.span`
@@ -345,8 +344,8 @@ export default function TrollBox() {
                 {m.user.slice(0, 6)}
               </Username>
               <GuestBadge>GUEST</GuestBadge>
-              <span style={{ marginLeft: '6px' }}>:</span>
-              <span style={{ marginLeft: '8px', whiteSpace: 'pre-wrap' }}>
+              <span style={{ margin: '0 4px' }}>:</span>
+              <span style={{ whiteSpace: 'pre-wrap' }}>
                 {m.text}
               </span>
               <Timestamp>{fmtTime(m.ts)}</Timestamp>
