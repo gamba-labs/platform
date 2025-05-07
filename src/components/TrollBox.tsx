@@ -53,7 +53,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   ${({ $isMinimized }) => $isMinimized
     ? `
       width: 56px;
-      hei: 56px;
+      height: 56px;
       max-height: 56px;
       justify-content: center;
       align-items: center;
@@ -244,7 +244,7 @@ export default function TrollBox() {
   // send with optimistic UI + cooldown
   async function send() {
     if (!connected) return walletModal.setVisible(true)
-    const txt = (text.trim() + " 🍌").trim()  // Aquí agregamos el emoji al texto
+    const txt = text.trim()
     if (!txt || isSending || cooldown > 0) return
     setIsSending(true)
     const id = Date.now()
@@ -311,7 +311,7 @@ export default function TrollBox() {
           </HeaderStatus>
           <MinimizeButton><MinimizeIcon/></MinimizeButton>
         </Header>
-        <Log r={logRef}>
+        <Log ref={logRef}>
           {!messages.length && !error && <LoadingText>Loading messages…</LoadingText>}
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
