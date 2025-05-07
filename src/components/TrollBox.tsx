@@ -62,22 +62,23 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 500px; /* Tamaño grande en PC */
-      max-height: 600px;
+      width: 100%; /* Ensures the chat takes full width on small screens */
+      max-width: 500px;
       min-height: 200px;
     `}
 
-  /* Ajustes para pantallas pequeñas */
+  /* Ajustes para pantallas pequeñas (de menos de 768px) */
   @media (max-width: 768px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:360px; bottom:16px; right:16px;`} 
+      : `width: 100%; max-width: 95%; bottom:16px; right:16px;`} 
   }
 
+  /* Ajustes para pantallas muy pequeñas (menores a 480px) */
   @media (max-width: 480px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:320px; bottom:16px; right:16px;`} 
+      : `width: 100%; max-width: 90%; bottom:16px; right:16px;`} 
   }
 `
 
