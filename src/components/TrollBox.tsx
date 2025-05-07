@@ -28,12 +28,6 @@ const ChatIcon = () => (
   </svg>
 )
 
-const SendIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M3 12l18-6-7 7 7 7-18-6z" />
-  </svg>
-)
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -45,7 +39,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   right: 20px;
   z-index: 998;
   border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '12px'};
-  background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : 'rgba(28,28,35,0.65)'};
+  background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : 'rgba(28,28,35,0.45)'}; /* Fondo más transparente */
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
   font-size: 0.9rem;
@@ -135,7 +129,7 @@ const Log = styled.div`
   flex-direction:column;
   gap:1rem;
   min-height:100px;
-  background: #2f3136;
+  background: #2f3136; /* Fondo más transparente */
   border-radius: 10px;
   margin-top: 5px;
   &::-webkit-scrollbar { width:6px; }
@@ -152,9 +146,6 @@ const MessageItem = styled.div<{ $isOwn?: boolean }>`
   color: white;
   margin-bottom: 8px;
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
-  display: flex;
-  gap: 8px;
-  align-items: center;
 `
 
 const Username = styled.strong<{ userColor: string }>`
@@ -168,14 +159,6 @@ const Timestamp = styled.span`
   color:#888;
   opacity:0.7;
   margin-left:0.5em;
-`
-
-const Avatar = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: url('https://www.iconfinder.com/icons/2630167/banana_fruit_emoji_icon') no-repeat center center;
-  background-size: cover;
 `
 
 const InputRow = styled.div`
@@ -201,7 +184,7 @@ const TextInput = styled.input`
 const SendBtn = styled.button`
   background:#7289da;
   border:none;
-  padding:8px;
+  padding:0 18px;
   cursor:pointer;
   font-weight:600;
   color:#fff;
@@ -322,7 +305,7 @@ export default function TrollBox() {
       )}
       <ContentContainer $isMinimized={isMinimized}>
         <Header onClick={toggleMinimize}>
-          <HeaderTitle>#Banabets-chat</HeaderTitle>
+          <HeaderTitle>#Banabets-chat 🍌</HeaderTitle>
           <HeaderStatus>
             {messages.length ? `${messages.length} msgs` : 'Connecting…'}
           </HeaderStatus>
@@ -333,7 +316,6 @@ export default function TrollBox() {
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
             <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
-              <Avatar />
               <Username userColor={userColors[m.user]}>
                 {m.user.slice(0, 6)}
               </Username>
@@ -357,7 +339,8 @@ export default function TrollBox() {
             onClick={send}
             disabled={!connected || isSending || cooldown > 0 || !text.trim() || !swrKey}
           >
-            <SendIcon />
+            { isSending ? '…'
+              : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
           </SendBtn>
         </InputRow>
       </ContentContainer>
