@@ -66,16 +66,17 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       min-height: 250px;
     `}
   
+  /* Ajustes para pantallas pequeñas */
   @media (max-width: 768px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:500px; bottom:16px; right:16px;`} 
+      : `width:calc(100% - 32px); max-width:400px; bottom:16px; right:16px;`} 
   }
 
   @media (max-width: 480px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:400px; bottom:16px; right:16px;`} 
+      : `width:calc(100% - 32px); max-width:360px; bottom:16px; right:16px;`} 
   }
 `
 
