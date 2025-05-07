@@ -129,7 +129,7 @@ const Log = styled.div`
   flex-direction:column;
   gap:1rem;
   min-height:100px;
-  background: #2f3136;
+  background: rgba(47, 49, 54, 0.7);  // Este valor se puede ajustar para mayor o menor transparencia
   border-radius: 10px;
   margin-top: 5px;
   &::-webkit-scrollbar { width:6px; }
