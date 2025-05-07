@@ -37,6 +37,7 @@ const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap; /* ✅ Permitir que se envuelvan si no entran */
   width: 100%;
   padding: 10px;
   background: #000000cc;
@@ -45,36 +46,23 @@ const StyledHeader = styled.div`
   top: 0;
   left: 0;
   z-index: 1000;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 10px;
-  }
 `
 
 const LeftSection = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
-
-  @media (max-width: 768px) {
-    justify-content: space-between;
-    width: 100%;
-  }
 `
 
 const RightSection = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
-  position: relative;
+  flex-wrap: wrap; /* ✅ También permitir wrap en la parte derecha */
+  margin-top: 10px; /* Espacio pequeño si se va abajo */
 
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
+  @media (min-width: 768px) {
+    margin-top: 0; /* En desktop no hace falta margen arriba */
   }
 `
 
