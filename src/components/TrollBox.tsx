@@ -96,7 +96,17 @@ const HeaderTitle = styled.span`
   flex-grow: 1;
   font-size: 1.2rem;
   font-weight: bold;
-`;
+  display: flex;
+  align-items: center;
+`
+
+const OnlineStatus = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #28a745;
+  margin-left: 10px;
+`
 
 const HeaderStatus = styled.span`
   font-size:0.75rem;
@@ -156,8 +166,8 @@ const Username = styled.strong<{ userColor: string }>`
 
 const Timestamp = styled.span`
   font-size:0.75em;
-  color:#888;
-  opacity:0.7;
+  color:white; /* Hora en color blanco */
+  opacity:1;
   margin-left:0.5em;
 `
 
@@ -295,6 +305,11 @@ export default function TrollBox() {
 
   const toggleMinimize = () => setIsMinimized(v => !v)
 
+  const onlineUsers = useMemo(() => {
+    const uniqueUsers = new Set(messages.map(m => m.user));
+    return uniqueUsers.size;
+  }, [messages]);
+
   return (
     <Wrapper $isMinimized={isMinimized}>
       {isMinimized && (
@@ -304,7 +319,10 @@ export default function TrollBox() {
       )}
       <ContentContainer $isMinimized={isMinimized}>
         <Header onClick={toggleMinimize}>
-          <HeaderTitle>#banabets-chat</HeaderTitle>
+          <HeaderTitle>
+            #banabets-chat
+            <OnlineStatus />
+          </HeaderTitle>
           <HeaderStatus>
             {messages.length ? `${messages.length} msgs` : 'Connecting…'}
           </HeaderStatus>
