@@ -22,7 +22,6 @@ const MinimizeIcon = () => (
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
-
 const ChatIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
@@ -130,7 +129,7 @@ const Log = styled.div`
   flex-direction:column;
   gap:1rem;
   min-height:100px;
-  background: #2f3136;
+  background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
   border-radius: 10px;
   margin-top: 5px;
   &::-webkit-scrollbar { width:6px; }
@@ -147,10 +146,7 @@ const MessageItem = styled.div<{ $isOwn?: boolean }>`
   color: white;
   margin-bottom: 8px;
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
-  display: flex;
-  align-items: center;
-  word-wrap: break-word; /* This ensures long text does not break the layout */
-`;
+`
 
 const Username = styled.strong<{ userColor: string }>`
   font-weight:600;
@@ -164,16 +160,6 @@ const Timestamp = styled.span`
   opacity:0.7;
   margin-left:0.5em;
 `
-
-const Avatar = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-image: url('https://path/to/banana-icon.png'); /* Placeholder for banana icon */
-  background-size: cover;
-  background-position: center;
-  margin-right: 8px;
-`;
 
 const InputRow = styled.div`
   display:flex;
@@ -196,25 +182,16 @@ const TextInput = styled.input`
 `
 
 const SendBtn = styled.button`
-  background: none;
-  border: 1px solid #7289da;
-  padding: 0 18px;
-  cursor: pointer;
-  font-weight: 600;
-  color: #7289da;
-  font-size: 1rem;
-  border-radius: 8px;
-  &:hover:not(:disabled) {
-    background: rgba(114, 137, 218, 0.1);
-  }
-  &:active:not(:disabled) {
-    background: rgba(114, 137, 218, 0.2);
-    transform: scale(0.98);
-  }
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  background:none; /* Sin fondo */
+  border:none; /* Sin borde */
+  padding:0 18px;
+  cursor:pointer;
+  font-weight:600;
+  color:#fff;
+  font-size:1rem;
+  &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
+  &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
+  &:disabled { opacity:0.5; cursor:not-allowed; }
 `
 
 const LoadingText = styled.div`
@@ -231,6 +208,7 @@ export default function TrollBox() {
   const [isMinimized, setIsMinimized] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
+  // derive username
   const anonFallback = useMemo(
     () => 'anon' + Math.floor(Math.random() * 1e4).toString().padStart(4, '0'),
     [],
@@ -239,6 +217,7 @@ export default function TrollBox() {
     ? publicKey.toBase58().slice(0, 6)
     : anonFallback
 
+  // SWR setup
   const swrKey = isMinimized || (typeof document !== 'undefined' && document.hidden)
     ? null : '/api/chat'
   const { data: messages = [], error, mutate } = useSWR<Msg[]>(
@@ -251,6 +230,7 @@ export default function TrollBox() {
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // color map
   const userColors = useMemo(() => {
     const map: Record<string, string> = {}
     messages.forEach(m => {
@@ -260,6 +240,7 @@ export default function TrollBox() {
     return map
   }, [messages, userName])
 
+  // send with optimistic UI + cooldown
   async function send() {
     if (!connected) return walletModal.setVisible(true)
     const txt = text.trim()
@@ -285,12 +266,14 @@ export default function TrollBox() {
     }
   }
 
+  // scroll to bottom on every message load
   useEffect(() => {
     if (!isMinimized && logRef.current) {
       logRef.current.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' })
     }
   }, [messages, isMinimized])
 
+  // focus when expanded
   useEffect(() => {
     if (!isMinimized) {
       const t = setTimeout(() => inputRef.current?.focus(), 300)
@@ -298,6 +281,7 @@ export default function TrollBox() {
     }
   }, [isMinimized])
 
+  // cooldown countdown
   useEffect(() => {
     if (cooldown <= 0) return
     const timer = setTimeout(() => setCooldown(cooldown - 1), 1000)
@@ -320,7 +304,7 @@ export default function TrollBox() {
       )}
       <ContentContainer $isMinimized={isMinimized}>
         <Header onClick={toggleMinimize}>
-          <HeaderTitle>Troll Box 🍌</HeaderTitle>
+          <HeaderTitle>#banabets-chat</HeaderTitle>
           <HeaderStatus>
             {messages.length ? `${messages.length} msgs` : 'Connecting…'}
           </HeaderStatus>
@@ -331,7 +315,6 @@ export default function TrollBox() {
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
             <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
-              <Avatar />
               <Username userColor={userColors[m.user]}>
                 {m.user.slice(0, 6)}
               </Username>
