@@ -22,7 +22,7 @@ const fadeIn = keyframes`
 `
 
 // Avatar component with banana emoji and random background color
-const Avatar = styled.span<{ $bgColor: string }>`
+const Avatar = styled.div<{ $bgColor: string }>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
