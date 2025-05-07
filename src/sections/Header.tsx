@@ -1,6 +1,7 @@
 // src/sections/Header.tsx
 import {
   GambaUi,
+  TokenValue,
   useCurrentPool,
   useGambaPlatformContext,
   useUserBalance,
@@ -95,15 +96,6 @@ const Logo = styled(NavLink)`
 /* ─────── config ──────────────────────────────────────────────── */
 const CREATOR_ADDRESS = 'ExampleCreatorPubkey'
 
-/* ─────── helpers ─────────────────────────────────────────────── */
-
-function formatTokenValue(amount: number | string) {
-  return Number(amount).toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 4,
-  })
-}
-
 /* ─────── main component ──────────────────────────────────────── */
 
 export default function Header() {
@@ -123,7 +115,7 @@ export default function Header() {
         <Modal onClose={() => setBonusHelp(false)}>
           <h1>Bonus ✨</h1>
           <p>
-            You have <b>{formatTokenValue(balance.bonusBalance)}</b> worth of free plays.
+            You have <b><TokenValue amount={balance.bonusBalance} /></b> worth of free plays.
             This bonus will be applied automatically when you play.
           </p>
           <p>Note that a fee is still needed from your wallet for each play.</p>
@@ -134,7 +126,7 @@ export default function Header() {
         <Modal onClose={() => setJackpotHelp(false)}>
           <h1>Jackpot 💰</h1>
           <p style={{ fontWeight: 'bold' }}>
-            There's {formatTokenValue(pool.jackpotBalance)} in the Jackpot.
+            There's <TokenValue amount={pool.jackpotBalance} /> in the Jackpot.
           </p>
           <p>
             The Jackpot is a prize pool that grows with every bet made. As it grows,
@@ -177,13 +169,13 @@ export default function Header() {
         <RightSection>
           {pool.jackpotBalance > 0 && (
             <Bonus onClick={() => setJackpotHelp(true)}>
-              💰 {formatTokenValue(pool.jackpotBalance)}
+              💰 <TokenValue amount={pool.jackpotBalance} />
             </Bonus>
           )}
 
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
-              ✨ {formatTokenValue(balance.bonusBalance)}
+              ✨ <TokenValue amount={balance.bonusBalance} />
             </Bonus>
           )}
 
