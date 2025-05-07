@@ -16,21 +16,23 @@ const stringToHslColor = (str: string, s: number, l: number): string => {
   return `hsl(${hash % 360}, ${s}%, ${l}%)`
 }
 
-const MinimizeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-)
-const ChatIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-  </svg>
-)
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
+`
+
+// Avatar component with banana emoji and random background color
+const Avatar = styled.span<{ $bgColor: string }>`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: ${({ $bgColor }) => $bgColor};
+  font-size: 18px;
+  color: white;
+  margin-right: 8px;
 `
 
 const Wrapper = styled.div<{ $isMinimized: boolean }>`
@@ -156,6 +158,8 @@ const MessageItem = styled.div<{ $isOwn?: boolean }>`
   color: white;
   margin-bottom: 5px; /* Reducido margen inferior */
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
+  display: flex;
+  align-items: center;
 `
 
 const Username = styled.strong<{ userColor: string }>`
@@ -334,6 +338,9 @@ export default function TrollBox() {
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
             <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
+              <Avatar $bgColor={userColors[m.user]}>
+                🍌
+              </Avatar>
               <Username userColor={userColors[m.user]}>
                 {m.user.slice(0, 6)}
               </Username>
@@ -347,9 +354,9 @@ export default function TrollBox() {
             ref={inputRef}
             value={text}
             placeholder={connected ? 'Say something…' : 'Connect wallet to chat'}
-            onChange={ e => setText(e.target.value)}
-            onClick={ () => !connected && walletModal.setVisible(true)}
-            onKeyDown={ e =>{ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }}}
+            onChange={e => setText(e.target.value)}
+            onClick={() => !connected && walletModal.setVisible(true)}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }}}
             disabled={isSending || !swrKey}
             maxLength={200}
           />
