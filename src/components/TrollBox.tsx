@@ -137,7 +137,7 @@ const Log = styled.div`
   padding:20px 25px; /* Aumentado padding */
   display:flex;
   flex-direction:column;
-  gap:1.5rem; /* Aumentado espacio entre mensajes */
+  gap:1rem; /* Reducido el espacio entre mensajes */
   min-height:200px; /* Aumentada altura mínima */
   background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
   border-radius: 10px;
@@ -154,7 +154,7 @@ const MessageItem = styled.div<{ $isOwn?: boolean }>`
   padding: 12px 16px; /* Aumentado padding */
   max-width: 85%; /* Aumentado máximo ancho */
   color: white;
-  margin-bottom: 10px; /* Aumentado margen inferior */
+  margin-bottom: 5px; /* Reducido margen inferior */
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
 `
 
