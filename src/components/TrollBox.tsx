@@ -137,7 +137,7 @@ const Log = styled.div`
   padding:20px 25px;
   display:flex;
   flex-direction:column;
-  gap:0.3rem;
+  gap:1rem;
   min-height:200px;
   background: rgba(47, 49, 54, 0.8);
   border-radius: 10px;
@@ -146,19 +146,20 @@ const Log = styled.div`
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
 
-const MessageItem = styled.div`
-  display: flex;
-  align-items: baseline;
-  color: #dcddde;
-  font-size: 0.95rem;
-  line-height: 1.5;
+// ✅ MENSAJE CON BURBUJA Y GUEST BADGE
+const MessageItem = styled.div<{ $isOwn?: boolean }>`
+  line-height: 1.6;
   animation: ${fadeIn} 0.3s ease-out;
-  
-  & > span.message-text {
-    flex: 1;
-    margin-left: 8px;
-    white-space: pre-wrap;
-  }
+  background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 85%;
+  color: white;
+  margin-bottom: 5px;
+  align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
 `
 
 const Username = styled.strong<{ userColor: string }>`
@@ -183,7 +184,7 @@ const Timestamp = styled.span`
   font-size:0.75em;
   color: #aaa;
   opacity:1;
-  margin-left: 10px;
+  margin-left: auto;
   white-space: nowrap;
 `
 
@@ -337,12 +338,14 @@ export default function TrollBox() {
           {!messages.length && !error && <LoadingText>Loading messages…</LoadingText>}
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
-            <MessageItem key={m.ts || i}>
+            <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
               <Username userColor={userColors[m.user]}>
                 {m.user.slice(0, 6)}
               </Username>
               <GuestBadge>GUEST</GuestBadge>
-              <span className="message-text">{m.text}</span>
+              <span style={{ marginLeft: '8px', whiteSpace: 'pre-wrap' }}>
+                {m.text}
+              </span>
               <Timestamp>{fmtTime(m.ts)}</Timestamp>
             </MessageItem>
           ))}
