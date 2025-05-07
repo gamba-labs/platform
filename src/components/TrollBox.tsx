@@ -34,43 +34,128 @@ const fadeIn = keyframes`
 `
 
 const Wrapper = styled.div<{ $isMinimized: boolean }>`
-  /* Estilos previos */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 998;
+  border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '12px'};
+  background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
+  border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
+  color: #eee;
+  font-size: 1rem; /* Aumentado tamaño de fuente */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  ${({ $isMinimized }) => !$isMinimized && `backdrop-filter: blur(10px);`}
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: ${({ $isMinimized }) => $isMinimized ? 'pointer' : 'default'};
+  transition: width 0.3s, height 0.3s, max-height 0.3s, border-radius 0.3s, background 0.3s;
+  ${({ $isMinimized }) => $isMinimized
+    ? `
+      width: 56px;
+      height: 56px;
+      max-height: 56px;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      & > *:not(${ExpandIconWrapper}) { display: none; }
+    `
+    : `
+      width: 500px; /* Aumentado ancho */
+      max-height: 600px; /* Aumentada altura */
+      min-height: 200px; /* Aumentada altura mínima */
+    `}
+  @media (max-width:480px) {
+    ${({ $isMinimized }) => $isMinimized
+      ? `bottom:16px; right:16px;`
+      : `width:calc(100% - 32px); max-width:500px; bottom:16px; right:16px;`}
 `
 
 const ContentContainer = styled.div<{ $isMinimized: boolean }>`
-  /* Estilos previos */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  opacity: ${({ $isMinimized }) => $isMinimized ? 0 : 1};
+  transition: opacity 0.2s;
+  pointer-events: ${({ $isMinimized }) => $isMinimized ? 'none' : 'auto'};
 `
 
 const Header = styled.div`
-  /* Estilos previos */
+  padding: 15px 20px; /* Aumentado padding */
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #202225;
+  color: #fff;
+  cursor: pointer;
 `
 
 const HeaderTitle = styled.span`
-  /* Estilos previos */
+  flex-grow: 1;
+  font-size: 1.4rem; /* Aumentado tamaño de fuente */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
 `
 
 const OnlineStatus = styled.div`
-  /* Estilos previos */
+  width: 10px; /* Aumentado tamaño del punto */
+  height: 10px; /* Aumentado tamaño del punto */
+  border-radius: 50%;
+  background-color: #28a745;
+  margin-left: 10px;
 `
 
 const HeaderStatus = styled.span`
-  /* Estilos previos */
+  font-size:0.85rem; /* Aumentado tamaño de fuente */
+  color:#a0a0a0;
+  opacity:0.8;
+  margin:0 10px;
 `
 
 const MinimizeButton = styled.button`
-  /* Estilos previos */
+  background:none;
+  border:none;
+  color:#a0a0a0;
+  padding:5px;
+  cursor:pointer;
+  border-radius:4px;
+  &:hover { background:rgba(255,255,255,0.1); color:#fff; }
 `
 
 const ExpandIconWrapper = styled.div`
-  /* Estilos previos */
+  display:flex;
+  align-items:center;
+  justify-content:center;
 `
 
 const Log = styled.div`
-  /* Estilos previos */
+  flex:1;
+  overflow-y:auto;
+  padding:20px 25px; /* Aumentado padding */
+  display:flex;
+  flex-direction:column;
+  gap:1.5rem; /* Aumentado espacio entre mensajes */
+  min-height:200px; /* Aumentada altura mínima */
+  background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
+  border-radius: 10px;
+  margin-top: 10px; /* Aumentado margen superior */
+  &::-webkit-scrollbar { width:8px; } /* Ancho aumentado de la barra de desplazamiento */
+  &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
 
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
-  /* Estilos previos */
+  line-height:1.6; /* Aumentado el interlineado */
+  animation:${fadeIn} 0.3s ease-out;
+  background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
+  border-radius: 8px;
+  padding: 12px 16px; /* Aumentado padding */
+  max-width: 85%; /* Aumentado máximo ancho */
+  color: white;
+  margin-bottom: 10px; /* Aumentado margen inferior */
+  align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
 `
 
 const Username = styled.strong<{ userColor: string }>`
@@ -79,34 +164,53 @@ const Username = styled.strong<{ userColor: string }>`
   margin-right:0.5em;
 `
 
-// Agregar el estilo para el nivel dorado
-const UserLevel = styled.span`
-  font-size: 0.85rem; /* Tamaño pequeño */
-  color: gold; /* Color dorado */
-  margin-left: 5px;
-`
-
 const Timestamp = styled.span`
-  font-size:0.85em;
-  color:white;
+  font-size:0.85em; /* Aumentado tamaño de la hora */
+  color:white; /* Hora en color blanco */
   opacity:1;
   margin-left:0.5em;
 `
 
 const InputRow = styled.div`
-  /* Estilos previos */
+  display:flex;
+  border-top:1px solid rgba(255,255,255,0.08);
+  background:#202225;
+  flex-shrink:0;
+  align-items: center;
+  padding: 10px 15px; /* Aumentado padding */
 `
 
 const TextInput = styled.input`
-  /* Estilos previos */
+  flex:1;
+  background:#40444b;
+  border:none;
+  padding:15px 20px; /* Aumentado padding */
+  color:#fff;
+  outline:none;
+  font-size:1.1rem; /* Aumentado tamaño de fuente */
+  border-radius: 10px; /* Aumentado radio de borde */
+  &::placeholder { color:#777; opacity:0.8; }
 `
 
 const SendBtn = styled.button`
-  /* Estilos previos */
+  background:none; /* Sin fondo */
+  border:none; /* Sin borde */
+  padding:0 20px; /* Aumentado padding */
+  cursor:pointer;
+  font-weight:600;
+  color:#fff;
+  font-size:1.1rem; /* Aumentado tamaño de fuente */
+  &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
+  &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
+  &:disabled { opacity:0.5; cursor:not-allowed; }
 `
 
 const LoadingText = styled.div`
-  /* Estilos previos */
+  text-align:center;
+  color:#a0a0a0;
+  padding:2rem 0;
+  font-style:italic;
+  font-size:1rem; /* Aumentado tamaño de fuente */
 `
 
 export default function TrollBox() {
@@ -114,7 +218,6 @@ export default function TrollBox() {
   const walletModal = useWalletModal()
   const [isMinimized, setIsMinimized] = useState(false)
   const [cooldown, setCooldown] = useState(0)
-  const [userLevel, setUserLevel] = useState(0) // Estado para el nivel del usuario
 
   // derive username
   const anonFallback = useMemo(
@@ -157,7 +260,6 @@ export default function TrollBox() {
     const id = Date.now()
     mutate([...messages, { user: userName, text: txt, ts: id }], false)
     setText('')
-    setUserLevel(prevLevel => prevLevel + 1) // Incrementar el nivel al enviar un mensaje
     try {
       await fetch('/api/chat', {
         method: 'POST',
@@ -181,6 +283,14 @@ export default function TrollBox() {
       logRef.current.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' })
     }
   }, [messages, isMinimized])
+
+  // focus when expanded
+  useEffect(() => {
+    if (!isMinimized) {
+      const t = setTimeout(() => inputRef.current?.focus(), 300)
+      return ()=> clearTimeout(t)
+    }
+  }, [isMinimized])
 
   // cooldown countdown
   useEffect(() => {
@@ -227,7 +337,6 @@ export default function TrollBox() {
               <Username userColor={userColors[m.user]}>
                 {m.user.slice(0, 6)}
               </Username>
-              <UserLevel>{userLevel}</UserLevel> {/* Mostrar el nivel */}
               : {m.text}
               <Timestamp>{fmtTime(m.ts)}</Timestamp>
             </MessageItem>
