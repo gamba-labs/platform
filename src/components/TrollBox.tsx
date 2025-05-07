@@ -165,18 +165,21 @@ const Username = styled.strong<{ userColor: string }>`
   font-weight:600;
   color:${p => p.userColor};
   margin-right:0.5em;
+  position: relative;
 `
 
 const GuestBadge = styled.span`
   background: #5865F2;
   color: #fff;
-  font-size: 0.6rem; /* más pequeño */
-  font-weight: 500;
-  border-radius: 3px;
-  padding: 1px 3px; /* más pequeño */
-  margin-left: 6px;
+  font-size: 0.55rem; /* más pequeño */
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 1px 4px;
+  margin-left: 4px;
   text-transform: uppercase;
   line-height: 1;
+  position: relative;
+  top: -2px; /* subido para verse como badge */
 `
 
 const Timestamp = styled.span`
