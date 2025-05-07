@@ -22,6 +22,7 @@ const MinimizeIcon = () => (
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
+
 const ChatIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
@@ -129,7 +130,7 @@ const Log = styled.div`
   flex-direction:column;
   gap:1rem;
   min-height:100px;
-  background: rgba(47, 49, 54, 0.7);  // Este valor se puede ajustar para mayor o menor transparencia
+  background: #2f3136;
   border-radius: 10px;
   margin-top: 5px;
   &::-webkit-scrollbar { width:6px; }
@@ -146,7 +147,9 @@ const MessageItem = styled.div<{ $isOwn?: boolean }>`
   color: white;
   margin-bottom: 8px;
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
-`
+  display: flex;
+  align-items: center;
+`;
 
 const Username = styled.strong<{ userColor: string }>`
   font-weight:600;
@@ -160,6 +163,14 @@ const Timestamp = styled.span`
   opacity:0.7;
   margin-left:0.5em;
 `
+
+const Avatar = styled.div<{ userColor: string }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: ${({ userColor }) => userColor};
+  margin-right: 8px;
+`;
 
 const InputRow = styled.div`
   display:flex;
@@ -182,32 +193,24 @@ const TextInput = styled.input`
 `
 
 const SendBtn = styled.button`
-  background: linear-gradient(145deg, #7289da, #5b6eae);
-  border: none;
-  padding: 12px 24px;
+  background: none;
+  border: 1px solid #7289da;
+  padding: 0 18px;
   cursor: pointer;
   font-weight: 600;
-  color: #fff;
+  color: #7289da;
   font-size: 1rem;
-  border-radius: 16px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease-in-out;
-  
+  border-radius: 8px;
   &:hover:not(:disabled) {
-    background: linear-gradient(145deg, #5b6eae, #7289da);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    background: rgba(114, 137, 218, 0.1);
   }
-  
   &:active:not(:disabled) {
-    background: linear-gradient(145deg, #4c5c91, #5b6eae);
-    transform: translateY(2px);
+    background: rgba(114, 137, 218, 0.2);
+    transform: scale(0.98);
   }
-  
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background: linear-gradient(145deg, #7289da, #5b6eae);
   }
 `
 
@@ -332,6 +335,7 @@ export default function TrollBox() {
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
             <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
+              <Avatar userColor={userColors[m.user]} />
               <Username userColor={userColors[m.user]}>
                 {m.user.slice(0, 6)}
               </Username>
