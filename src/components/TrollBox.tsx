@@ -22,9 +22,10 @@ const MinimizeIcon = () => (
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
-const ChatIcon = () => (
+
+const SendIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+    <path d="M2 21l1-8 7-3-7-3 1-8 9 9 9-9 1 8-7 3 7 3-1 8-9-9-9 9z" />
   </svg>
 )
 
@@ -39,7 +40,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   right: 20px;
   z-index: 998;
   border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '12px'};
-  background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : 'rgba(28,28,35,0.45)'}; /* Fondo más transparente */
+  background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
   font-size: 0.9rem;
@@ -129,7 +130,7 @@ const Log = styled.div`
   flex-direction:column;
   gap:1rem;
   min-height:100px;
-  background: #2f3136; /* Fondo más transparente */
+  background: #2f3136;
   border-radius: 10px;
   margin-top: 5px;
   &::-webkit-scrollbar { width:6px; }
@@ -184,12 +185,15 @@ const TextInput = styled.input`
 const SendBtn = styled.button`
   background:#7289da;
   border:none;
-  padding:0 18px;
+  padding:8px;
   cursor:pointer;
   font-weight:600;
   color:#fff;
   font-size:1rem;
-  border-radius: 8px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover:not(:disabled) { background:#5b6eae; }
   &:active:not(:disabled) { background:#4c5c91; transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
@@ -305,7 +309,7 @@ export default function TrollBox() {
       )}
       <ContentContainer $isMinimized={isMinimized}>
         <Header onClick={toggleMinimize}>
-          <HeaderTitle>#Banabets-chat 🍌</HeaderTitle>
+          <HeaderTitle>Troll Box 🍌</HeaderTitle>
           <HeaderStatus>
             {messages.length ? `${messages.length} msgs` : 'Connecting…'}
           </HeaderStatus>
@@ -339,8 +343,7 @@ export default function TrollBox() {
             onClick={send}
             disabled={!connected || isSending || cooldown > 0 || !text.trim() || !swrKey}
           >
-            { isSending ? '…'
-              : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
+            <SendIcon />
           </SendBtn>
         </InputRow>
       </ContentContainer>
