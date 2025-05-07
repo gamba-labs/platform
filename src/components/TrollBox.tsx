@@ -13,7 +13,7 @@ const stringToHslColor = (str: string, s: number, l: number): string => {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
   }
-  return `hsl(${hash % 360}, ${s}%, ${l}%)`
+  return hsl(${hash % 360}, ${s}%, ${l}%)
 }
 
 const MinimizeIcon = () => (
@@ -28,12 +28,12 @@ const ChatIcon = () => (
   </svg>
 )
 
-const fadeIn = keyframes`
+const fadeIn = keyframes
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
-`
 
-const Wrapper = styled.div<{ $isMinimized: boolean }>`
+
+const Wrapper = styled.div<{ $isMinimized: boolean }>
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -42,16 +42,16 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
-  font-size: 1rem; /* Aumentado tamaño de fuente */
+  font-size: 0.9rem;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  ${({ $isMinimized }) => !$isMinimized && `backdrop-filter: blur(10px);`}
+  ${({ $isMinimized }) => !$isMinimized && backdrop-filter: blur(10px);}
   overflow: hidden;
   display: flex;
   flex-direction: column;
   cursor: ${({ $isMinimized }) => $isMinimized ? 'pointer' : 'default'};
   transition: width 0.3s, height 0.3s, max-height 0.3s, border-radius 0.3s, background 0.3s;
   ${({ $isMinimized }) => $isMinimized
-    ? `
+    ? 
       width: 56px;
       height: 56px;
       max-height: 56px;
@@ -59,19 +59,19 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       align-items: center;
       color: #fff;
       & > *:not(${ExpandIconWrapper}) { display: none; }
-    `
-    : `
-      width: 500px; /* Aumentado ancho */
-      max-height: 600px; /* Aumentada altura */
-      min-height: 200px; /* Aumentada altura mínima */
-    `}
+    
+    : 
+      width: 340px;
+      max-height: 450px;
+      min-height: 150px;
+    }
   @media (max-width:480px) {
     ${({ $isMinimized }) => $isMinimized
-      ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:500px; bottom:16px; right:16px;`}
-`
+      ? bottom:16px; right:16px;
+      : width:calc(100% - 32px); max-width:340px; bottom:16px; right:16px;}
 
-const ContentContainer = styled.div<{ $isMinimized: boolean }>`
+
+const ContentContainer = styled.div<{ $isMinimized: boolean }>
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -79,10 +79,10 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
   opacity: ${({ $isMinimized }) => $isMinimized ? 0 : 1};
   transition: opacity 0.2s;
   pointer-events: ${({ $isMinimized }) => $isMinimized ? 'none' : 'auto'};
-`
 
-const Header = styled.div`
-  padding: 15px 20px; /* Aumentado padding */
+
+const Header = styled.div
+  padding: 10px 15px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -90,32 +90,32 @@ const Header = styled.div`
   background: #202225;
   color: #fff;
   cursor: pointer;
-`
 
-const HeaderTitle = styled.span`
+
+const HeaderTitle = styled.span
   flex-grow: 1;
-  font-size: 1.4rem; /* Aumentado tamaño de fuente */
+  font-size: 1.2rem;
   font-weight: bold;
   display: flex;
   align-items: center;
-`
 
-const OnlineStatus = styled.div`
-  width: 10px; /* Aumentado tamaño del punto */
-  height: 10px; /* Aumentado tamaño del punto */
+
+const OnlineStatus = styled.div
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #28a745;
   margin-left: 10px;
-`
 
-const HeaderStatus = styled.span`
-  font-size:0.85rem; /* Aumentado tamaño de fuente */
+
+const HeaderStatus = styled.span
+  font-size:0.75rem;
   color:#a0a0a0;
   opacity:0.8;
   margin:0 10px;
-`
 
-const MinimizeButton = styled.button`
+
+const MinimizeButton = styled.button
   background:none;
   border:none;
   color:#a0a0a0;
@@ -123,95 +123,94 @@ const MinimizeButton = styled.button`
   cursor:pointer;
   border-radius:4px;
   &:hover { background:rgba(255,255,255,0.1); color:#fff; }
-`
 
-const ExpandIconWrapper = styled.div`
+
+const ExpandIconWrapper = styled.div
   display:flex;
   align-items:center;
   justify-content:center;
-`
 
-const Log = styled.div`
+
+const Log = styled.div
   flex:1;
   overflow-y:auto;
-  padding:20px 25px; /* Aumentado padding */
+  padding:12px 15px;
   display:flex;
   flex-direction:column;
-  gap:1.5rem; /* Aumentado espacio entre mensajes */
-  min-height:200px; /* Aumentada altura mínima */
+  gap:1rem;
+  min-height:100px;
   background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
   border-radius: 10px;
-  margin-top: 10px; /* Aumentado margen superior */
-  &::-webkit-scrollbar { width:8px; } /* Ancho aumentado de la barra de desplazamiento */
+  margin-top: 5px;
+  &::-webkit-scrollbar { width:6px; }
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
-`
 
-const MessageItem = styled.div<{ $isOwn?: boolean }>`
-  line-height:1.6; /* Aumentado el interlineado */
+
+const MessageItem = styled.div<{ $isOwn?: boolean }>
+  line-height:1.4;
   animation:${fadeIn} 0.3s ease-out;
   background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
   border-radius: 8px;
-  padding: 12px 16px; /* Aumentado padding */
-  max-width: 85%; /* Aumentado máximo ancho */
+  padding: 8px 12px;
+  max-width: 80%;
   color: white;
-  margin-bottom: 10px; /* Aumentado margen inferior */
+  margin-bottom: 8px;
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
-`
 
-const Username = styled.strong<{ userColor: string }>`
+
+const Username = styled.strong<{ userColor: string }>
   font-weight:600;
   color:${p => p.userColor};
   margin-right:0.5em;
-`
 
-const Timestamp = styled.span`
-  font-size:0.85em; /* Aumentado tamaño de la hora */
+
+const Timestamp = styled.span
+  font-size:0.75em;
   color:white; /* Hora en color blanco */
   opacity:1;
   margin-left:0.5em;
-`
 
-const InputRow = styled.div`
+
+const InputRow = styled.div
   display:flex;
   border-top:1px solid rgba(255,255,255,0.08);
   background:#202225;
   flex-shrink:0;
   align-items: center;
-  padding: 10px 15px; /* Aumentado padding */
-`
 
-const TextInput = styled.input`
+
+const TextInput = styled.input
   flex:1;
   background:#40444b;
   border:none;
-  padding:15px 20px; /* Aumentado padding */
+  padding:12px 15px;
   color:#fff;
   outline:none;
-  font-size:1.1rem; /* Aumentado tamaño de fuente */
-  border-radius: 10px; /* Aumentado radio de borde */
+  font-size:1rem;
+  border-radius: 8px;
   &::placeholder { color:#777; opacity:0.8; }
-`
 
-const SendBtn = styled.button`
+
+const SendBtn = styled.button
   background:none; /* Sin fondo */
   border:none; /* Sin borde */
-  padding:0 20px; /* Aumentado padding */
+  padding:0 18px;
   cursor:pointer;
   font-weight:600;
   color:#fff;
-  font-size:1.1rem; /* Aumentado tamaño de fuente */
+  font-size:1rem;
   &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
   &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
-`
 
-const LoadingText = styled.div`
+
+const LoadingText = styled.div
   text-align:center;
   color:#a0a0a0;
   padding:2rem 0;
   font-style:italic;
-  font-size:1rem; /* Aumentado tamaño de fuente */
-`
+  font-size:0.85rem;
+
 
 export default function TrollBox() {
   const { publicKey, connected } = useWallet()
@@ -325,7 +324,7 @@ export default function TrollBox() {
             <OnlineStatus />
           </HeaderTitle>
           <HeaderStatus>
-            {messages.length ? `${messages.length} msgs` : 'Connecting…'}
+            {messages.length ? ${messages.length} msgs : 'Connecting…'}
           </HeaderStatus>
           <MinimizeButton><MinimizeIcon/></MinimizeButton>
         </Header>
@@ -358,7 +357,7 @@ export default function TrollBox() {
             disabled={!connected || isSending || cooldown > 0 || !text.trim() || !swrKey}
           >
             { isSending ? '…'
-              : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
+              : cooldown > 0 ? Wait ${cooldown}s : 'Send' }
           </SendBtn>
         </InputRow>
       </ContentContainer>
