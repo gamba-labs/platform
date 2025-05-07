@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import useSWR from 'swr'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
@@ -39,7 +39,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   right: 20px;
   z-index: 998;
   border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '12px'};
-  background: ${({ $isMinimized }) => $isMinimized ? '#ffe42d' : 'rgba(28,28,35,0.85)'};
+  background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
   font-size: 0.9rem;
@@ -69,8 +69,8 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
       : `width:calc(100% - 32px); max-width:340px; bottom:16px; right:16px;`}
-  }
 `
+
 const ContentContainer = styled.div<{ $isMinimized: boolean }>`
   display: flex;
   flex-direction: column;
@@ -80,23 +80,31 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
   transition: opacity 0.2s;
   pointer-events: ${({ $isMinimized }) => $isMinimized ? 'none' : 'auto'};
 `
+
 const Header = styled.div`
   padding: 10px 15px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255,255,255,0.05);
+  background: #202225;
   color: #fff;
   cursor: pointer;
 `
-const HeaderTitle = styled.span`flex-grow:1;`;
+
+const HeaderTitle = styled.span`
+  flex-grow: 1;
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
 const HeaderStatus = styled.span`
   font-size:0.75rem;
   color:#a0a0a0;
   opacity:0.8;
   margin:0 10px;
 `
+
 const MinimizeButton = styled.button`
   background:none;
   border:none;
@@ -106,65 +114,87 @@ const MinimizeButton = styled.button`
   border-radius:4px;
   &:hover { background:rgba(255,255,255,0.1); color:#fff; }
 `
+
 const ExpandIconWrapper = styled.div`
   display:flex;
   align-items:center;
   justify-content:center;
 `
+
 const Log = styled.div`
   flex:1;
   overflow-y:auto;
   padding:12px 15px;
   display:flex;
   flex-direction:column;
-  gap:0.6rem;
+  gap:1rem;
   min-height:100px;
+  background: #2f3136;
+  border-radius: 10px;
+  margin-top: 5px;
   &::-webkit-scrollbar { width:6px; }
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
+
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
   line-height:1.4;
   animation:${fadeIn} 0.3s ease-out;
+  background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
+  border-radius: 8px;
+  padding: 8px 12px;
+  max-width: 80%;
+  color: white;
+  margin-bottom: 8px;
+  align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
 `
+
 const Username = styled.strong<{ userColor: string }>`
   font-weight:600;
   color:${p => p.userColor};
   margin-right:0.5em;
 `
+
 const Timestamp = styled.span`
   font-size:0.75em;
   color:#888;
   opacity:0.7;
   margin-left:0.5em;
 `
+
 const InputRow = styled.div`
   display:flex;
   border-top:1px solid rgba(255,255,255,0.08);
-  background:rgba(0,0,0,0.1);
+  background:#202225;
   flex-shrink:0;
+  align-items: center;
 `
+
 const TextInput = styled.input`
   flex:1;
-  background:transparent;
+  background:#40444b;
   border:none;
   padding:12px 15px;
-  color:#eee;
+  color:#fff;
   outline:none;
-  font-size:0.9rem;
+  font-size:1rem;
+  border-radius: 8px;
   &::placeholder { color:#777; opacity:0.8; }
 `
+
 const SendBtn = styled.button`
-  background:#ffe42d;
+  background:#7289da;
   border:none;
   padding:0 18px;
   cursor:pointer;
   font-weight:600;
   color:#fff;
-  font-size:0.9rem;
-  &:hover:not(:disabled) { background:#ffe42d; }
-  &:active:not(:disabled) { background:#ffe416; transform:scale(0.98); }
+  font-size:1rem;
+  border-radius: 8px;
+  &:hover:not(:disabled) { background:#5b6eae; }
+  &:active:not(:disabled) { background:#4c5c91; transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
 `
+
 const LoadingText = styled.div`
   text-align:center;
   color:#a0a0a0;
@@ -173,7 +203,6 @@ const LoadingText = styled.div`
   font-size:0.85rem;
 `
 
-// --- Component ---
 export default function TrollBox() {
   const { publicKey, connected } = useWallet()
   const walletModal = useWalletModal()
