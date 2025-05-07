@@ -50,6 +50,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   flex-direction: column;
   cursor: ${({ $isMinimized }) => $isMinimized ? 'pointer' : 'default'};
   transition: width 0.3s, height 0.3s, max-height 0.3s, border-radius 0.3s, background 0.3s;
+  
   ${({ $isMinimized }) => $isMinimized
     ? `
       width: 56px;
@@ -61,22 +62,22 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 600px; /* Tamaño grande en PC */
-      max-height: 700px;
-      min-height: 250px;
+      width: 500px; /* Tamaño grande en PC */
+      max-height: 600px;
+      min-height: 200px;
     `}
-  
+
   /* Ajustes para pantallas pequeñas */
   @media (max-width: 768px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:400px; bottom:16px; right:16px;`} 
+      : `width:calc(100% - 32px); max-width:360px; bottom:16px; right:16px;`} 
   }
 
   @media (max-width: 480px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:360px; bottom:16px; right:16px;`} 
+      : `width:calc(100% - 32px); max-width:320px; bottom:16px; right:16px;`} 
   }
 `
 
@@ -91,7 +92,7 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
 `
 
 const Header = styled.div`
-  padding: 15px 20px;
+  padding: 10px 15px; /* Reducido padding en móviles */
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -103,22 +104,22 @@ const Header = styled.div`
 
 const HeaderTitle = styled.span`
   flex-grow: 1;
-  font-size: 1.4rem;
+  font-size: 1.2rem; /* Reducido tamaño de fuente en móviles */
   font-weight: bold;
   display: flex;
   align-items: center;
 `
 
 const OnlineStatus = styled.div`
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #28a745;
   margin-left: 10px;
 `
 
 const HeaderStatus = styled.span`
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #a0a0a0;
   opacity: 0.8;
   margin: 0 10px;
@@ -143,10 +144,10 @@ const ExpandIconWrapper = styled.div`
 const Log = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 20px 25px;
+  padding: 15px 20px; /* Reducido padding en móviles */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   min-height: 200px;
   background: rgba(47, 49, 54, 0.8);
   border-radius: 10px;
