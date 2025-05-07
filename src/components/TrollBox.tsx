@@ -146,7 +146,6 @@ const Log = styled.div`
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
 
-// ✅ MENSAJE CON BURBUJA Y GUEST BADGE
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
   line-height: 1.6;
   animation: ${fadeIn} 0.3s ease-out;
@@ -171,10 +170,10 @@ const Username = styled.strong<{ userColor: string }>`
 const GuestBadge = styled.span`
   background: #5865F2;
   color: #fff;
-  font-size: 0.65rem;
+  font-size: 0.6rem; /* más pequeño */
   font-weight: 500;
   border-radius: 3px;
-  padding: 2px 4px;
+  padding: 1px 3px; /* más pequeño */
   margin-left: 6px;
   text-transform: uppercase;
   line-height: 1;
@@ -343,6 +342,7 @@ export default function TrollBox() {
                 {m.user.slice(0, 6)}
               </Username>
               <GuestBadge>GUEST</GuestBadge>
+              <span style={{ marginLeft: '6px' }}>:</span>
               <span style={{ marginLeft: '8px', whiteSpace: 'pre-wrap' }}>
                 {m.text}
               </span>
