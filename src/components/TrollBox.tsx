@@ -166,7 +166,7 @@ const Username = styled.strong<{ userColor: string }>`
 
 const Timestamp = styled.span`
   font-size:0.85em; /* Aumentado tamaño de la hora */
-  color:white; /* Hora en color blanco */
+  color: #aaa; /* Cambié el color a un gris más suave */
   opacity:1;
   margin-left:0.5em;
 `
