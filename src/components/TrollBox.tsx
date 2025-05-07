@@ -42,7 +42,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
-  font-size: 1rem; 
+  font-size: 1rem; /* Aumentado tamaño de fuente */
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   ${({ $isMinimized }) => !$isMinimized && `backdrop-filter: blur(10px);`}
   overflow: hidden;
@@ -61,9 +61,9 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 500px; 
-      max-height: 600px; 
-      min-height: 200px;
+      width: 500px; /* Aumentado ancho */
+      max-height: 600px; /* Aumentada altura */
+      min-height: 200px; /* Aumentada altura mínima */
     `}
   @media (max-width:480px) {
     ${({ $isMinimized }) => $isMinimized
@@ -82,7 +82,7 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
 `
 
 const Header = styled.div`
-  padding: 15px 20px;
+  padding: 15px 20px; /* Aumentado padding */
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -94,22 +94,22 @@ const Header = styled.div`
 
 const HeaderTitle = styled.span`
   flex-grow: 1;
-  font-size: 1.4rem;
+  font-size: 1.4rem; /* Aumentado tamaño de fuente */
   font-weight: bold;
   display: flex;
   align-items: center;
 `
 
 const OnlineStatus = styled.div`
-  width: 10px;
-  height: 10px;
+  width: 10px; /* Aumentado tamaño del punto */
+  height: 10px; /* Aumentado tamaño del punto */
   border-radius: 50%;
   background-color: #28a745;
   margin-left: 10px;
 `
 
 const HeaderStatus = styled.span`
-  font-size:0.85rem; 
+  font-size:0.85rem; /* Aumentado tamaño de fuente */
   color:#a0a0a0;
   opacity:0.8;
   margin:0 10px;
@@ -134,27 +134,27 @@ const ExpandIconWrapper = styled.div`
 const Log = styled.div`
   flex:1;
   overflow-y:auto;
-  padding:20px 25px;
+  padding:20px 25px; /* Aumentado padding */
   display:flex;
   flex-direction:column;
-  gap:1.5rem;
-  min-height:200px;
-  background: rgba(47, 49, 54, 0.5); /* Fondo gris más transparente */
+  gap:1.5rem; /* Aumentado espacio entre mensajes */
+  min-height:200px; /* Aumentada altura mínima */
+  background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
   border-radius: 10px;
-  margin-top: 10px;
-  &::-webkit-scrollbar { width:8px; }
+  margin-top: 10px; /* Aumentado margen superior */
+  &::-webkit-scrollbar { width:8px; } /* Ancho aumentado de la barra de desplazamiento */
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
 
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
-  line-height:1.6;
+  line-height:1.6; /* Aumentado el interlineado */
   animation:${fadeIn} 0.3s ease-out;
   background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
   border-radius: 8px;
-  padding: 12px 16px;
-  max-width: 85%;
+  padding: 12px 16px; /* Aumentado padding */
+  max-width: 85%; /* Aumentado máximo ancho */
   color: white;
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Aumentado margen inferior */
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
 `
 
@@ -165,8 +165,8 @@ const Username = styled.strong<{ userColor: string }>`
 `
 
 const Timestamp = styled.span`
-  font-size:0.85em;
-  color:white;
+  font-size:0.85em; /* Aumentado tamaño de la hora */
+  color:white; /* Hora en color blanco */
   opacity:1;
   margin-left:0.5em;
 `
@@ -177,29 +177,29 @@ const InputRow = styled.div`
   background:#202225;
   flex-shrink:0;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px 15px; /* Aumentado padding */
 `
 
 const TextInput = styled.input`
   flex:1;
   background:#40444b;
   border:none;
-  padding:15px 20px;
+  padding:15px 20px; /* Aumentado padding */
   color:#fff;
   outline:none;
-  font-size:1.1rem;
-  border-radius: 10px;
+  font-size:1.1rem; /* Aumentado tamaño de fuente */
+  border-radius: 10px; /* Aumentado radio de borde */
   &::placeholder { color:#777; opacity:0.8; }
 `
 
 const SendBtn = styled.button`
-  background:none;
-  border:none;
-  padding:0 20px;
+  background:none; /* Sin fondo */
+  border:none; /* Sin borde */
+  padding:0 20px; /* Aumentado padding */
   cursor:pointer;
   font-weight:600;
   color:#fff;
-  font-size:1.1rem;
+  font-size:1.1rem; /* Aumentado tamaño de fuente */
   &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
   &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
@@ -210,7 +210,7 @@ const LoadingText = styled.div`
   color:#a0a0a0;
   padding:2rem 0;
   font-style:italic;
-  font-size:1rem;
+  font-size:1rem; /* Aumentado tamaño de fuente */
 `
 
 export default function TrollBox() {
@@ -219,6 +219,7 @@ export default function TrollBox() {
   const [isMinimized, setIsMinimized] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
+  // derive username
   const anonFallback = useMemo(
     () => 'anon' + Math.floor(Math.random() * 1e4).toString().padStart(4, '0'),
     [],
@@ -227,6 +228,7 @@ export default function TrollBox() {
     ? publicKey.toBase58().slice(0, 6)
     : anonFallback
 
+  // SWR setup
   const swrKey = isMinimized || (typeof document !== 'undefined' && document.hidden)
     ? null : '/api/chat'
   const { data: messages = [], error, mutate } = useSWR<Msg[]>(
@@ -239,6 +241,7 @@ export default function TrollBox() {
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // color map
   const userColors = useMemo(() => {
     const map: Record<string, string> = {}
     messages.forEach(m => {
@@ -248,6 +251,7 @@ export default function TrollBox() {
     return map
   }, [messages, userName])
 
+  // send with optimistic UI + cooldown
   async function send() {
     if (!connected) return walletModal.setVisible(true)
     const txt = text.trim()
@@ -273,12 +277,14 @@ export default function TrollBox() {
     }
   }
 
+  // scroll to bottom on every message load
   useEffect(() => {
     if (!isMinimized && logRef.current) {
       logRef.current.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' })
     }
   }, [messages, isMinimized])
 
+  // focus when expanded
   useEffect(() => {
     if (!isMinimized) {
       const t = setTimeout(() => inputRef.current?.focus(), 300)
@@ -286,6 +292,7 @@ export default function TrollBox() {
     }
   }, [isMinimized])
 
+  // cooldown countdown
   useEffect(() => {
     if (cooldown <= 0) return
     const timer = setTimeout(() => setCooldown(cooldown - 1), 1000)
