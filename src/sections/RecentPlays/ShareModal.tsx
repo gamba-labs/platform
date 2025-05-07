@@ -24,7 +24,7 @@ const Inner = styled.div`
 const Content = styled.div`
   border-radius: 10px;
   padding: 55px;
-  background-image: url(https://iili.io/3GxQaY7.jpg);
+  background-image: url(https://iili.io/315va8G.webp);
   background-size: cover;
   background-position: center;
   display: flex;
