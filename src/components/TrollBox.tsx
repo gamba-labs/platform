@@ -61,7 +61,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 500px; /* Aumentado ancho */
+      width: 400px; /* Aumentado ancho */
       max-height: 600px; /* Aumentada altura */
       min-height: 200px; /* Aumentada altura mínima */
     `}
