@@ -2,10 +2,10 @@ import { GambaTransaction } from 'gamba-core-v2'
 import { GambaUi, TokenValue, useTokenMeta } from 'gamba-react-ui-v2'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Flex } from '../../components'
 import { Modal } from '../../components/Modal'
-import { EXPLORER_URL, PLATFORM_SHARABLE_URL } from '../../constants'
+import { EXPLORER_URL } from '../../constants'
 import { extractMetadata } from '../../utils'
 
 const Container = styled.div`
@@ -14,6 +14,7 @@ const Container = styled.div`
   padding: 15px;
   padding-bottom: 0;
   width: 100%;
+  position: relative;
 `
 
 const Inner = styled.div`
@@ -23,12 +24,58 @@ const Inner = styled.div`
 const Content = styled.div`
   border-radius: 10px;
   padding: 55px;
-  background-image: url(https://iili.io/315va8G.webp;); 
-  background-size: cover; 
-background-position: auto;
+  background-image: url(https://iili.io/3GxQaY7.jpg);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 `
 
-export function ShareModal({ event, onClose }: {event: GambaTransaction<'GameSettled'>, onClose: () => void}) {
+const ResultBox = styled.div`
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  padding: 20px 30px;
+  text-align: center;
+  max-width: 300px;
+`
+
+const glowStyle = (color: string) => css`
+  color: ${color};
+  text-shadow: 0 0 8px ${color}, 0 0 16px ${color};
+`
+
+const BigText = styled.div<{ isProfit: boolean }>`
+  font-size: 45px;
+  font-weight: bold;
+  ${({ isProfit }) => glowStyle(isProfit ? '#00ff00' : '#ff0000')}
+`
+
+const BiggerText = styled.div<{ isProfit: boolean }>`
+  font-size: 60px;
+  font-weight: bold;
+  margin-top: 10px;
+  ${({ isProfit }) => glowStyle(isProfit ? '#00ff00' : '#ff0000')}
+`
+
+const PlayText = styled.div`
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  font-size: 16px;
+  color: #ffffffcc;
+  font-style: italic;
+  text-align: left;
+
+  b {
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 3px #000, 0 0 5px #000;
+  }
+`
+
+export function ShareModal({ event, onClose }: { event: GambaTransaction<'GameSettled'>, onClose: () => void }) {
   const navigate = useNavigate()
   const { game } = extractMetadata(event)
   const gotoGame = () => {
@@ -36,35 +83,31 @@ export function ShareModal({ event, onClose }: {event: GambaTransaction<'GameSet
     onClose()
   }
   const tokenMeta = useTokenMeta(event.data.tokenMint)
-  const ref = React.useRef<HTMLDivElement>(null!)
 
   const profit = event.data.payout.sub(event.data.wager).toNumber()
-  const percentChange = profit / event.data.wager.toNumber()
+  const isProfit = profit >= 0
+  const multiplier = (event.data.multiplierBps / 10_000).toLocaleString()
 
   return (
     <Modal onClose={() => onClose()}>
       <Container>
         <Inner>
-          <Content ref={ref}>
-            <div style={{ display: 'grid', gap: '0px', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', padding: '10px' }}>
-              <img src={tokenMeta.image} style={{ borderRadius: '50%', height: '35px' }} />
-              <div style={{ fontSize: '30px', color: percentChange >= 0 ? '#9bffad' : '#ff4f4f', padding: '10px' }}>
-                <b>
-                  {profit >= 0 ? '+' : '-'}
-                  <TokenValue exact amount={Math.abs(profit)} mint={event.data.tokenMint} />
-                </b>
-                <div style={{ fontSize: '20px' }}>
-                  {(event.data.multiplierBps / 10_000).toLocaleString()}x
-                </div>
+          <Content>
+            <ResultBox>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
+                <img src={tokenMeta.image} style={{ borderRadius: '50%', height: '50px' }} alt="token" />
               </div>
-              <div style={{ padding: '10px', textAlign: 'center' }}>
-                
-              </div>
-            </div>
-            <div style={{  color: '#ffffffcc', fontStyle: 'italic', display: 'flex', alignContent: 'center', gap: '1px', padding: '10px', borderRadius: '10px' }}>
-            
-              <div>play on <b>{PLATFORM_SHARABLE_URL}</b></div>
-            </div>
+              <BigText isProfit={isProfit}>
+                {isProfit ? '+' : '-'}
+                <TokenValue exact amount={Math.abs(profit)} mint={event.data.tokenMint} />
+              </BigText>
+              <BiggerText isProfit={isProfit}>
+                {multiplier}x
+              </BiggerText>
+            </ResultBox>
+            <PlayText>
+              Play now on <b>banabets.com</b>
+            </PlayText>
           </Content>
         </Inner>
         <Flex>
