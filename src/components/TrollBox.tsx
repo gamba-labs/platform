@@ -22,10 +22,9 @@ const MinimizeIcon = () => (
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
-
-const SendIcon = () => (
+const ChatIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 21l1-8 7-3-7-3 1-8 9 9 9-9 1 8-7 3 7 3-1 8-9-9-9 9z" />
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
   </svg>
 )
 
@@ -54,7 +53,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   ${({ $isMinimized }) => $isMinimized
     ? `
       width: 56px;
-      height: 56px;
+      hei: 56px;
       max-height: 56px;
       justify-content: center;
       align-items: center;
@@ -185,15 +184,12 @@ const TextInput = styled.input`
 const SendBtn = styled.button`
   background:#7289da;
   border:none;
-  padding:8px;
+  padding:0 18px;
   cursor:pointer;
   font-weight:600;
   color:#fff;
   font-size:1rem;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border-radius: 8px;
   &:hover:not(:disabled) { background:#5b6eae; }
   &:active:not(:disabled) { background:#4c5c91; transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
@@ -248,7 +244,7 @@ export default function TrollBox() {
   // send with optimistic UI + cooldown
   async function send() {
     if (!connected) return walletModal.setVisible(true)
-    const txt = text.trim()
+    const txt = (text.trim() + " 🍌").trim()  // Aquí agregamos el emoji al texto
     if (!txt || isSending || cooldown > 0) return
     setIsSending(true)
     const id = Date.now()
@@ -315,7 +311,7 @@ export default function TrollBox() {
           </HeaderStatus>
           <MinimizeButton><MinimizeIcon/></MinimizeButton>
         </Header>
-        <Log ref={logRef}>
+        <Log r={logRef}>
           {!messages.length && !error && <LoadingText>Loading messages…</LoadingText>}
           {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
@@ -343,7 +339,8 @@ export default function TrollBox() {
             onClick={send}
             disabled={!connected || isSending || cooldown > 0 || !text.trim() || !swrKey}
           >
-            <SendIcon />
+            { isSending ? '…'
+              : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
           </SendBtn>
         </InputRow>
       </ContentContainer>
