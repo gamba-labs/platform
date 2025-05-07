@@ -182,17 +182,33 @@ const TextInput = styled.input`
 `
 
 const SendBtn = styled.button`
-  background:#7289da;
-  border:none;
-  padding:0 18px;
-  cursor:pointer;
-  font-weight:600;
-  color:#fff;
-  font-size:1rem;
-  border-radius: 8px;
-  &:hover:not(:disabled) { background:#5b6eae; }
-  &:active:not(:disabled) { background:#4c5c91; transform:scale(0.98); }
-  &:disabled { opacity:0.5; cursor:not-allowed; }
+  background: linear-gradient(145deg, #7289da, #5b6eae);
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(145deg, #5b6eae, #7289da);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  &:active:not(:disabled) {
+    background: linear-gradient(145deg, #4c5c91, #5b6eae);
+    transform: translateY(2px);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: linear-gradient(145deg, #7289da, #5b6eae);
+  }
 `
 
 const LoadingText = styled.div`
