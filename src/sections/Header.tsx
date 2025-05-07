@@ -37,7 +37,6 @@ const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap; /* ✅ Permitir que se envuelvan si no entran */
   width: 100%;
   padding: 10px;
   background: #000000cc;
@@ -48,40 +47,17 @@ const StyledHeader = styled.div`
   z-index: 1000;
 `
 
-const LeftSection = styled.div`
-  display: flex;
-  gap: 20px;
-  align-items: center;
-`
-
-const RightSection = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap; /* ✅ También permitir wrap en la parte derecha */
-  margin-top: 10px; /* Espacio pequeño si se va abajo */
-
-  @media (min-width: 768px) {
-    margin-top: 0; /* En desktop no hace falta margen arriba */
-  }
-`
-
 const Logo = styled(NavLink)`
   height: 35px;
   margin: 0 10px;
   & > img {
     height: 120%;
   }
-
-  @media (max-width: 768px) {
-    height: 30px;
-    & > img {
-      height: 100%;
-    }
-  }
 `
 
 /* ─────── config ──────────────────────────────────────────────── */
+/** Change this to the creator address whose leaderboard you want
+ *  to display. You can also pipe it in via an env variable. */
 const CREATOR_ADDRESS = 'ExampleCreatorPubkey'
 
 /* ─────── main component ──────────────────────────────────────── */
@@ -99,12 +75,16 @@ export default function Header() {
 
   return (
     <>
+      {/* ────── helper modals ────── */}
       {bonusHelp && (
         <Modal onClose={() => setBonusHelp(false)}>
           <h1>Bonus ✨</h1>
           <p>
-            You have <b><TokenValue amount={balance.bonusBalance} /></b> worth of free plays.
-            This bonus will be applied automatically when you play.
+            You have <b>
+              <TokenValue amount={balance.bonusBalance} />
+            </b>{' '}
+            worth of free plays. This bonus will be applied automatically when you
+            play.
           </p>
           <p>Note that a fee is still needed from your wallet for each play.</p>
         </Modal>
@@ -114,12 +94,13 @@ export default function Header() {
         <Modal onClose={() => setJackpotHelp(false)}>
           <h1>Jackpot 💰</h1>
           <p style={{ fontWeight: 'bold' }}>
-            There's <TokenValue amount={pool.jackpotBalance} /> in the Jackpot.
+            There&apos;s <TokenValue amount={pool.jackpotBalance} /> in the
+            Jackpot.
           </p>
           <p>
-            The Jackpot is a prize pool that grows with every bet made. As it grows,
-            so does your chance of winning. Once a winner is selected, the pool resets
-            and grows again from there.
+            The Jackpot is a prize pool that grows with every bet made. As it
+            grows, so does your chance of winning. Once a winner is selected,
+            the pool resets and grows again from there.
           </p>
           <p>
             You pay a maximum of{' '}
@@ -140,6 +121,7 @@ export default function Header() {
         </Modal>
       )}
 
+      {/* ────── leaderboards modal ────── */}
       {showLeaderboard && (
         <LeaderboardsModal
           creator={PLATFORM_CREATOR_ADDRESS.toBase58()}
@@ -147,14 +129,22 @@ export default function Header() {
         />
       )}
 
+      {/* ────── header bar ────── */}
       <StyledHeader>
-        <LeftSection>
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <Logo to="/">
             <img alt="Gamba logo" src="/logo.svg" />
           </Logo>
-        </LeftSection>
+        </div>
 
-        <RightSection>
+        <div
+          style={{
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'center',
+            position: 'relative',
+          }}
+        >
           {pool.jackpotBalance > 0 && (
             <Bonus onClick={() => setJackpotHelp(true)}>
               💰 <TokenValue amount={pool.jackpotBalance} />
@@ -167,6 +157,7 @@ export default function Header() {
             </Bonus>
           )}
 
+          {/* Leaderboard trigger only on desktop */}
           {isDesktop && (
             <GambaUi.Button onClick={() => setShowLeaderboard(true)}>
               Leaderboard
@@ -175,7 +166,7 @@ export default function Header() {
 
           <TokenSelect />
           <UserButton />
-        </RightSection>
+        </div>
       </StyledHeader>
     </>
   )
