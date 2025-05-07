@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 
-type Msg = { user: string; text: string; ts: number; reactions?: Record<string, number> };
+type Msg = { user: string; text: string; ts: number };
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -16,13 +16,12 @@ const stringToHslColor = (str: string, s: number, l: number): string => {
   return `hsl(${hash % 360}, ${s}%, ${l}%)`
 }
 
-// Reactions Icons
-const LikeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+const MinimizeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
-);
-
+)
 const ChatIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
@@ -43,7 +42,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
-  font-size: 1rem;
+  font-size: 1rem; /* Aumentado tamaño de fuente */
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   ${({ $isMinimized }) => !$isMinimized && `backdrop-filter: blur(10px);`}
   overflow: hidden;
@@ -62,9 +61,9 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 400px;
-      max-height: 600px;
-      min-height: 200px;
+      width: 400px; /* Aumentado ancho */
+      max-height: 600px; /* Aumentada altura */
+      min-height: 200px; /* Aumentada altura mínima */
     `}
   @media (max-width:480px) {
     ${({ $isMinimized }) => $isMinimized
@@ -83,7 +82,7 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
 `
 
 const Header = styled.div`
-  padding: 15px 20px;
+  padding: 15px 20px; /* Aumentado padding */
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -93,30 +92,69 @@ const Header = styled.div`
   cursor: pointer;
 `
 
+const HeaderTitle = styled.span`
+  flex-grow: 1;
+  font-size: 1.4rem; /* Aumentado tamaño de fuente */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+`
+
+const OnlineStatus = styled.div`
+  width: 10px; /* Aumentado tamaño del punto */
+  height: 10px; /* Aumentado tamaño del punto */
+  border-radius: 50%;
+  background-color: #28a745;
+  margin-left: 10px;
+`
+
+const HeaderStatus = styled.span`
+  font-size:0.85rem; /* Aumentado tamaño de fuente */
+  color:#a0a0a0;
+  opacity:0.8;
+  margin:0 10px;
+`
+
+const MinimizeButton = styled.button`
+  background:none;
+  border:none;
+  color:#a0a0a0;
+  padding:5px;
+  cursor:pointer;
+  border-radius:4px;
+  &:hover { background:rgba(255,255,255,0.1); color:#fff; }
+`
+
+const ExpandIconWrapper = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+`
+
 const Log = styled.div`
   flex:1;
   overflow-y:auto;
-  padding:20px 25px;
+  padding:20px 25px; /* Aumentado padding */
   display:flex;
   flex-direction:column;
-  gap:1rem;
-  min-height:200px;
-  background: rgba(47, 49, 54, 0.8);
+  gap:1rem; /* Reducido el espacio entre mensajes */
+  min-height:200px; /* Aumentada altura mínima */
+  background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
   border-radius: 10px;
-  margin-top: 10px;
-  &::-webkit-scrollbar { width:8px; }
+  margin-top: 10px; /* Aumentado margen superior */
+  &::-webkit-scrollbar { width:8px; } /* Ancho aumentado de la barra de desplazamiento */
   &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
 `
 
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
-  line-height:1.6;
+  line-height:1.6; /* Aumentado el interlineado */
   animation:${fadeIn} 0.3s ease-out;
   background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
   border-radius: 8px;
-  padding: 12px 16px;
-  max-width: 85%;
+  padding: 12px 16px; /* Aumentado padding */
+  max-width: 85%; /* Aumentado máximo ancho */
   color: white;
-  margin-bottom: 5px;
+  margin-bottom: 5px; /* Reducido margen inferior */
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
 `
 
@@ -126,57 +164,53 @@ const Username = styled.strong<{ userColor: string }>`
   margin-right:0.5em;
 `
 
+const Timestamp = styled.span`
+  font-size:0.85em; /* Aumentado tamaño de la hora */
+  color: #aaa; /* Cambié el color a un gris más suave */
+  opacity:1;
+  margin-left:0.5em;
+`
+
 const InputRow = styled.div`
   display:flex;
   border-top:1px solid rgba(255,255,255,0.08);
   background:#202225;
   flex-shrink:0;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px 15px; /* Aumentado padding */
 `
 
 const TextInput = styled.input`
   flex:1;
   background:#40444b;
   border:none;
-  padding:15px 20px;
+  padding:15px 20px; /* Aumentado padding */
   color:#fff;
   outline:none;
-  font-size:1.1rem;
-  border-radius: 10px;
+  font-size:1.1rem; /* Aumentado tamaño de fuente */
+  border-radius: 10px; /* Aumentado radio de borde */
   &::placeholder { color:#777; opacity:0.8; }
 `
 
 const SendBtn = styled.button`
-  background:none;
-  border:none;
-  padding:0 20px;
+  background:none; /* Sin fondo */
+  border:none; /* Sin borde */
+  padding:0 20px; /* Aumentado padding */
   cursor:pointer;
   font-weight:600;
   color:#fff;
-  font-size:1.1rem;
+  font-size:1.1rem; /* Aumentado tamaño de fuente */
   &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
   &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
   &:disabled { opacity:0.5; cursor:not-allowed; }
 `
 
-// Add Reaction logic
-const ReactionContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 5px;
-`
-
-const ReactionButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #a0a0a0;
-  padding: 5px;
-  margin-right: 10px;
-  &:hover {
-    color: #fff;
-  }
+const LoadingText = styled.div`
+  text-align:center;
+  color:#a0a0a0;
+  padding:2rem 0;
+  font-style:italic;
+  font-size:1rem; /* Aumentado tamaño de fuente */
 `
 
 export default function TrollBox() {
@@ -185,6 +219,7 @@ export default function TrollBox() {
   const [isMinimized, setIsMinimized] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
+  // derive username
   const anonFallback = useMemo(
     () => 'anon' + Math.floor(Math.random() * 1e4).toString().padStart(4, '0'),
     [],
@@ -193,6 +228,7 @@ export default function TrollBox() {
     ? publicKey.toBase58().slice(0, 6)
     : anonFallback
 
+  // SWR setup
   const swrKey = isMinimized || (typeof document !== 'undefined' && document.hidden)
     ? null : '/api/chat'
   const { data: messages = [], error, mutate } = useSWR<Msg[]>(
@@ -205,6 +241,7 @@ export default function TrollBox() {
   const logRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // color map
   const userColors = useMemo(() => {
     const map: Record<string, string> = {}
     messages.forEach(m => {
@@ -214,19 +251,7 @@ export default function TrollBox() {
     return map
   }, [messages, userName])
 
-  // Handle reaction click
-  const handleReaction = (messageId: number, reaction: string) => {
-    const updatedMessages = messages.map(msg => {
-      if (msg.ts === messageId) {
-        const newReactions = { ...msg.reactions };
-        newReactions[reaction] = (newReactions[reaction] || 0) + 1;
-        return { ...msg, reactions: newReactions };
-      }
-      return msg;
-    });
-    mutate(updatedMessages, false);
-  };
-
+  // send with optimistic UI + cooldown
   async function send() {
     if (!connected) return walletModal.setVisible(true)
     const txt = text.trim()
@@ -252,6 +277,28 @@ export default function TrollBox() {
     }
   }
 
+  // scroll to bottom on every message load
+  useEffect(() => {
+    if (!isMinimized && logRef.current) {
+      logRef.current.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' })
+    }
+  }, [messages, isMinimized])
+
+  // focus when expanded
+  useEffect(() => {
+    if (!isMinimized) {
+      const t = setTimeout(() => inputRef.current?.focus(), 300)
+      return ()=> clearTimeout(t)
+    }
+  }, [isMinimized])
+
+  // cooldown countdown
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const timer = setTimeout(() => setCooldown(cooldown - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [cooldown])
+
   const fmtTime = (ts:number) =>
     ts > Date.now() - 5000
       ? 'sending…'
@@ -259,23 +306,32 @@ export default function TrollBox() {
 
   const toggleMinimize = () => setIsMinimized(v => !v)
 
+  const onlineUsers = useMemo(() => {
+    const uniqueUsers = new Set(messages.map(m => m.user));
+    return uniqueUsers.size;
+  }, [messages]);
+
   return (
     <Wrapper $isMinimized={isMinimized}>
       {isMinimized && (
         <ExpandIconWrapper onClick={toggleMinimize}>
-          <ChatIcon />
+          <ChatIcon/>
         </ExpandIconWrapper>
       )}
       <ContentContainer $isMinimized={isMinimized}>
         <Header onClick={toggleMinimize}>
           <HeaderTitle>
             #banabets-chat
+            <OnlineStatus />
           </HeaderTitle>
-          <MinimizeButton><MinimizeIcon /></MinimizeButton>
+          <HeaderStatus>
+            {messages.length ? `${messages.length} msgs` : 'Connecting…'}
+          </HeaderStatus>
+          <MinimizeButton><MinimizeIcon/></MinimizeButton>
         </Header>
         <Log ref={logRef}>
           {!messages.length && !error && <LoadingText>Loading messages…</LoadingText>}
-          {error && <LoadingText style={{ color: '#ff8080' }}>Error loading chat.</LoadingText>}
+          {error && <LoadingText style={{color: '#ff8080' }}>Error loading chat.</LoadingText>}
           {messages.map((m, i) => (
             <MessageItem key={m.ts || i} $isOwn={m.user === userName}>
               <Username userColor={userColors[m.user]}>
@@ -283,12 +339,6 @@ export default function TrollBox() {
               </Username>
               : {m.text}
               <Timestamp>{fmtTime(m.ts)}</Timestamp>
-              <ReactionContainer>
-                <ReactionButton onClick={() => handleReaction(m.ts, 'like')}>
-                  <LikeIcon />
-                  {m.reactions?.like || 0}
-                </ReactionButton>
-              </ReactionContainer>
             </MessageItem>
           ))}
         </Log>
@@ -297,13 +347,9 @@ export default function TrollBox() {
             ref={inputRef}
             value={text}
             placeholder={connected ? 'Say something…' : 'Connect wallet to chat'}
-            onChange={e => setText(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                send()
-              }
-            }}
+            onChange={ e => setText(e.target.value)}
+            onClick={ () => !connected && walletModal.setVisible(true)}
+            onKeyDown={ e =>{ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }}}
             disabled={isSending || !swrKey}
             maxLength={200}
           />
@@ -311,10 +357,11 @@ export default function TrollBox() {
             onClick={send}
             disabled={!connected || isSending || cooldown > 0 || !text.trim() || !swrKey}
           >
-            {isSending ? '…' : cooldown > 0 ? `Wait ${cooldown}s` : 'Send'}
+            { isSending ? '…'
+              : cooldown > 0 ? `Wait ${cooldown}s` : 'Send' }
           </SendBtn>
         </InputRow>
       </ContentContainer>
     </Wrapper>
-  );
+  )
 }
