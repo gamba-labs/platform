@@ -4,9 +4,6 @@ import useSWR from 'swr'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 
-// Emoji Selector
-import EmojiPicker from 'emoji-picker-react'; // Puedes instalar esto con npm
-
 type Msg = { user: string; text: string; ts: number };
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
@@ -201,15 +198,6 @@ const TextInput = styled.input`
   &::placeholder { color:#777; opacity:0.8; }
 `
 
-const EmojiButton = styled.button`
-  background: none;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
-  padding: 5px;
-  margin-right: 10px;
-`
-
 const SendBtn = styled.button`
   background:none;
   border:none;
@@ -238,16 +226,9 @@ export default function TrollBox() {
   const [cooldown, setCooldown] = useState(0)
   const [text, setText] = useState('')
   const [isSending, setIsSending] = useState(false)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [userLevel, setUserLevel] = useState(0)
 
   const toggleMinimize = () => setIsMinimized(v => !v)
-
-  // Emoji select handler
-  const onEmojiClick = (event: any, emojiObject: any) => {
-    setText((prev) => prev + emojiObject.emoji)
-    setShowEmojiPicker(false)
-  }
 
   const send = async () => {
     if (!connected) return walletModal.setVisible(true)
@@ -299,10 +280,6 @@ export default function TrollBox() {
           ))}
         </Log>
         <InputRow>
-          <EmojiButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-            😊
-          </EmojiButton>
-          {showEmojiPicker && <EmojiPicker onEmojiClick={onEmojiClick} />}
           <TextInput
             value={text}
             onChange={e => setText(e.target.value)}
