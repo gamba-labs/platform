@@ -1,7 +1,6 @@
 // src/sections/Header.tsx
 import {
   GambaUi,
-  TokenValue,
   useCurrentPool,
   useGambaPlatformContext,
   useUserBalance,
@@ -45,6 +44,37 @@ const StyledHeader = styled.div`
   top: 0;
   left: 0;
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px;
+  }
+`
+
+const LeftSection = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    justify-content: space-between;
+    width: 100%;
+  }
+`
+
+const RightSection = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: relative;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+  }
 `
 
 const Logo = styled(NavLink)`
@@ -53,12 +83,26 @@ const Logo = styled(NavLink)`
   & > img {
     height: 120%;
   }
+
+  @media (max-width: 768px) {
+    height: 30px;
+    & > img {
+      height: 100%;
+    }
+  }
 `
 
 /* ─────── config ──────────────────────────────────────────────── */
-/** Change this to the creator address whose leaderboard you want
- *  to display. You can also pipe it in via an env variable. */
 const CREATOR_ADDRESS = 'ExampleCreatorPubkey'
+
+/* ─────── helpers ─────────────────────────────────────────────── */
+
+function formatTokenValue(amount: number | string) {
+  return Number(amount).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+  })
+}
 
 /* ─────── main component ──────────────────────────────────────── */
 
@@ -75,16 +119,12 @@ export default function Header() {
 
   return (
     <>
-      {/* ────── helper modals ────── */}
       {bonusHelp && (
         <Modal onClose={() => setBonusHelp(false)}>
           <h1>Bonus ✨</h1>
           <p>
-            You have <b>
-              <TokenValue amount={balance.bonusBalance} />
-            </b>{' '}
-            worth of free plays. This bonus will be applied automatically when you
-            play.
+            You have <b>{formatTokenValue(balance.bonusBalance)}</b> worth of free plays.
+            This bonus will be applied automatically when you play.
           </p>
           <p>Note that a fee is still needed from your wallet for each play.</p>
         </Modal>
@@ -94,13 +134,12 @@ export default function Header() {
         <Modal onClose={() => setJackpotHelp(false)}>
           <h1>Jackpot 💰</h1>
           <p style={{ fontWeight: 'bold' }}>
-            There&apos;s <TokenValue amount={pool.jackpotBalance} /> in the
-            Jackpot.
+            There's {formatTokenValue(pool.jackpotBalance)} in the Jackpot.
           </p>
           <p>
-            The Jackpot is a prize pool that grows with every bet made. As it
-            grows, so does your chance of winning. Once a winner is selected,
-            the pool resets and grows again from there.
+            The Jackpot is a prize pool that grows with every bet made. As it grows,
+            so does your chance of winning. Once a winner is selected, the pool resets
+            and grows again from there.
           </p>
           <p>
             You pay a maximum of{' '}
@@ -121,7 +160,6 @@ export default function Header() {
         </Modal>
       )}
 
-      {/* ────── leaderboards modal ────── */}
       {showLeaderboard && (
         <LeaderboardsModal
           creator={PLATFORM_CREATOR_ADDRESS.toBase58()}
@@ -129,35 +167,26 @@ export default function Header() {
         />
       )}
 
-      {/* ────── header bar ────── */}
       <StyledHeader>
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+        <LeftSection>
           <Logo to="/">
             <img alt="Gamba logo" src="/logo.svg" />
           </Logo>
-        </div>
+        </LeftSection>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '10px',
-            alignItems: 'center',
-            position: 'relative',
-          }}
-        >
+        <RightSection>
           {pool.jackpotBalance > 0 && (
             <Bonus onClick={() => setJackpotHelp(true)}>
-              💰 <TokenValue amount={pool.jackpotBalance} />
+              💰 {formatTokenValue(pool.jackpotBalance)}
             </Bonus>
           )}
 
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
-              ✨ <TokenValue amount={balance.bonusBalance} />
+              ✨ {formatTokenValue(balance.bonusBalance)}
             </Bonus>
           )}
 
-          {/* Leaderboard trigger only on desktop */}
           {isDesktop && (
             <GambaUi.Button onClick={() => setShowLeaderboard(true)}>
               Leaderboard
@@ -166,7 +195,7 @@ export default function Header() {
 
           <TokenSelect />
           <UserButton />
-        </div>
+        </RightSection>
       </StyledHeader>
     </>
   )
