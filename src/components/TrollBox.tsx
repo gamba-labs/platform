@@ -50,6 +50,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   flex-direction: column;
   cursor: ${({ $isMinimized }) => $isMinimized ? 'pointer' : 'default'};
   transition: width 0.3s, height 0.3s, max-height 0.3s, border-radius 0.3s, background 0.3s;
+  
   ${({ $isMinimized }) => $isMinimized
     ? `
       width: 56px;
@@ -61,14 +62,24 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 500px; /* Aumentado ancho */
-      max-height: 500px; /* Aumentada altura */
-      min-height: 200px; /* Aumentada altura mínima */
+      width: 100%; /* Ensures the chat takes full width on small screens */
+      max-width: 500px;
+      min-height: 200px;
     `}
-  @media (max-width:480px) {
+
+  /* Ajustes para pantallas pequeñas (de menos de 768px) */
+  @media (max-width: 768px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:400px; bottom:16px; right:16px;`}
+      : `width: 100%; max-width: 95%; bottom:16px; right:16px;`} 
+  }
+
+  /* Ajustes para pantallas muy pequeñas (menores a 480px) */
+  @media (max-width: 480px) {
+    ${({ $isMinimized }) => $isMinimized
+      ? `bottom:16px; right:16px;`
+      : `width: 100%; max-width: 90%; bottom:16px; right:16px;`} 
+  }
 `
 
 const ContentContainer = styled.div<{ $isMinimized: boolean }>`
@@ -82,7 +93,7 @@ const ContentContainer = styled.div<{ $isMinimized: boolean }>`
 `
 
 const Header = styled.div`
-  padding: 15px 20px; /* Aumentado padding */
+  padding: 10px 15px; /* Reducido padding en móviles */
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -94,123 +105,123 @@ const Header = styled.div`
 
 const HeaderTitle = styled.span`
   flex-grow: 1;
-  font-size: 1.4rem; /* Aumentado tamaño de fuente */
+  font-size: 1.2rem; /* Reducido tamaño de fuente en móviles */
   font-weight: bold;
   display: flex;
   align-items: center;
 `
 
 const OnlineStatus = styled.div`
-  width: 10px; /* Aumentado tamaño del punto */
-  height: 10px; /* Aumentado tamaño del punto */
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #28a745;
   margin-left: 10px;
 `
 
 const HeaderStatus = styled.span`
-  font-size:0.85rem; /* Aumentado tamaño de fuente */
-  color:#a0a0a0;
-  opacity:0.8;
-  margin:0 10px;
+  font-size: 0.75rem;
+  color: #a0a0a0;
+  opacity: 0.8;
+  margin: 0 10px;
 `
 
 const MinimizeButton = styled.button`
-  background:none;
-  border:none;
-  color:#a0a0a0;
-  padding:5px;
-  cursor:pointer;
-  border-radius:4px;
-  &:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  &:hover { background: rgba(255,255,255,0.1); color: #fff; }
 `
 
 const ExpandIconWrapper = styled.div`
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const Log = styled.div`
-  flex:1;
-  overflow-y:auto;
-  padding:20px 25px; /* Aumentado padding */
-  display:flex;
-  flex-direction:column;
-  gap:1.5rem; /* Aumentado espacio entre mensajes */
-  min-height:200px; /* Aumentada altura mínima */
-  background: rgba(47, 49, 54, 0.8); /* Fondo gris más transparente */
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px 20px; /* Reducido padding en móviles */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 200px;
+  background: rgba(47, 49, 54, 0.8);
   border-radius: 10px;
-  margin-top: 10px; /* Aumentado margen superior */
-  &::-webkit-scrollbar { width:8px; } /* Ancho aumentado de la barra de desplazamiento */
-  &::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:3px; }
+  margin-top: 10px;
+  &::-webkit-scrollbar { width: 8px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
 `
 
 const MessageItem = styled.div<{ $isOwn?: boolean }>`
-  line-height:1.6; /* Aumentado el interlineado */
-  animation:${fadeIn} 0.3s ease-out;
+  line-height: 1.6;
+  animation: ${fadeIn} 0.3s ease-out;
   background: ${({ $isOwn }) => $isOwn ? '#7289da' : '#40444b'};
   border-radius: 8px;
-  padding: 12px 16px; /* Aumentado padding */
-  max-width: 85%; /* Aumentado máximo ancho */
+  padding: 12px 16px;
+  max-width: 85%;
   color: white;
-  margin-bottom: 10px; /* Aumentado margen inferior */
+  margin-bottom: 10px;
   align-self: ${({ $isOwn }) => $isOwn ? 'flex-end' : 'flex-start'};
 `
 
 const Username = styled.strong<{ userColor: string }>`
-  font-weight:600;
-  color:${p => p.userColor};
-  margin-right:0.5em;
+  font-weight: 600;
+  color: ${p => p.userColor};
+  margin-right: 0.5em;
 `
 
 const Timestamp = styled.span`
-  font-size:0.85em; /* Aumentado tamaño de la hora */
-  color:white; /* Hora en color blanco */
-  opacity:1;
-  margin-left:0.5em;
+  font-size: 0.85em;  /* Aumentado tamaño de la hora */
+  color: #b0b0b0; /* Gris más suave para la hora */
+  opacity: 1;
+  margin-left: 0.5em;
 `
 
 const InputRow = styled.div`
-  display:flex;
-  border-top:1px solid rgba(255,255,255,0.08);
-  background:#202225;
-  flex-shrink:0;
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #202225;
+  flex-shrink: 0;
   align-items: center;
-  padding: 10px 15px; /* Aumentado padding */
+  padding: 10px 15px;
 `
 
 const TextInput = styled.input`
-  flex:1;
-  background:#40444b;
-  border:none;
-  padding:15px 20px; /* Aumentado padding */
-  color:#fff;
-  outline:none;
-  font-size:1.1rem; /* Aumentado tamaño de fuente */
-  border-radius: 10px; /* Aumentado radio de borde */
-  &::placeholder { color:#777; opacity:0.8; }
+  flex: 1;
+  background: #40444b;
+  border: none;
+  padding: 15px 20px;
+  color: #fff;
+  outline: none;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  &::placeholder { color: #777; opacity: 0.8; }
 `
 
 const SendBtn = styled.button`
-  background:none; /* Sin fondo */
-  border:none; /* Sin borde */
-  padding:0 20px; /* Aumentado padding */
-  cursor:pointer;
-  font-weight:600;
-  color:#fff;
-  font-size:1.1rem; /* Aumentado tamaño de fuente */
-  &:hover:not(:disabled) { background:rgba(255,255,255,0.1); }
-  &:active:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(0.98); }
-  &:disabled { opacity:0.5; cursor:not-allowed; }
+  background: none;
+  border: none;
+  padding: 0 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  font-size: 1.1rem;
+  &:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+  &:active:not(:disabled) { background: rgba(255,255,255,0.2); transform: scale(0.98); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 `
 
 const LoadingText = styled.div`
-  text-align:center;
-  color:#a0a0a0;
-  padding:2rem 0;
-  font-style:italic;
-  font-size:1rem; /* Aumentado tamaño de fuente */
+  text-align: center;
+  color: #a0a0a0;
+  padding: 2rem 0;
+  font-style: italic;
+  font-size: 1rem;
 `
 
 export default function TrollBox() {
