@@ -98,7 +98,7 @@ export const GAMES: GameBundle[] = [
     meta: {
       background: '#000000CC',
       image: '/games/cryptochart.png',
-      name: 'Crypto Chart',
+      name: 'Sol Crash',
       description: `A crypto-inspired twist on Crash. Watch the chart rise with candlestick animations. Cash out before it crashes.`,
     },
     app: React.lazy(() => import('./CryptoChartGame')),
