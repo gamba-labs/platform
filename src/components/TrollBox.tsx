@@ -43,10 +43,10 @@ const ExpandIconWrapper = styled.div`
 
 const Wrapper = styled.div<{ $isMinimized: boolean }>`
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 16px;
+  right: 16px;
   z-index: 998;
-  border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '12px'};
+  border-radius: ${({ $isMinimized }) => $isMinimized ? '50%' : '16px'};
   background: ${({ $isMinimized }) => $isMinimized ? '#7289da' : '#2f3136'};
   border: 1px solid ${({ $isMinimized }) => $isMinimized ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'};
   color: #eee;
@@ -70,21 +70,17 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       & > *:not(${ExpandIconWrapper}) { display: none; }
     `
     : `
-      width: 400px;
-      max-height: 600px;
-      min-height: 200px;
+      width: 100%;
+      max-width: 320px;
+      max-height: 60vh;
+      min-height: 180px;
     `}
 
-  @media (max-width: 480px) {
-    ${({ $isMinimized }) => $isMinimized
-      ? `bottom:16px; right:16px;`
-      : `
-        width: calc(100% - 32px);
-        max-width: 100%;
-        bottom: 16px;
-        right: 16px;
-        max-height: 90vh;
-      `}
+  @media (min-width: 480px) {
+    ${({ $isMinimized }) => !$isMinimized && `
+      max-width: 400px;
+      max-height: 600px;
+    `}
   }
 `
 
