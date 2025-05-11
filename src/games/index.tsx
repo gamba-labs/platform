@@ -97,7 +97,7 @@ export const GAMES: GameBundle[] = [
     id: 'crypto-chart',
     meta: {
       background: '#000000CC',
-      image: '/games/cryptochart.webp',
+      image: '/games/cryptochart.png',
       name: 'Crypto Chart',
       description: `A crypto-inspired twist on Crash. Watch the chart rise with candlestick animations. Cash out before it crashes.`,
     },
