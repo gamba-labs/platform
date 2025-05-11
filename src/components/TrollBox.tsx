@@ -1,10 +1,11 @@
+// TrollBox.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import styled, { keyframes } from 'styled-components'
 import useSWR from 'swr'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 
-type Msg = { user: string; text: string; ts: number };
+type Msg = { user: string; text: string; ts: number }
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -22,6 +23,7 @@ const MinimizeIcon = () => (
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
+
 const ChatIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
@@ -31,6 +33,12 @@ const ChatIcon = () => (
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
+`
+
+const ExpandIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const Wrapper = styled.div<{ $isMinimized: boolean }>`
@@ -50,6 +58,7 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
   flex-direction: column;
   cursor: ${({ $isMinimized }) => $isMinimized ? 'pointer' : 'default'};
   transition: width 0.3s, height 0.3s, max-height 0.3s, border-radius 0.3s, background 0.3s;
+
   ${({ $isMinimized }) => $isMinimized
     ? `
       width: 56px;
@@ -65,10 +74,18 @@ const Wrapper = styled.div<{ $isMinimized: boolean }>`
       max-height: 600px;
       min-height: 200px;
     `}
-  @media (max-width:480px) {
+
+  @media (max-width: 480px) {
     ${({ $isMinimized }) => $isMinimized
       ? `bottom:16px; right:16px;`
-      : `width:calc(100% - 32px); max-width:500px; bottom:16px; right:16px;`}
+      : `
+        width: calc(100% - 32px);
+        max-width: 100%;
+        bottom: 16px;
+        right: 16px;
+        max-height: 90vh;
+      `}
+  }
 `
 
 const ContentContainer = styled.div<{ $isMinimized: boolean }>`
@@ -123,12 +140,6 @@ const MinimizeButton = styled.button`
   cursor:pointer;
   border-radius:4px;
   &:hover { background:rgba(255,255,255,0.1); color:#fff; }
-`
-
-const ExpandIconWrapper = styled.div`
-  display:flex;
-  align-items:center;
-  justify-content:center;
 `
 
 const Log = styled.div`
@@ -213,7 +224,6 @@ const LoadingText = styled.div`
   font-size:1rem;
 `
 
-// 🔥 NUEVOS styled-components agregados:
 const MessageHeader = styled.div`
   display: flex;
   align-items: center;
@@ -327,16 +337,11 @@ export default function TrollBox() {
 
   const toggleMinimize = () => setIsMinimized(v => !v)
 
-  const onlineUsers = useMemo(() => {
-    const uniqueUsers = new Set(messages.map(m => m.user));
-    return uniqueUsers.size;
-  }, [messages]);
-
   return (
     <Wrapper $isMinimized={isMinimized}>
       {isMinimized && (
         <ExpandIconWrapper onClick={toggleMinimize}>
-          <ChatIcon/>
+          <ChatIcon />
         </ExpandIconWrapper>
       )}
       <ContentContainer $isMinimized={isMinimized}>
