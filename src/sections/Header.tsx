@@ -21,6 +21,7 @@ const StyledHeader = styled.div`
   z-index: 1000;
 
   display: flex;
+  flex-wrap: wrap; /* permite bajar línea si no cabe */
   align-items: center;
   justify-content: space-between;
 
@@ -43,6 +44,7 @@ const Logo = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0; /* evita overflow */
   text-decoration: none;
 
   img {
@@ -66,6 +68,21 @@ const Bonus = styled.button<{ noBackground?: boolean }>`
 
   &:hover {
     background-color: ${({ noBackground }) => (noBackground ? 'transparent' : '#333')};
+  }
+`
+
+const RightGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto; /* permite scroll horizontal */
+  -webkit-overflow-scrolling: touch;
+
+  /* oculta scrollbar webkit */
+  &::-webkit-scrollbar {
+    display: none;
   }
 `
 
@@ -165,13 +182,11 @@ export default function Header() {
       )}
 
       <StyledHeader>
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <Logo to="/">
-            <img alt="Gamba logo" src="/logo.svg" />
-          </Logo>
-        </div>
+        <Logo to="/">
+          <img alt="Gamba logo" src="/logo.svg" />
+        </Logo>
 
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' }}>
+        <RightGroup>
           {pool.jackpotBalance > 0 && (
             <Bonus noBackground onClick={() => setJackpotHelp(true)}>
               💰 <TokenValue amount={pool.jackpotBalance} />
@@ -184,7 +199,7 @@ export default function Header() {
           )}
           <TokenSelect />
           <UserButton />
-        </div>
+        </RightGroup>
       </StyledHeader>
     </>
   )
