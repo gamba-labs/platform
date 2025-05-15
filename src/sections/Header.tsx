@@ -28,7 +28,7 @@ const StyledHeader = styled.div`
 
   width: 90%;
   max-width: 1400px;
-  height: 100px; /* fijo en desktop */
+  height: 100px;
   padding: 0 32px;
 
   background: rgba(0, 0, 0, 0.5);
@@ -39,8 +39,9 @@ const StyledHeader = styled.div`
   @media (max-width: 600px) {
     width: 95%;
     flex-direction: column;
-    height: auto; /* altura automática en móvil */
-    padding: 8px 16px 4px 16px; /* padding vertical ajustado en móvil */
+    height: auto;
+    padding: 8px 16px 4px 16px;
+    margin-bottom: -20px; /* reduce espacio debajo */
     top: 12px;
   }
 `
