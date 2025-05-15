@@ -70,7 +70,7 @@ export default function App() {
       <ScrollToTop />
       <ErrorHandler />
       <Header />
-<div style={{ height: '30px', visibility: 'hidden', pointerEvents: 'none' }} />
+<div style={{ height: '50px', visibility: 'hidden', pointerEvents: 'none' }} />
       <Toasts />
       <MainWrapper>
         <Routes>
