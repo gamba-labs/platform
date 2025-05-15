@@ -86,6 +86,11 @@ const Bonus = styled.button<{ noBackground?: boolean }>`
   &:hover {
     background-color: ${({ noBackground }) => (noBackground ? 'transparent' : '#333')};
   }
+
+  @media (max-width: 600px) {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
 `
 
 const RightGroup = styled.div`
@@ -94,18 +99,18 @@ const RightGroup = styled.div`
   gap: 10px;
   min-width: 0;
   flex-wrap: nowrap;
-  overflow-x: visible; /* eliminado scroll */
-  
+  overflow-x: visible;
+
   &::-webkit-scrollbar {
     display: none;
   }
 
   @media (max-width: 600px) {
     width: 100%;
-    justify-content: flex-end; /* alineado a la derecha */
-    margin-top: 0; /* sin margen arriba */
-    overflow-x: visible; /* sin scroll */
-    flex-wrap: nowrap; /* una sola línea */
+    justify-content: flex-end;
+    margin-top: 0;
+    overflow-x: visible;
+    flex-wrap: nowrap;
   }
 `
 
@@ -157,7 +162,7 @@ export default function Header() {
   const pool = useCurrentPool()
   const context = useGambaPlatformContext()
   const balance = useUserBalance()
-  const isDesktop = useMediaQuery('lg') // desktop ≥ 1024px
+  const isDesktop = useMediaQuery('lg')
 
   const [bonusHelp, setBonusHelp] = React.useState(false)
   const [jackpotHelp, setJackpotHelp] = React.useState(false)
@@ -214,12 +219,12 @@ export default function Header() {
         <RightGroup>
           {pool.jackpotBalance > 0 && (
             <Bonus noBackground onClick={() => setJackpotHelp(true)}>
-              💰 {isDesktop ? <TokenValue amount={pool.jackpotBalance} /> : pool.jackpotBalance.toFixed(3)}
+              💰 <TokenValue amount={pool.jackpotBalance} />
             </Bonus>
           )}
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
-              ✨ {isDesktop ? <TokenValue amount={balance.bonusBalance} /> : balance.bonusBalance.toFixed(3)}
+              ✨ <TokenValue amount={balance.bonusBalance} />
             </Bonus>
           )}
           <TokenSelect />
