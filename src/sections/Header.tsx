@@ -12,6 +12,7 @@ import { Modal } from '../components/Modal'
 import { PLATFORM_JACKPOT_FEE } from '../constants'
 import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 
 const StyledHeader = styled.div`
   position: fixed;
@@ -21,7 +22,6 @@ const StyledHeader = styled.div`
   z-index: 1000;
 
   display: flex;
-  flex-wrap: wrap; /* permite bajar línea si no cabe */
   align-items: center;
   justify-content: space-between;
 
@@ -37,6 +37,9 @@ const StyledHeader = styled.div`
 
   @media (max-width: 600px) {
     width: 95%;
+    flex-direction: column;
+    height: auto;
+    padding: 16px 24px;
   }
 `
 
@@ -44,11 +47,23 @@ const Logo = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 0; /* evita overflow */
+  min-width: 0;
   text-decoration: none;
 
   img {
     height: 38px;
+    transition: height 0.3s ease;
+  }
+
+  @media (max-width: 600px) {
+    justify-content: center;
+    width: 100%;
+
+    img {
+      height: 50px;
+      margin: 0 auto;
+      display: block;
+    }
   }
 `
 
@@ -77,12 +92,17 @@ const RightGroup = styled.div`
   gap: 10px;
   min-width: 0;
   flex-wrap: nowrap;
-  overflow-x: auto; /* permite scroll horizontal */
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
-  /* oculta scrollbar webkit */
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    justify-content: center;
+    margin-top: 12px;
   }
 `
 
@@ -134,6 +154,8 @@ export default function Header() {
   const pool = useCurrentPool()
   const context = useGambaPlatformContext()
   const balance = useUserBalance()
+  const isDesktop = useMediaQuery('lg') // desktop ≥ 1024px
+
   const [bonusHelp, setBonusHelp] = React.useState(false)
   const [jackpotHelp, setJackpotHelp] = React.useState(false)
   const [showDailyChest, setShowDailyChest] = React.useState(false)
@@ -189,12 +211,12 @@ export default function Header() {
         <RightGroup>
           {pool.jackpotBalance > 0 && (
             <Bonus noBackground onClick={() => setJackpotHelp(true)}>
-              💰 <TokenValue amount={pool.jackpotBalance} />
+              💰 {isDesktop ? <TokenValue amount={pool.jackpotBalance} /> : pool.jackpotBalance.toFixed(3)}
             </Bonus>
           )}
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
-              ✨ <TokenValue amount={balance.bonusBalance} />
+              ✨ {isDesktop ? <TokenValue amount={balance.bonusBalance} /> : balance.bonusBalance.toFixed(3)}
             </Bonus>
           )}
           <TokenSelect />
