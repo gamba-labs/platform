@@ -40,7 +40,7 @@ const StyledHeader = styled.div`
     width: 95%;
     flex-direction: column;
     height: auto;
-    padding: 16px 24px 8px 24px; /* más padding arriba, menos abajo */
+    padding: 8px 16px 4px 16px; /* menos padding abajo */
     top: 12px;
   }
 `
@@ -60,6 +60,7 @@ const Logo = styled(NavLink)`
   @media (max-width: 600px) {
     justify-content: center;
     width: 100%;
+    margin-bottom: 4px; /* pequeño espacio debajo para separar */
 
     img {
       height: 50px;
@@ -107,8 +108,8 @@ const RightGroup = styled.div`
 
   @media (max-width: 600px) {
     width: 100%;
-    justify-content: center; /* centra en móvil */
-    margin-top: 2px; /* un poco más arriba */
+    justify-content: center;
+    margin-top: 0; /* elimina margen arriba para acercar al logo */
     overflow-x: visible;
     flex-wrap: nowrap;
   }
