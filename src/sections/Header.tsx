@@ -1,4 +1,3 @@
-// src/sections/Header.tsx
 import {
   GambaUi,
   TokenValue,
@@ -10,81 +9,123 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { Modal } from '../components/Modal'
-import LeaderboardsModal from '../components/LeaderboardsModal'
-import { PLATFORM_JACKPOT_FEE, PLATFORM_CREATOR_ADDRESS } from '../constants'
-import { useMediaQuery } from '../hooks/useMediaQuery'
+import { PLATFORM_JACKPOT_FEE } from '../constants'
 import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
 
-/* ─────── styled bits ─────────────────────────────────────────── */
-
-const Bonus = styled.button`
-  all: unset;
-  cursor: pointer;
-  color: #ffe42d;
-  border-radius: 10px;
-  padding: 2px 10px;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: bold;
-  transition: background-color 0.2s;
-  &:hover {
-    background: white;
-  }
-`
+/* ─────── styled ───────────────────────────────────────────── */
 
 const StyledHeader = styled.div`
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 55%;
+  max-width: 1400px;
+  height: 80px;
+  padding: 0 24px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(18px);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 10px;
-  background: #000000cc;
-  backdrop-filter: blur(20px);
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
 `
 
+
 const Logo = styled(NavLink)`
-  height: 35px;
-  margin: 0 10px;
-  & > img {
-    height: 120%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+
+  img {
+    height: 28px;
   }
 `
 
-/* ─────── config ──────────────────────────────────────────────── */
-/** Change this to the creator address whose leaderboard you want
- *  to display. You can also pipe it in via an env variable. */
-const CREATOR_ADDRESS = 'ExampleCreatorPubkey'
+const Bonus = styled.button`
+  background-color: #1f1f1f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
 
-/* ─────── main component ──────────────────────────────────────── */
+  &:hover {
+    background-color: #333;
+  }
+`
+
+const PopupContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 512px;
+  height: 512px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  z-index: 2000;
+`
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+
+  &:hover {
+    color: #ccc;
+  }
+`
+
+const ClaimButton = styled.button`
+  background-color: #333;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+
+  &:hover {
+    background-color: #555;
+  }
+`
+
+/* ─────── main component ───────────────────────────────────── */
 
 export default function Header() {
   const pool = useCurrentPool()
   const context = useGambaPlatformContext()
   const balance = useUserBalance()
-
-  const isDesktop = useMediaQuery('lg') // ≥ 1024 px
-  const [showLeaderboard, setShowLeaderboard] = React.useState(false)
-
   const [bonusHelp, setBonusHelp] = React.useState(false)
   const [jackpotHelp, setJackpotHelp] = React.useState(false)
+  const [showDailyChest, setShowDailyChest] = React.useState(false)
 
   return (
     <>
-      {/* ────── helper modals ────── */}
+      {/* Modals */}
       {bonusHelp && (
         <Modal onClose={() => setBonusHelp(false)}>
           <h1>Bonus ✨</h1>
           <p>
-            You have <b>
-              <TokenValue amount={balance.bonusBalance} />
-            </b>{' '}
-            worth of free plays. This bonus will be applied automatically when you
-            play.
+            You have <b><TokenValue amount={balance.bonusBalance} /></b> worth of free plays. This bonus will be applied automatically when you play.
           </p>
           <p>Note that a fee is still needed from your wallet for each play.</p>
         </Modal>
@@ -94,42 +135,35 @@ export default function Header() {
         <Modal onClose={() => setJackpotHelp(false)}>
           <h1>Jackpot 💰</h1>
           <p style={{ fontWeight: 'bold' }}>
-            There&apos;s <TokenValue amount={pool.jackpotBalance} /> in the
-            Jackpot.
+            There&apos;s <TokenValue amount={pool.jackpotBalance} /> in the Jackpot.
           </p>
           <p>
-            The Jackpot is a prize pool that grows with every bet made. As it
-            grows, so does your chance of winning. Once a winner is selected,
-            the pool resets and grows again from there.
+            The Jackpot is a prize pool that grows with every bet made. As the Jackpot grows, so does your chance of winning. Once a winner is selected, the value of the Jackpot resets and grows from there until a new winner is selected.
           </p>
           <p>
-            You pay a maximum of{' '}
-            {(PLATFORM_JACKPOT_FEE * 100).toLocaleString(undefined, {
-              maximumFractionDigits: 4,
-            })}
-            % of each wager for a chance to win.
+            You will be paying a maximum of {(PLATFORM_JACKPOT_FEE * 100).toLocaleString(undefined, { maximumFractionDigits: 4 })}% for each wager for a chance to win.
           </p>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {context.defaultJackpotFee === 0 ? 'DISABLED' : 'ENABLED'}
             <GambaUi.Switch
               checked={context.defaultJackpotFee > 0}
-              onChange={(checked) =>
-                context.setDefaultJackpotFee(checked ? PLATFORM_JACKPOT_FEE : 0)
-              }
+              onChange={(checked) => context.setDefaultJackpotFee(checked ? PLATFORM_JACKPOT_FEE : 0)}
             />
           </label>
         </Modal>
       )}
 
-      {/* ────── leaderboards modal ────── */}
-      {showLeaderboard && (
-        <LeaderboardsModal
-          creator={PLATFORM_CREATOR_ADDRESS.toBase58()}
-          onClose={() => setShowLeaderboard(false)}
-        />
+      {/* Daily Chest Popup */}
+      {showDailyChest && (
+        <PopupContainer>
+          <CloseButton onClick={() => setShowDailyChest(false)}>×</CloseButton>
+          <h2>Daily Chest</h2>
+          <p>Claim your daily chest to get more chances to win!</p>
+          <ClaimButton onClick={() => alert('Claimed Daily Chest!')}>Claim</ClaimButton>
+        </PopupContainer>
       )}
 
-      {/* ────── header bar ────── */}
+      {/* Header UI */}
       <StyledHeader>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <Logo to="/">
@@ -137,33 +171,17 @@ export default function Header() {
           </Logo>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '10px',
-            alignItems: 'center',
-            position: 'relative',
-          }}
-        >
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' }}>
           {pool.jackpotBalance > 0 && (
             <Bonus onClick={() => setJackpotHelp(true)}>
               💰 <TokenValue amount={pool.jackpotBalance} />
             </Bonus>
           )}
-
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
               ✨ <TokenValue amount={balance.bonusBalance} />
             </Bonus>
           )}
-
-          {/* Leaderboard trigger only on desktop */}
-          {isDesktop && (
-            <GambaUi.Button onClick={() => setShowLeaderboard(true)}>
-              Leaderboard
-            </GambaUi.Button>
-          )}
-
           <TokenSelect />
           <UserButton />
         </div>
