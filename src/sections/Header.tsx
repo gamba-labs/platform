@@ -16,7 +16,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery'
 
 const StyledHeader = styled.div`
   position: fixed;
-  top: 8px; /* más arriba */
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -28,7 +28,7 @@ const StyledHeader = styled.div`
 
   width: 90%;
   max-width: 1400px;
-  height: 100px; /* más alto */
+  height: 100px;
   padding: 0 32px;
 
   background: rgba(0, 0, 0, 0.5);
@@ -40,8 +40,8 @@ const StyledHeader = styled.div`
     width: 95%;
     flex-direction: column;
     height: auto;
-    padding: 16px 24px;
-    top: 12px; /* un poco menos arriba en móvil */
+    padding: 8px 16px;
+    top: 12px;
   }
 `
 
@@ -94,17 +94,18 @@ const RightGroup = styled.div`
   gap: 10px;
   min-width: 0;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-
+  overflow-x: visible; /* eliminado scroll */
+  
   &::-webkit-scrollbar {
     display: none;
   }
 
   @media (max-width: 600px) {
     width: 100%;
-    justify-content: center;
-    margin-top: 12px;
+    justify-content: flex-end; /* alineado a la derecha */
+    margin-top: 0; /* sin margen arriba */
+    overflow-x: visible; /* sin scroll */
+    flex-wrap: nowrap; /* una sola línea */
   }
 `
 
