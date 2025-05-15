@@ -13,8 +13,6 @@ import { PLATFORM_JACKPOT_FEE } from '../constants'
 import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
 
-/* ─────── styled ───────────────────────────────────────────── */
-
 const StyledHeader = styled.div`
   position: fixed;
   top: 20px;
@@ -28,7 +26,7 @@ const StyledHeader = styled.div`
 
   width: 90%;
   max-width: 1400px;
-  height: 80px;
+  height: 64px;
   padding: 0 24px;
 
   background: rgba(0, 0, 0, 0.5);
@@ -37,14 +35,9 @@ const StyledHeader = styled.div`
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 
   @media (max-width: 600px) {
-    height: 48px;
-    padding: 0 16px;
-    top: 10px;
     width: 95%;
-    border-radius: 12px;
   }
 `
-
 
 const Logo = styled(NavLink)`
   display: flex;
@@ -57,8 +50,8 @@ const Logo = styled(NavLink)`
   }
 `
 
-const Bonus = styled.button`
-  background-color: #1f1f1f;
+const Bonus = styled.button<{ noBackground?: boolean }>`
+  background-color: ${({ noBackground }) => (noBackground ? 'transparent' : '#1f1f1f')};
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -72,7 +65,7 @@ const Bonus = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background-color: #333;
+    background-color: ${({ noBackground }) => (noBackground ? 'transparent' : '#333')};
   }
 `
 
@@ -120,8 +113,6 @@ const ClaimButton = styled.button`
   }
 `
 
-/* ─────── main component ───────────────────────────────────── */
-
 export default function Header() {
   const pool = useCurrentPool()
   const context = useGambaPlatformContext()
@@ -132,7 +123,6 @@ export default function Header() {
 
   return (
     <>
-      {/* Modals */}
       {bonusHelp && (
         <Modal onClose={() => setBonusHelp(false)}>
           <h1>Bonus ✨</h1>
@@ -165,7 +155,6 @@ export default function Header() {
         </Modal>
       )}
 
-      {/* Daily Chest Popup */}
       {showDailyChest && (
         <PopupContainer>
           <CloseButton onClick={() => setShowDailyChest(false)}>×</CloseButton>
@@ -175,7 +164,6 @@ export default function Header() {
         </PopupContainer>
       )}
 
-      {/* Header UI */}
       <StyledHeader>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <Logo to="/">
@@ -185,7 +173,7 @@ export default function Header() {
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' }}>
           {pool.jackpotBalance > 0 && (
-            <Bonus onClick={() => setJackpotHelp(true)}>
+            <Bonus noBackground onClick={() => setJackpotHelp(true)}>
               💰 <TokenValue amount={pool.jackpotBalance} />
             </Bonus>
           )}
