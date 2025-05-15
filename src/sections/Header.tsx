@@ -17,20 +17,32 @@ import { UserButton } from './UserButton'
 
 const StyledHeader = styled.div`
   position: fixed;
-  top: 10px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  width: 55%;
-  max-width: 1400px;
-  height: 80px;
-  padding: 0 24px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(18px);
-  border-radius: 16px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  width: 90%;
+  max-width: 1400px;
+  height: 64px;
+  padding: 0 24px;
+
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(18px);
+  border-radius: 16px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 600px) {
+    height: 48px;
+    padding: 0 16px;
+    top: 10px;
+    width: 95%;
+    border-radius: 12px;
+  }
 `
 
 
