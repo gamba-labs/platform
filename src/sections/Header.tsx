@@ -12,6 +12,7 @@ import { Modal } from '../components/Modal'
 import { PLATFORM_JACKPOT_FEE } from '../constants'
 import TokenSelect from './TokenSelect'
 import { UserButton } from './UserButton'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 
 const StyledHeader = styled.div`
   position: fixed;
@@ -117,6 +118,8 @@ export default function Header() {
   const pool = useCurrentPool()
   const context = useGambaPlatformContext()
   const balance = useUserBalance()
+  const isDesktop = useMediaQuery('lg') // true si es desktop (≥1024px)
+
   const [bonusHelp, setBonusHelp] = React.useState(false)
   const [jackpotHelp, setJackpotHelp] = React.useState(false)
   const [showDailyChest, setShowDailyChest] = React.useState(false)
@@ -174,12 +177,12 @@ export default function Header() {
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', position: 'relative' }}>
           {pool.jackpotBalance > 0 && (
             <Bonus noBackground onClick={() => setJackpotHelp(true)}>
-              💰 <TokenValue amount={pool.jackpotBalance} />
+              💰 {isDesktop ? <TokenValue amount={pool.jackpotBalance} /> : pool.jackpotBalance.toFixed(3)}
             </Bonus>
           )}
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
-              ✨ <TokenValue amount={balance.bonusBalance} />
+              ✨ {isDesktop ? <TokenValue amount={balance.bonusBalance} /> : balance.bonusBalance.toFixed(3)}
             </Bonus>
           )}
           <TokenSelect />
