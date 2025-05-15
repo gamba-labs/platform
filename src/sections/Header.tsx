@@ -26,7 +26,7 @@ const StyledHeader = styled.div`
 
   width: 90%;
   max-width: 1400px;
-  height: 64px;
+  height: 90px;
   padding: 0 24px;
 
   background: rgba(0, 0, 0, 0.5);
