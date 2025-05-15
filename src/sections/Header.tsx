@@ -16,19 +16,20 @@ import { useMediaQuery } from '../hooks/useMediaQuery'
 
 const StyledHeader = styled.div`
   position: fixed;
-  top: 20px;
+  top: 8px; /* más arriba */
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
 
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 
   width: 90%;
   max-width: 1400px;
-  height: 90px;
-  padding: 0 24px;
+  height: 100px; /* más alto */
+  padding: 0 32px;
 
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(18px);
@@ -40,6 +41,7 @@ const StyledHeader = styled.div`
     flex-direction: column;
     height: auto;
     padding: 16px 24px;
+    top: 12px; /* un poco menos arriba en móvil */
   }
 `
 
