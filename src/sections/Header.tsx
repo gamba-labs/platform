@@ -40,7 +40,7 @@ const StyledHeader = styled.div`
     width: 95%;
     flex-direction: column;
     height: auto;
-    padding: 8px 16px;
+    padding: 16px 24px 8px 24px; /* más padding arriba, menos abajo */
     top: 12px;
   }
 `
@@ -107,8 +107,8 @@ const RightGroup = styled.div`
 
   @media (max-width: 600px) {
     width: 100%;
-    justify-content: flex-end;
-    margin-top: 0;
+    justify-content: center; /* centra en móvil */
+    margin-top: 6px; /* un poco más arriba */
     overflow-x: visible;
     flex-wrap: nowrap;
   }
