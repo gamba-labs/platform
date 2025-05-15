@@ -41,7 +41,7 @@ const StyledHeader = styled.div`
     flex-direction: column;
     height: auto;
     padding: 8px 16px 4px 16px;
-    margin-bottom: -20px; /* reduce espacio debajo */
+    margin-bottom: -20px;
     top: 12px;
   }
 `
@@ -61,7 +61,7 @@ const Logo = styled(NavLink)`
   @media (max-width: 600px) {
     justify-content: center;
     width: 100%;
-    margin-bottom: 4px; /* pequeño espacio debajo para separar */
+    margin-bottom: 4px;
 
     img {
       height: 50px;
@@ -95,6 +95,29 @@ const Bonus = styled.button<{ noBackground?: boolean }>`
   }
 `
 
+const JackpotBonus = styled(Bonus)`
+  font-size: 18px;
+  font-weight: 700;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  color: #000;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
+  border-radius: 12px;
+
+  &:hover {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+    box-shadow: 0 0 12px rgba(217, 119, 6, 1);
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
+    padding: 6px 12px;
+    background: #1f1f1f;
+    color: #fff;
+    box-shadow: none;
+  }
+`
+
 const RightGroup = styled.div`
   display: flex;
   align-items: center;
@@ -110,7 +133,7 @@ const RightGroup = styled.div`
   @media (max-width: 600px) {
     width: 100%;
     justify-content: center;
-    margin-top: 0; /* elimina margen arriba para acercar al logo */
+    margin-top: 0;
     overflow-x: visible;
     flex-wrap: nowrap;
   }
@@ -195,7 +218,7 @@ export default function Header() {
             You will be paying a maximum of {(PLATFORM_JACKPOT_FEE * 100).toLocaleString(undefined, { maximumFractionDigits: 4 })}% for each wager for a chance to win.
           </p>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {context.defaultJackpotFee === 0 ? 'DISABLED' : 'ENABLED'}
+            <span>{context.defaultJackpotFee === 0 ? 'DISABLED' : 'ENABLED'}</span>
             <GambaUi.Switch
               checked={context.defaultJackpotFee > 0}
               onChange={(checked) => context.setDefaultJackpotFee(checked ? PLATFORM_JACKPOT_FEE : 0)}
@@ -220,9 +243,15 @@ export default function Header() {
 
         <RightGroup>
           {pool.jackpotBalance > 0 && (
-            <Bonus noBackground onClick={() => setJackpotHelp(true)}>
-              💰 <TokenValue amount={pool.jackpotBalance} />
-            </Bonus>
+            isDesktop ? (
+              <JackpotBonus noBackground onClick={() => setJackpotHelp(true)}>
+                💰 <TokenValue amount={pool.jackpotBalance} />
+              </JackpotBonus>
+            ) : (
+              <Bonus noBackground onClick={() => setJackpotHelp(true)}>
+                💰 <TokenValue amount={pool.jackpotBalance} />
+              </Bonus>
+            )
           )}
           {balance.bonusBalance > 0 && (
             <Bonus onClick={() => setBonusHelp(true)}>
