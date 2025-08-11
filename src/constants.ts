@@ -16,10 +16,12 @@ export const EXPLORER_URL = 'https://explorer.gamba.so'
 export const PLATFORM_SHARABLE_URL = 'play.gamba.so'
 
 // Creator fee (in %)
-export const PLATFORM_CREATOR_FEE = 0.01 // 1% !!max 5%!!
+export const PLATFORM_CREATOR_FEE = 0.01 // 1% !!max 7%!!
+
+export const MULTIPLAYER_FEE = 0.01 // 1% 
 
 // Jackpot fee (in %)
-export const PLATFORM_JACKPOT_FEE = 0.001 // 0.1%
+export const PLATFORM_JACKPOT_FEE = 0.001 // 0.1%,  not jackpot game specific, but platform wide
 
 // Referral fee (in %)
 export const PLATFORM_REFERRAL_FEE = 0.0025 // 0.25%
@@ -108,4 +110,9 @@ export const TOKEN_METADATA_FETCHER = (
 )()
 
 export const ENABLE_LEADERBOARD = true 
-export const ENABLE_TROLLBOX = true // Requires setup in vercel (check tutorial in discord)
+export const ENABLE_TROLLBOX = false // Requires setup in vercel (check tutorial in discord)
+
+/** If true, the featured game is fully playable inline on the dashboard */
+export const FEATURED_GAME_INLINE = false 
+export const FEATURED_GAME_ID: string | undefined = 'jackpot'   // ← put game id or leave undefined
+

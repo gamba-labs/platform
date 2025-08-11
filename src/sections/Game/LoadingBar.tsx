@@ -1,95 +1,88 @@
 import { decodeGame, getGameAddress } from 'gamba-core-v2'
 import { useAccount, useTransactionStore, useWalletAddress } from 'gamba-react-v2'
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 
-const StyledLoadingThingy = styled.div`
-  position: relative;
+const Container = styled.div`
   display: flex;
   width: 100%;
   gap: 5px;
 `
 
-export const loadingAnimation = keyframes`
-  0%, 100% { opacity: .6 }
-  50% { opacity: .8 }
+const pulse = keyframes`
+  0%, 100% { opacity: 0.6 }
+  50%     { opacity: 0.8 }
 `
 
-const StyledLoadingBar = styled.div<{$state: 'finished' | 'loading' | 'none'}>`
-  position: relative;
-  width: 100%;
-  border-radius: 10px;
+const Bar = styled.div<{$state: 'none' | 'loading' | 'finished'}>`
   flex-grow: 1;
-  background: var(--gamba-ui-primary-color);
-  color: black;
-  padding: 0 10px;
-  font-size: 12px;
   height: 6px;
-  font-weight: bold;
-  opacity: .2;
-  ${(props) => props.$state === 'loading' && css`
-    animation: ${loadingAnimation} ease infinite 1s;
-  `}
-  ${(props) => props.$state === 'finished' && css`
-    opacity: .8;
-  `}
-  &:after {
-    content: " ";
-    position: absolute;
-    width: 25%;
-    height: 100%;
-    transition: opacity .5s;
-  }
+  border-radius: 10px;
+  background: var(--gamba-ui-primary-color);
+  opacity: 0.2;
+
+  ${({ $state }) =>
+    $state === 'loading' &&
+    css`
+      animation: ${pulse} 1s ease infinite;
+    `}
+
+  ${({ $state }) =>
+    $state === 'finished' &&
+    css`
+      opacity: 0.8;
+    `}
 `
 
-const steps = [
-  'Signing',
-  'Sending',
-  'Settling',
-]
+const steps = ['Signing', 'Sending', 'Settling'] as const
 
-export function useLoadingState() {
-  const userAddress = useWalletAddress()
-  const game = useAccount(getGameAddress(userAddress), decodeGame)
-  const txStore = useTransactionStore()
-  const step = (
-    () => {
-      if (txStore.label !== 'play') {
-        return -1
-      }
-      if (game?.status.resultRequested) {
-        return 2
-      }
-      if (txStore.state === 'processing' || txStore.state === 'sending') {
-        return 1
-      }
-      if (txStore.state === 'simulating' || txStore.state === 'signing') {
-        return 0
-      }
-      return -1
-    }
-  )()
+export function useLoadingState(): Array<'none' | 'loading' | 'finished'> {
+  const user = useWalletAddress()
+  const tx = useTransactionStore()
+  const game = useAccount(getGameAddress(user), decodeGame)
 
-  return step
+  const status = useMemo<string | null>(
+    () => (game?.status ? Object.keys(game.status)[0] : null),
+    [game?.status]
+  )
+
+  const states: Array<'none' | 'loading' | 'finished'> = ['none', 'none', 'none']
+
+  if (tx.label !== 'play') return states
+
+  if (tx.state === 'simulating' || tx.state === 'signing') {
+    states[0] = 'loading'
+    return states
+  }
+
+  if (tx.state === 'processing' || tx.state === 'sending') {
+    states[0] = 'finished'
+    states[1] = 'loading'
+    return states
+  }
+
+  if (tx.state === 'confirming' || status === 'ResultRequested') {
+    states[0] = 'finished'
+    states[1] = 'finished'
+    states[2] = 'loading'
+    return states
+  }
+
+  if (status === 'Ready') {
+    return states
+  }
+
+  return states
 }
 
 export function LoadingBar() {
-  const step = useLoadingState()
+  const states = useLoadingState()
 
   return (
-    <div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <StyledLoadingThingy>
-          {steps
-            .map((__, i) => (
-              <StyledLoadingBar
-                key={i}
-                $state={step === i ? 'loading' : step > i ? 'finished' : 'none'}
-              />
-            ),
-            )}
-        </StyledLoadingThingy>
-      </div>
-    </div>
+    <Container>
+      {states.map((state, i) => (
+        <Bar key={i} $state={state} />
+      ))}
+    </Container>
   )
 }

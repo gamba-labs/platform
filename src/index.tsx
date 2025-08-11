@@ -1,3 +1,10 @@
+import * as ReactRoot from 'react'
+console.log('🏷️ App React identity:', ReactRoot)
+
+import * as ReactLocal from 'react'
+console.log('🏷️ useConnection React identity:', ReactLocal)
+
+
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import '@solana/wallet-adapter-react-ui/styles.css'

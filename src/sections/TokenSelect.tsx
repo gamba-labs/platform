@@ -58,6 +58,8 @@ function TokenSelectItem({ mint }: {mint: PublicKey}) {
 export default function TokenSelect() {
   const [visible, setVisible] = React.useState(false)
   const [warning, setWarning] = React.useState(false)
+  // Allow real plays override via query param/localStorage for deployed testing
+  const [allowRealPlays, setAllowRealPlays] = React.useState(false)
   const context = React.useContext(GambaPlatformContext)
   const selectedToken = useCurrentToken()
   const userStore = useUserStore()
@@ -70,13 +72,25 @@ export default function TokenSelect() {
     }
   }, [])
 
+  // Read real-play override – enables SOL selection on deployed builds when needed
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const q = params.get('allowReal') || params.get('real') || params.get('realplays')
+      if (q != null) {
+        const v = q === '1' || q === 'true'
+        localStorage.setItem('allowRealPlays', v ? '1' : '0')
+      }
+      const saved = localStorage.getItem('allowRealPlays')
+      setAllowRealPlays(saved === '1')
+    } catch {}
+  }, [])
+
   const selectPool = (pool: PoolToken) => {
     setVisible(false)
     // Check if platform has real plays disabled
-    if (
-      import.meta.env.VITE_REAL_PLAYS_DISABLED &&
-      !pool.token.equals(FAKE_TOKEN_MINT)
-    ) {
+    const realDisabled = Boolean(import.meta.env.VITE_REAL_PLAYS_DISABLED) && !allowRealPlays
+    if (realDisabled && !pool.token.equals(FAKE_TOKEN_MINT)) {
       setWarning(true)
       return
     }
@@ -120,7 +134,8 @@ export default function TokenSelect() {
           )}
         </GambaUi.Button>
         <Dropdown visible={visible}>
-          {POOLS.map((pool, i) => (
+          {/* Mount balances for list items only when dropdown is visible to avoid unnecessary watchers */}
+          {visible && POOLS.map((pool, i) => (
             <StyledTokenButton onClick={() => selectPool(pool)} key={i}>
               <TokenSelectItem mint={pool.token} />
             </StyledTokenButton>
