@@ -28,6 +28,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background: #181818;
+  border: 1px solid #202533;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 24px rgba(214, 186, 186, 0.25);
 `
 const Header = styled.div`
   display: flex;
@@ -61,7 +66,7 @@ const TR = styled.tr<{ $clickable?: boolean }>`
 const TD = styled.td`
   padding: 10px 12px;
   font-size: 0.95rem;
-  border-bottom: 1px solid #222;
+  border-bottom: 3px solid #222;
 `
 
 export default function Lobby({
@@ -165,11 +170,23 @@ export default function Lobby({
 
               const startMs = Number(softExpirationTimestamp) * 1000
               const msLeft = startMs - now
-              const startsIn = state.waiting
+                const startsIn = state.waiting
                 ? msLeft > 0
-                  ? formatDuration(msLeft)
-                  : 'Ready to start'
-                : 'Started'
+                  ? (
+                    <span style={{ color: '#FFD700', fontWeight: 'bold' }}>
+                    {formatDuration(msLeft)}
+                    </span>
+                  )
+                  : (
+                    <span style={{ color: '#00FF99', fontWeight: 'bold' }}>
+                    Ready to start
+                    </span>
+                  )
+                : (
+                  <span style={{ color: '#FF5555', fontWeight: 'bold' }}>
+                    Started
+                  </span>
+                  )
 
               return (
                 <TR
