@@ -28,11 +28,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: #181818;
   border: 1px solid #202533;
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 6px 24px rgba(214, 186, 186, 0.25);
 `
 const Header = styled.div`
   display: flex;
