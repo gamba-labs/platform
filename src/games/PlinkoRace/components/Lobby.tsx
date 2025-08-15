@@ -57,7 +57,7 @@ const TH = styled.th`
 `
 const TR = styled.tr<{ $clickable?: boolean }>`
   &:hover {
-    background: ${({ $clickable }) => ($clickable ? '#1c1c1c' : 'inherit')};
+    background: ${({ $clickable }) => ($clickable ? '#a2a2a26c' : 'inherit')};
   }
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
 `
